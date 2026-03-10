@@ -1,0 +1,166 @@
+---
+title: State Directory
+last_updated: 2026-03-10
+---
+
+[← Back to Index](index.md)
+
+# State Directory
+
+All runtime state lives in the `.orbit/` directory. This directory is the sole
+source of truth between orbits and between sessions. It should be gitignored.
+
+## Directory Layout
+
+```
+.orbit/
+├── registry.json                       # Component and mission registry
+├── progress.md                         # Session progress notes (append-only)
+│
+├── state/
+│   └── {component}/
+│       └── checkpoint.md               # Latest checkpoint for component
+│
+├── runs/
+│   └── {run-id}/
+│       ├── mission.json                # Run metadata (mission, status, timestamps)
+│       ├── metrics.json                # Runtime metrics (tokens, cost, duration)
+│       └── waypoints/
+│           └── {stage-name}.json       # Stage completion markers
+│
+├── plans/
+│   └── {mission}/
+│       ├── tasks.json                  # Decomposed task list
+│       └── atomic.json                 # Atomic task definitions
+│
+├── learning/
+│   ├── feedback/
+│   │   └── {component}.jsonl           # Component feedback entries
+│   ├── insights/
+│   │   ├── project.jsonl               # Project-scoped insights
+│   │   ├── mission.{name}.jsonl        # Mission-scoped insights
+│   │   └── component.{name}.jsonl      # Component-scoped insights
+│   └── decisions/
+│       ├── project.jsonl               # Project-scoped decisions
+│       ├── mission.{name}.jsonl        # Mission-scoped decisions
+│       └── component.{name}.jsonl      # Component-scoped decisions
+│
+├── sensors/
+│   ├── {component}-filewatch.pid       # File watch sensor PID(s)
+│   ├── {component}-interval.pid        # Interval sensor PID
+│   └── {component}.poll-hash           # Last poll hash (polling mode)
+│
+├── triggers/
+│   ├── {component}-filewatch           # File watch trigger signal
+│   ├── {component}-schedule            # Interval trigger signal
+│   ├── {component}-cron               # Cron trigger signal
+│   └── {component}-manual              # Manual trigger signal
+│
+├── manual/
+│   └── {gate-id}/
+│       ├── prompt.json                 # Gate definition and timeout
+│       └── response.json               # Human response
+│
+├── tool-auth/
+│   └── {component}.json                # Granted tools and auth key
+│
+├── tool-requests/
+│   ├── pending.jsonl                   # Pending tool requests
+│   └── denied.jsonl                    # Denied tool requests
+│
+├── cascade/
+│   └── active.json                     # Currently executing components
+│
+└── logs/
+    └── {date}.jsonl                    # Daily event logs
+```
+
+## File Formats
+
+### registry.json
+
+```json
+{
+  "built_at": "2026-03-10T14:30:00Z",
+  "components": {
+    "section-writer": {
+      "file": "components/section-writer.yaml",
+      "status": "active",
+      "description": "Writes document sections",
+      "delivers": ["output/sections/*.md"],
+      "has_sensors": true
+    }
+  },
+  "missions": {
+    "transform": {
+      "file": "missions/transform.yaml",
+      "status": "active"
+    }
+  },
+  "warnings": []
+}
+```
+
+### mission.json (run state)
+
+```json
+{
+  "run_id": "run-a1b2c3d4e5f6",
+  "mission": "transform",
+  "status": "running",
+  "started_at": "2026-03-10T14:30:00Z"
+}
+```
+
+Status values: `running`, `completed`, `rejected`, `aborted`, `failed`.
+
+### metrics.json
+
+```json
+{
+  "total_tokens": 0,
+  "cost_usd": 0,
+  "duration_seconds": 1234,
+  "orbit_count": 15
+}
+```
+
+### active.json (cascade tracking)
+
+```json
+{
+  "section-writer": "run-a1b2c3d4e5f6"
+}
+```
+
+Empty when no components are executing: `{}`.
+
+### Event Log Entry
+
+```json
+{
+  "timestamp": "2026-03-10T14:30:00Z",
+  "level": "info",
+  "event": "orbit.complete",
+  "message": "Orbit 5 completed for section-writer"
+}
+```
+
+### JSONL Conventions
+
+All JSONL files (feedback, insights, decisions, tool requests, logs) follow
+these conventions:
+
+- One JSON object per line, no trailing commas
+- Appends are atomic (write temp file, then `mv`)
+- Each entry has a unique `id` field with type prefix
+- Timestamps are ISO-8601 UTC
+- Files are created on first write (no pre-initialisation needed)
+
+## Interchangeability
+
+The `.orbit/` directory format is designed to be interchangeable between Rover
+(bash) and Station (Go). Both implementations read and write the same file
+formats, enabling promotion from Rover to Station without data migration.
+
+[← Back to Index](index.md)

@@ -1,0 +1,33 @@
+---
+title: Orbit Rover Documentation
+last_updated: 2026-03-10
+---
+
+# Orbit Rover Documentation
+
+Orbit Rover is a bash-based agent orchestration engine — the open-source,
+zero-infrastructure tier of the Orbit platform. It runs on any POSIX system
+with bash 4+, no compiled runtime required.
+
+Rover implements the **Ralph loop** pattern: a deterministic orbit loop that
+invokes an AI agent repeatedly until a success condition is met, with deadlock
+detection, checkpoint continuity, and a learning system that accumulates
+knowledge across orbits.
+
+## Documentation
+
+| Document | Description |
+|----------|-------------|
+| [Getting Started](getting-started.md) | Installation, prerequisites, and your first Orbit project |
+| [Architecture](architecture.md) | Core design principles, data flow, and system invariants |
+| [Configuration](configuration.md) | `orbit.yaml`, component, mission, and module YAML reference |
+| [CLI Reference](cli-reference.md) | Complete reference for all `orbit` subcommands |
+| [Orbit Loop](orbit-loop.md) | The core engine — orbit execution, checkpoints, deadlock detection, and promise flag |
+| [Adapters](adapters.md) | Agent adapters for claude-code and opencode |
+| [Sensors](sensors.md) | File watch, interval schedule, cron delegation, and cascade control |
+| [Learning System](learning-system.md) | Feedback, insights, decisions, and XML tag parsing |
+| [Tool System](tool-system.md) | Tool auth keys, policy flags, request governance, and access control |
+| [Mission Safety](mission-safety.md) | Flight rules, manual approval gates, waypoints, and retry logic |
+| [State Directory](state-directory.md) | `.orbit/` directory layout, file formats, and JSONL schemas |
+| [Studios](studios.md) | Example studio projects — docsmith, scholar, sentinel, fieldops, regulatory |
+| [Compatibility](compatibility.md) | Rover-Station compatibility contract and schema versioning |
