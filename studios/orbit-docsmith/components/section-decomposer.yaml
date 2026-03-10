@@ -1,0 +1,12 @@
+component: section-decomposer
+prompt: prompts/section-decomposer.md
+
+delivers:
+  - .orbit/plans/docsmith/tasks.json
+
+success:
+  when: file
+  path: .orbit/plans/docsmith/tasks.json
+
+orbits:
+  max: 3

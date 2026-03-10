@@ -1,0 +1,38 @@
+mission: pre-release-gate
+status: active
+
+stages:
+  - name: trace
+    component: traceability-generator
+    waypoint: true
+
+  - name: assess-soup
+    component: soup-assessor
+    depends_on: [trace]
+    waypoint: true
+
+  - name: track-reqs
+    component: req-tracker
+    depends_on: [assess-soup]
+    waypoint: true
+
+  - name: monitor-risks
+    component: risk-monitor
+    depends_on: [track-reqs]
+    waypoint: true
+
+  - name: verify
+    component: verification-planner
+    depends_on: [monitor-risks]
+    waypoint: true
+
+  - name: release-gate
+    type: manual
+    prompt: |
+      Pre-release regulatory verification complete.
+      Review: traceability matrix, SOUP assessment, requirement status, risk status, verification plan.
+      Approve to proceed with release, reject to halt, iterate to return for fixes.
+    options: [approve, reject, iterate]
+    timeout: 120h
+    default: reject
+    depends_on: [verify]

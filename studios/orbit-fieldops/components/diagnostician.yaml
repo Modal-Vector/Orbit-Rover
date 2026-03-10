@@ -1,0 +1,15 @@
+component: diagnostician
+prompt: prompts/diagnostician.md
+
+preflight:
+  - scripts/extract-anomalies.sh
+
+delivers:
+  - .orbit/plans/fieldops/tasks.json
+
+success:
+  when: file
+  path: .orbit/plans/fieldops/tasks.json
+
+orbits:
+  max: 5

@@ -1,0 +1,12 @@
+component: req-tracker
+prompt: prompts/req-tracker.md
+
+delivers:
+  - requirements/status.json
+
+success:
+  when: file
+  path: requirements/status.json
+
+orbits:
+  max: 5

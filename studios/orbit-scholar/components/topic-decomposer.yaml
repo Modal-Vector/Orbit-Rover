@@ -1,0 +1,14 @@
+component: topic-decomposer
+prompt: prompts/topic-decomposer.md
+
+delivers:
+  - .orbit/plans/scholar/atomic/
+
+success:
+  when: bash
+  condition: |
+    test -d .orbit/plans/scholar/atomic && \
+    find .orbit/plans/scholar/atomic -name '*.json' | head -1 | grep -q .
+
+orbits:
+  max: 5

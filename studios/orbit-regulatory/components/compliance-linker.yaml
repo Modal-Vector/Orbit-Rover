@@ -1,0 +1,15 @@
+component: compliance-linker
+prompt: prompts/compliance-linker.md
+
+preflight:
+  - scripts/check-refs-exist.sh
+
+delivers:
+  - .orbit/state/compliance-linker/links.json
+
+success:
+  when: file
+  path: .orbit/state/compliance-linker/links.json
+
+orbits:
+  max: 5

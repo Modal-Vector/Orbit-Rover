@@ -1,0 +1,12 @@
+component: traceability-generator
+prompt: prompts/traceability-generator.md
+
+delivers:
+  - traceability/matrix.json
+
+success:
+  when: file
+  path: traceability/matrix.json
+
+orbits:
+  max: 10

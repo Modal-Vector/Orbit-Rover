@@ -1,0 +1,34 @@
+component: remediator
+prompt: prompts/remediator.md
+
+postflight:
+  - scripts/validate-fix.sh
+
+tools:
+  assigned:
+    - notify-operator
+    - check-health
+    - restart-service
+    - apply-config-patch
+  policy: restricted
+
+delivers:
+  - .orbit/plans/fieldops/tasks.json
+
+success:
+  when: bash
+  condition: |
+    jq -e '[.tasks[] | select(.done == false)] | length == 0' \
+      .orbit/plans/fieldops/tasks.json
+
+orbits:
+  max: 20
+  deadlock_threshold: 3
+
+perspective: |
+  You are stuck in the remediation loop. Try:
+  - Check if the health endpoint confirms the issue is already resolved
+  - Verify the fix was actually applied by reading the service state
+  - If a restricted tool is needed, use <tool_request> to request access
+  - Consider if a different remediation approach is needed
+  - Notify the operator if the issue requires manual intervention

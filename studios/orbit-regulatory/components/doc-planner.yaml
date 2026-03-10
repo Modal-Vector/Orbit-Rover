@@ -1,0 +1,12 @@
+component: doc-planner
+prompt: prompts/doc-planner.md
+
+delivers:
+  - .orbit/plans/regulatory/tasks.json
+
+success:
+  when: file
+  path: .orbit/plans/regulatory/tasks.json
+
+orbits:
+  max: 3

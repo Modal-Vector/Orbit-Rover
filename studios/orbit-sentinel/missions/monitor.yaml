@@ -1,0 +1,34 @@
+mission: monitor
+status: active
+
+sensors:
+  schedule:
+    cron: "0 6 * * *"
+
+stages:
+  - name: decompose
+    component: source-decomposer
+    waypoint: true
+
+  - name: analyse
+    component: analyst
+    depends_on: [decompose]
+    orbits_to: decompose
+    max_orbits: 100
+
+    orbit_exit:
+      when: bash
+      condition: |
+        jq -e '[.tasks[] | select(.done == false)] | length == 0' \
+          .orbit/plans/sentinel/tasks.json
+
+  - name: brief-gate
+    type: manual
+    prompt: |
+      Daily intelligence brief ready.
+      Review: intelligence/daily-brief.md
+      Approve to archive and reset, reject to iterate.
+    options: [approve, reject]
+    timeout: 12h
+    default: approve
+    depends_on: [analyse]

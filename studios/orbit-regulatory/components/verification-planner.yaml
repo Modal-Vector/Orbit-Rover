@@ -1,0 +1,12 @@
+component: verification-planner
+prompt: prompts/verification-planner.md
+
+delivers:
+  - verification/plan.json
+
+success:
+  when: file
+  path: verification/plan.json
+
+orbits:
+  max: 5

@@ -1,0 +1,184 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# orbit — Main CLI entry point for Orbit Rover
+# Self-locating, sources all lib/ and cmd/ files, dispatches subcommands.
+
+_orbit_resolve_root() {
+  local source="${BASH_SOURCE[0]}"
+  while [ -L "$source" ]; do
+    local dir
+    dir=$(cd -P "$(dirname "$source")" && pwd)
+    source=$(readlink "$source")
+    [[ "$source" != /* ]] && source="$dir/$source"
+  done
+  cd -P "$(dirname "$source")" && pwd
+}
+
+ORBIT_ROOT=$(_orbit_resolve_root)
+export ORBIT_ROOT
+export ORBIT_LIB_DIR="$ORBIT_ROOT/lib"
+
+# Source all lib files
+source "$ORBIT_LIB_DIR/util.sh"
+source "$ORBIT_LIB_DIR/extract.sh"
+source "$ORBIT_LIB_DIR/template.sh"
+source "$ORBIT_LIB_DIR/hash.sh"
+source "$ORBIT_LIB_DIR/yaml.sh"
+source "$ORBIT_LIB_DIR/config.sh"
+source "$ORBIT_LIB_DIR/registry.sh"
+source "$ORBIT_LIB_DIR/orbit_loop.sh"
+source "$ORBIT_LIB_DIR/watch.sh"
+source "$ORBIT_LIB_DIR/sensors/cascade.sh"
+source "$ORBIT_LIB_DIR/sensors/schedule.sh"
+source "$ORBIT_LIB_DIR/sensors/file_watch.sh"
+source "$ORBIT_LIB_DIR/learning/feedback.sh"
+source "$ORBIT_LIB_DIR/learning/insights.sh"
+source "$ORBIT_LIB_DIR/learning/decisions.sh"
+source "$ORBIT_LIB_DIR/learning/parse_tags.sh"
+source "$ORBIT_LIB_DIR/tools/auth.sh"
+source "$ORBIT_LIB_DIR/tools/policy.sh"
+source "$ORBIT_LIB_DIR/tools/requests.sh"
+source "$ORBIT_LIB_DIR/manual_gate.sh"
+source "$ORBIT_LIB_DIR/flight_rules.sh"
+source "$ORBIT_LIB_DIR/waypoints.sh"
+source "$ORBIT_LIB_DIR/retry.sh"
+
+# Source all cmd files
+for cmd_file in "$ORBIT_ROOT"/cmd/*.sh; do
+  [[ -f "$cmd_file" ]] && source "$cmd_file"
+done
+
+# --------------------------------------------------------------------------
+# Structured log helper
+# --------------------------------------------------------------------------
+# Writes JSONL to .orbit/logs/{date}.jsonl
+_orbit_log_event() {
+  local level="$1"
+  local event="$2"
+  local message="$3"
+  local state_dir="${ORBIT_STATE_DIR:-.orbit}"
+
+  local log_dir="${state_dir}/logs"
+  mkdir -p "$log_dir"
+
+  local ts
+  ts=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+  local date_str
+  date_str=$(date -u +"%Y-%m-%d")
+
+  local entry
+  entry=$(jq -nc \
+    --arg ts "$ts" \
+    --arg level "$level" \
+    --arg event "$event" \
+    --arg msg "$message" \
+    '{timestamp: $ts, level: $level, event: $event, message: $msg}')
+
+  _atomic_append_jsonl "${log_dir}/${date_str}.jsonl" "$entry"
+}
+
+# --------------------------------------------------------------------------
+# Usage / help
+# --------------------------------------------------------------------------
+_orbit_usage() {
+  cat <<'EOF'
+Usage: orbit <command> [options]
+
+Commands:
+  init [name]              Initialise a new Orbit project
+  doctor                   Check system dependencies
+  watch                    Start watch mode (reactive sensors)
+  launch <mission>         Launch a mission
+  run <target>             Run a component or module
+  trigger <name>           Manually trigger a component/mission
+  status [mission]         Show status
+  registry                 Show component/mission registry
+  log [--tail N]           View run log
+  decisions <subcommand>   Manage decisions
+  insights <scope>         View insights
+  feedback <component>     View feedback
+  tools <subcommand>       Tool governance
+  cron <subcommand>        Cron management
+  pending                  List pending approval gates
+  approve <gate-id>        Approve a gate
+  reject <gate-id>         Reject a gate
+
+Global options:
+  --log-level <level>      Set log level (debug|info|warn|error)
+  --help                   Show this help
+EOF
+}
+
+# --------------------------------------------------------------------------
+# Main dispatch
+# --------------------------------------------------------------------------
+main() {
+  # Parse global options
+  local log_level=""
+  while [[ $# -gt 0 ]]; do
+    case "$1" in
+      --log-level)
+        log_level="$2"; shift 2
+        ;;
+      --help|-h)
+        _orbit_usage
+        exit 0
+        ;;
+      -*)
+        # Unknown global flag — pass through to subcommand
+        break
+        ;;
+      *)
+        break
+        ;;
+    esac
+  done
+
+  if [[ $# -eq 0 ]]; then
+    _orbit_usage
+    exit 1
+  fi
+
+  # Load system config if orbit.yaml exists
+  if [[ -f "orbit.yaml" ]]; then
+    config_load_system "orbit.yaml"
+    export ORBIT_STATE_DIR="${ORBIT_SYSTEM[settings.state_dir]:-.orbit}"
+  else
+    export ORBIT_STATE_DIR=".orbit"
+  fi
+
+  # Apply log level override
+  if [[ -n "$log_level" ]]; then
+    ORBIT_SYSTEM[settings.log_level]="$log_level" 2>/dev/null || true
+  fi
+
+  local command="$1"; shift
+
+  case "$command" in
+    init)       cmd_init "$@" ;;
+    doctor)     cmd_doctor "$@" ;;
+    watch)      cmd_watch "$@" ;;
+    launch)     cmd_launch "$@" ;;
+    run)        cmd_run "$@" ;;
+    trigger)    cmd_trigger "$@" ;;
+    status)     cmd_status "$@" ;;
+    registry)   cmd_registry "$@" ;;
+    log)        cmd_log "$@" ;;
+    decisions)  cmd_decisions "$@" ;;
+    insights)   cmd_insights "$@" ;;
+    feedback)   cmd_feedback "$@" ;;
+    tools)      cmd_tools "$@" ;;
+    cron)       cmd_cron "$@" ;;
+    pending)    cmd_pending "$@" ;;
+    approve)    cmd_approve "$@" ;;
+    reject)     cmd_reject "$@" ;;
+    *)
+      echo "Unknown command: $command" >&2
+      _orbit_usage >&2
+      exit 1
+      ;;
+  esac
+}
+
+main "$@"

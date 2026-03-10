@@ -1,0 +1,27 @@
+# watchlist.yaml — Sources to monitor
+# Each entry defines a source for the intelligence monitoring pipeline.
+
+sources:
+  - name: "Orbit GitHub Releases"
+    url: "https://github.com/Modal-Vector/orbit/releases.atom"
+    type: rss
+    priority: high
+    tags: [product, releases]
+
+  - name: "AI Agent Frameworks Newsletter"
+    url: "https://example.com/ai-agents-feed.xml"
+    type: rss
+    priority: medium
+    tags: [industry, frameworks]
+
+  - name: "LLM Research Papers"
+    url: "https://arxiv.org/rss/cs.AI"
+    type: rss
+    priority: medium
+    tags: [research, papers]
+
+  - name: "Competitor Product Updates"
+    url: "https://example.com/competitor-blog"
+    type: web
+    priority: high
+    tags: [competitive, product]

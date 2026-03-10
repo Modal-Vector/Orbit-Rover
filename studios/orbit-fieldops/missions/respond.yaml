@@ -1,0 +1,31 @@
+mission: respond
+status: active
+
+sensors:
+  paths:
+    - "logs/anomaly-trigger"
+  events: [create]
+  cascade: block
+
+stages:
+  - name: diagnose
+    component: diagnostician
+    waypoint: true
+
+  - name: remediate
+    component: remediator
+    depends_on: [diagnose]
+    orbits_to: diagnose
+    max_orbits: 20
+
+    orbit_exit:
+      when: bash
+      condition: |
+        jq -e '[.tasks[] | select(.done == false)] | length == 0' \
+          .orbit/plans/fieldops/tasks.json
+
+flight_rules:
+  - name: cost-ceiling
+    condition: "metrics.cost_usd < 2.00"
+    on_violation: abort
+    message: "Fieldops cost ceiling — human review required"

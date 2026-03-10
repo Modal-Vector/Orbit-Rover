@@ -1,0 +1,21 @@
+mission: decision-capture
+status: active
+
+sensors:
+  paths:
+    - "decisions/**/*.yaml"
+  events: [create, modify]
+
+stages:
+  - name: validate
+    component: ddr-validator
+    waypoint: true
+
+  - name: link
+    component: compliance-linker
+    depends_on: [validate]
+    waypoint: true
+
+  - name: analyse
+    component: regulatory-analyst
+    depends_on: [link]

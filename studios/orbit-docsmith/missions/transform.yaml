@@ -1,0 +1,19 @@
+mission: transform
+status: active
+
+stages:
+  - name: decompose
+    component: section-decomposer
+    waypoint: true
+
+  - name: write
+    component: section-writer
+    depends_on: [decompose]
+    orbits_to: decompose
+    max_orbits: 50
+
+    orbit_exit:
+      when: bash
+      condition: |
+        jq -e '[.tasks[] | select(.done == false)] | length == 0' \
+          .orbit/plans/docsmith/tasks.json

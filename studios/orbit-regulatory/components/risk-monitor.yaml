@@ -1,0 +1,12 @@
+component: risk-monitor
+prompt: prompts/risk-monitor.md
+
+delivers:
+  - risks/status.json
+
+success:
+  when: file
+  path: risks/status.json
+
+orbits:
+  max: 5

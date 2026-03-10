@@ -1,0 +1,7 @@
+mission: plan
+status: active
+
+stages:
+  - name: plan
+    component: research-planner
+    waypoint: true

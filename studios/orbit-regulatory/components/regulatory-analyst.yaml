@@ -1,0 +1,12 @@
+component: regulatory-analyst
+prompt: prompts/regulatory-analyst.md
+
+delivers:
+  - .orbit/state/regulatory-analyst/analysis.json
+
+success:
+  when: file
+  path: .orbit/state/regulatory-analyst/analysis.json
+
+orbits:
+  max: 5

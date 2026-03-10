@@ -1,0 +1,22 @@
+component: section-writer
+prompt: prompts/section-writer.md
+
+delivers:
+  - output/
+
+success:
+  when: bash
+  condition: |
+    jq -e '[.tasks[] | select(.done == false)] | length == 0' \
+      .orbit/plans/docsmith/tasks.json
+
+orbits:
+  max: 50
+  deadlock_threshold: 5
+
+perspective: |
+  You are stuck in a loop. Try a different approach:
+  - Re-read the task requirements carefully
+  - Check if the output file already exists and needs updating rather than creating
+  - Verify you are writing to the correct path
+  - Consider if you need to mark the task as done in tasks.json

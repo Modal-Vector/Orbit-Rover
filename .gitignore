@@ -1,0 +1,32 @@
+# Environment
+.env
+.env.*
+
+# Design documents (kept separate)
+Design/
+SPEC.md
+PROMPTS.md
+
+# Tests
+tests/
+
+# Runtime state
+.orbit/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Claude Code local settings
+.claude/settings.local.json
+
+# Editor / IDE
+*.swp
+*.swo
+*~
+.vscode/
+.idea/
+
+# Temp files
+*.tmp
+*.bak

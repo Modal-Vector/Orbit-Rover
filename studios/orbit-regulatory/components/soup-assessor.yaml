@@ -1,0 +1,12 @@
+component: soup-assessor
+prompt: prompts/soup-assessor.md
+
+delivers:
+  - regulatory-docs/soup-assessment.md
+
+success:
+  when: file
+  path: regulatory-docs/soup-assessment.md
+
+orbits:
+  max: 10
