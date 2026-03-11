@@ -30,7 +30,7 @@ cmd_doctor() {
   fi
 
   # Optional dependencies
-  local optionals=(python3 yq cron claude opencode ollama inotifywait)
+  local optionals=(python3 yq cron claude opencode ollama inotifywait gum)
   for tool in "${optionals[@]}"; do
     if command -v "$tool" >/dev/null 2>&1; then
       local ver=""
@@ -42,6 +42,7 @@ cmd_doctor() {
         ollama)     ver="installed" ;;
         cron)       ver="available" ;;
         inotifywait) ver=$($tool --help 2>&1 | head -1 || echo "installed") ;;
+        gum)        ver=$($tool --version 2>&1 | head -1 || echo "installed") ;;
       esac
       echo "[OK]   ${tool} ${ver}"
     else

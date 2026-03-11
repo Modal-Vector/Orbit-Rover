@@ -93,6 +93,7 @@ Commands:
   run <target>             Run a component or module
   trigger <name>           Manually trigger a component/mission
   status [mission]         Show status
+  dashboard                Live TUI dashboard
   registry                 Show component/mission registry
   log [--tail N]           View run log
   decisions <subcommand>   Manage decisions
@@ -163,6 +164,7 @@ main() {
     run)        cmd_run "$@" ;;
     trigger)    cmd_trigger "$@" ;;
     status)     cmd_status "$@" ;;
+    dashboard)  cmd_dashboard "$@" ;;
     registry)   cmd_registry "$@" ;;
     log)        cmd_log "$@" ;;
     decisions)  cmd_decisions "$@" ;;

@@ -1,11 +1,37 @@
 ---
 title: CLI Reference
-last_updated: 2026-03-10
+last_updated: 2026-03-11
 ---
 
 [← Back to Index](index.md)
 
 # CLI Reference
+
+## orbit dashboard
+
+Live-updating TUI dashboard showing missions, components, sensors, and gates.
+
+```bash
+# Start live dashboard (refreshes every 2s)
+orbit dashboard
+
+# Custom refresh interval
+orbit dashboard --refresh 5
+
+# Render once and exit (useful for CI/scripting)
+orbit dashboard --once
+
+# Plain text (no gum styling)
+orbit dashboard --no-color
+```
+
+Requires `gum` (charmbracelet) for styled output. Falls back to plain text
+automatically when gum is not installed. Install gum:
+`brew install charmbracelet/tap/gum` (macOS) or see https://github.com/charmbracelet/gum.
+
+Keyboard: **r** = refresh now, **q** = quit.
+
+---
 
 All commands are invoked as `./orbit <command> [options]`.
 
@@ -39,7 +65,7 @@ orbit doctor
 **Critical** (exit 1 if missing): bash 4+, jq
 
 **Optional** (warning if missing): python3, yq, cron, claude, opencode,
-ollama, inotifywait
+ollama, inotifywait, gum
 
 ## orbit run
 
