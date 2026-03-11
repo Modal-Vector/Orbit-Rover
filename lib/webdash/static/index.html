@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ORBIT ROVER // Mission Control</title>
+    <link rel="stylesheet" href="/static/css/dashboard.css">
+    <script src="/static/js/vendor/cytoscape.min.js"></script>
+    <script src="/static/js/vendor/dagre.min.js"></script>
+    <script src="/static/js/vendor/cytoscape-dagre.min.js"></script>
+    <script src="/static/js/vendor/cytoscape-node-html-label.min.js"></script>
+</head>
+<body>
+    <header>
+        <h1>ORBIT ROVER <span class="separator">//</span> <span class="subtitle">Mission Control</span></h1>
+        <div class="view-tabs">
+            <button class="view-tab active" id="tab-graph">Graph</button>
+            <button class="view-tab" id="tab-runs">Runs</button>
+            <button class="view-tab" id="tab-costs">Costs</button>
+        </div>
+        <div class="metrics" id="metrics">
+            <span class="metric">
+                <span class="metric-value" id="metric-missions">0</span>
+                <span class="metric-label">missions</span>
+            </span>
+            <span class="metric">
+                <span class="metric-value" id="metric-components">0</span>
+                <span class="metric-label">active</span>
+            </span>
+            <span class="metric">
+                <span class="metric-value" id="metric-invocations">0</span>
+                <span class="metric-label">invocations</span>
+            </span>
+            <span class="metric">
+                <span class="metric-value" id="metric-tokens">0</span>
+                <span class="metric-label">tokens</span>
+            </span>
+        </div>
+        <div class="connection" id="connection">
+            <span class="connection-dot"></span>
+            <span class="connection-text">connected</span>
+        </div>
+    </header>
+
+    <main>
+        <div id="graph-container"></div>
+        <div id="runs-container" class="hidden"></div>
+        <div id="costs-container" class="hidden"></div>
+        <aside id="detail-panel" class="hidden">
+            <button class="close-btn" id="close-panel">&times;</button>
+            <div id="detail-content"></div>
+        </aside>
+    </main>
+
+    <div id="event-log">
+        <div class="event-log-header" id="event-log-toggle">
+            <h3>Event Log</h3>
+            <span class="event-count" id="event-count">0</span>
+        </div>
+        <div class="event-log-content" id="event-log-content"></div>
+    </div>
+
+    <footer>
+        <div class="legend">
+            <span class="legend-item"><span class="node-sample mission"></span> Mission</span>
+            <span class="legend-item"><span class="node-sample module"></span> Module</span>
+            <span class="legend-item"><span class="node-sample stage"></span> Stage</span>
+            <span class="legend-item"><span class="node-sample component"></span> Component</span>
+            <span class="legend-item"><span class="node-sample sensor"></span> Sensor</span>
+        </div>
+        <div class="status-legend">
+            <span class="status-item"><span class="status-dot defined"></span> defined</span>
+            <span class="status-item"><span class="status-dot pending"></span> pending</span>
+            <span class="status-item"><span class="status-dot running"></span> running</span>
+            <span class="status-item"><span class="status-dot success"></span> success</span>
+            <span class="status-item"><span class="status-dot failed"></span> failed</span>
+            <span class="status-item"><span class="status-dot offline"></span> offline</span>
+        </div>
+    </footer>
+
+    <script src="/static/js/api.js"></script>
+    <script src="/static/js/graph.js"></script>
+    <script src="/static/js/layout.js"></script>
+    <script src="/static/js/panels.js"></script>
+
+    <script src="/static/js/runs.js"></script>
+    <script src="/static/js/costs.js"></script>
+    <script src="/static/js/main.js"></script>
+</body>
+</html>

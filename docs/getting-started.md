@@ -180,8 +180,25 @@ Start reactive sensor monitoring:
 This activates all configured sensors (file watch, interval, cron) and
 dispatches components automatically when triggers fire.
 
+## Monitoring with the Dashboard
+
+Rover includes two dashboard modes for monitoring your system:
+
+```bash
+# Terminal TUI (requires gum for styled output)
+./orbit dashboard
+
+# Web dashboard with topology graph
+./orbit dashboard --web
+```
+
+The web dashboard provides a Cytoscape.js topology visualization showing
+missions, stages, components, sensors, and their connections with live status
+updates. See [Dashboard](dashboard.md) for details.
+
 ## Next Steps
 
+- [Dashboard](dashboard.md) — TUI and web dashboard
 - [Configuration](configuration.md) — full YAML reference
 - [CLI Reference](cli-reference.md) — all available commands
 - [Studios](studios.md) — example projects to study

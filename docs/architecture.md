@@ -160,6 +160,35 @@ flowchart TD
     POST --> DONE([Complete ✓])
 ```
 
+## Dashboard Architecture
+
+Rover provides two dashboard modes:
+
+**TUI Dashboard** (`orbit dashboard`) — A terminal dashboard using gum for
+styled output. Reads `.orbit/` state directly and renders missions, components,
+sensors, and gates with progress bars and status icons.
+
+**Web Dashboard** (`orbit dashboard --web`) — A Cytoscape.js topology
+visualization served by a Python stdlib HTTP server. The bash entry point
+pre-converts YAML configs to JSON using `yq`, then launches a Python server
+that reads those JSON files plus `.orbit/` runtime state. No external Python
+packages are required.
+
+```mermaid
+flowchart LR
+    YAML[missions/*.yaml<br>components/*.yaml] -->|yq -o=json| CACHE[.orbit/webdash-cache/*.json]
+    CACHE --> PY[Python HTTP server<br>stdlib only]
+    STATE[.orbit/ runtime state] --> PY
+    PY -->|/api/graph| BROWSER[Browser: Cytoscape.js]
+    PY -->|/api/events SSE| BROWSER
+    PY -->|/static/*| BROWSER
+```
+
+The web dashboard shares the same API contract as Orbit Station (Go), meaning
+the same frontend code (HTML/CSS/JS) runs against both backends.
+
+See [Dashboard](dashboard.md) for full details.
+
 ## Atomic Writes
 
 All writes to JSONL files and state files are atomic. The pattern is:

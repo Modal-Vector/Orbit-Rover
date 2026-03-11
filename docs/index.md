@@ -39,6 +39,12 @@ knowledge across orbits.
 | [Tool System](tool-system.md) | Tool auth keys, policy flags, request governance, and access control |
 | [Mission Safety](mission-safety.md) | Flight rules, manual approval gates, waypoints, and retry logic |
 
+## Monitoring
+
+| Document | Description |
+|----------|-------------|
+| [Dashboard](dashboard.md) | TUI and web dashboard — topology visualization, run history, costs |
+
 ## Reference
 
 | Document | Description |

@@ -513,6 +513,9 @@ cmd_dashboard() {
   local refresh=2
   local once=false
   local no_color=false
+  local web_mode=false
+  local port=8067
+  local no_open=false
 
   while [[ $# -gt 0 ]]; do
     case "$1" in
@@ -525,6 +528,15 @@ cmd_dashboard() {
       --no-color)
         no_color=true; shift
         ;;
+      --web)
+        web_mode=true; shift
+        ;;
+      --port)
+        port="$2"; shift 2
+        ;;
+      --no-open)
+        no_open=true; shift
+        ;;
       --help|-h)
         cat <<'EOF'
 Usage: orbit dashboard [options]
@@ -535,6 +547,9 @@ Options:
   --refresh N    Refresh interval in seconds (default: 2)
   --once         Render once and exit (no loop)
   --no-color     Disable colors and borders
+  --web          Launch web dashboard instead of TUI
+  --port N       Web dashboard port (default: 8067, only with --web)
+  --no-open      Don't auto-open browser (only with --web)
   --help         Show this help
 EOF
         return 0
@@ -546,6 +561,11 @@ EOF
     esac
   done
 
+  if [[ "$web_mode" == "true" ]]; then
+    _dashboard_web "$port" "$no_open"
+    return
+  fi
+
   if [[ "$no_color" == "true" ]]; then
     # Force plain text mode by hiding gum
     _dash_has_gum() { return 1; }
@@ -556,4 +576,130 @@ EOF
   else
     _dash_loop "$refresh"
   fi
+}
+
+# --------------------------------------------------------------------------
+# Web dashboard
+# --------------------------------------------------------------------------
+_dashboard_web() {
+  local port="$1"
+  local no_open="$2"
+  local state_dir="${ORBIT_STATE_DIR:-.orbit}"
+  local project_dir
+  project_dir="$(pwd)"
+
+  # Verify python3 available
+  if ! command -v python3 >/dev/null 2>&1; then
+    echo "[ROVER ERROR] python3 is required for the web dashboard" >&2
+    return 1
+  fi
+
+  # Verify yq available
+  local yq_path=""
+  if command -v yq >/dev/null 2>&1; then
+    yq_path="$(command -v yq)"
+  else
+    echo "[ROVER WARN] yq not found — config changes won't auto-refresh" >&2
+  fi
+
+  # Determine ORBIT_ROOT (where lib/webdash lives)
+  local orbit_root="${ORBIT_ROOT:-}"
+  if [[ -z "$orbit_root" ]]; then
+    # Derive from this script's location
+    local script_dir
+    script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+    orbit_root="$(cd "$script_dir/.." && pwd)"
+  fi
+
+  local webdash_dir="$orbit_root/lib/webdash"
+  if [[ ! -f "$webdash_dir/server.py" ]]; then
+    echo "[ROVER ERROR] Web dashboard not found at $webdash_dir/server.py" >&2
+    return 1
+  fi
+
+  # Create cache directory for YAML→JSON conversion
+  local cache_dir="$state_dir/webdash-cache"
+  mkdir -p "$cache_dir"
+
+  # Pre-convert YAML configs to JSON
+  _webdash_cache_configs "$cache_dir" "$yq_path"
+
+  # Build registry if it doesn't exist
+  if [[ ! -f "$state_dir/registry.json" ]]; then
+    if type registry_build >/dev/null 2>&1; then
+      registry_build "." 2>/dev/null || true
+    fi
+  fi
+
+  local python_pid=""
+
+  # Cleanup on exit
+  _webdash_cleanup() {
+    if [[ -n "$python_pid" ]] && kill -0 "$python_pid" 2>/dev/null; then
+      kill "$python_pid" 2>/dev/null || true
+      wait "$python_pid" 2>/dev/null || true
+    fi
+  }
+  trap _webdash_cleanup INT TERM EXIT
+
+  # Launch Python server
+  python3 "$webdash_dir/server.py" \
+    --port "$port" \
+    --state-dir "$state_dir" \
+    --project-dir "$project_dir" \
+    --cache-dir "$cache_dir" \
+    ${yq_path:+--yq-path "$yq_path"} &
+  python_pid=$!
+
+  # Brief pause for server startup
+  sleep 0.5 2>/dev/null || sleep 1
+
+  # Check server started
+  if ! kill -0 "$python_pid" 2>/dev/null; then
+    echo "[ROVER ERROR] Web dashboard failed to start" >&2
+    return 1
+  fi
+
+  echo "Orbit Rover dashboard: http://localhost:${port}"
+  echo "Press Ctrl+C to stop"
+
+  # Auto-open browser unless --no-open
+  if [[ "$no_open" != "true" ]]; then
+    if command -v open >/dev/null 2>&1; then
+      open "http://localhost:${port}" 2>/dev/null || true
+    elif command -v xdg-open >/dev/null 2>&1; then
+      xdg-open "http://localhost:${port}" 2>/dev/null || true
+    fi
+  fi
+
+  # Wait for Python process
+  wait "$python_pid" 2>/dev/null || true
+}
+
+_webdash_cache_configs() {
+  local cache_dir="$1"
+  local yq_path="$2"
+
+  [[ -z "$yq_path" ]] && return 0
+
+  mkdir -p "$cache_dir/missions" "$cache_dir/components" "$cache_dir/modules"
+
+  local f base
+  for f in missions/*.yaml missions/*.yml; do
+    [[ -f "$f" ]] || continue
+    base=$(basename "$f" | sed 's/\.\(yaml\|yml\)$/.json/')
+    "$yq_path" -o=json "$f" > "$cache_dir/missions/$base" 2>/dev/null || true
+  done
+
+  for f in components/*.yaml components/*.yml; do
+    [[ -f "$f" ]] || continue
+    base=$(basename "$f" | sed 's/\.\(yaml\|yml\)$/.json/')
+    "$yq_path" -o=json "$f" > "$cache_dir/components/$base" 2>/dev/null || true
+  done
+
+  for f in modules/*.yaml modules/*.yml; do
+    [[ -f "$f" ]] || continue
+    base=$(basename "$f" | sed 's/\.\(yaml\|yml\)$/.json/')
+    "$yq_path" -o=json "$f" > "$cache_dir/modules/$base" 2>/dev/null || true
+  done
 }

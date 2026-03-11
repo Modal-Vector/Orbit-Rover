@@ -9,7 +9,12 @@ last_updated: 2026-03-11
 
 ## orbit dashboard
 
-Live-updating TUI dashboard showing missions, components, sensors, and gates.
+Dashboard for monitoring missions, components, sensors, and gates. Available as
+a terminal TUI or a web-based Cytoscape.js topology visualization.
+
+See [Dashboard](dashboard.md) for full documentation with screenshots.
+
+### TUI Mode (default)
 
 ```bash
 # Start live dashboard (refreshes every 2s)
@@ -30,6 +35,28 @@ automatically when gum is not installed. Install gum:
 `brew install charmbracelet/tap/gum` (macOS) or see https://github.com/charmbracelet/gum.
 
 Keyboard: **r** = refresh now, **q** = quit.
+
+### Web Mode
+
+```bash
+# Start web dashboard (opens browser automatically)
+orbit dashboard --web
+
+# Custom port
+orbit dashboard --web --port 9090
+
+# Don't auto-open browser
+orbit dashboard --web --no-open
+```
+
+Requires `python3` (stdlib only, no pip packages). Uses `yq` (already a Rover
+dependency) to convert YAML configs to JSON for the server.
+
+| Option | Description |
+|--------|-------------|
+| `--web` | Launch web dashboard instead of TUI |
+| `--port N` | Web dashboard port (default: 8067) |
+| `--no-open` | Don't auto-open browser |
 
 ---
 

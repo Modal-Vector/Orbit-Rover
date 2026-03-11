@@ -109,10 +109,20 @@ orbit/                        ← repository root
 │   │   ├── insights.sh       ← insights JSONL (scope routing, assembly)
 │   │   ├── decisions.sh      ← decisions JSONL (lifecycle: propose/accept/reject/supersede)
 │   │   └── parse_tags.sh     ← XML tag → learning store routing
-│   └── tools/
-│       ├── auth.sh           ← auth key generation + validation
-│       ├── policy.sh         ← adapter flag building
-│       └── requests.sh       ← tool request governance
+│   ├── tools/
+│   │   ├── auth.sh           ← auth key generation + validation
+│   │   ├── policy.sh         ← adapter flag building
+│   │   └── requests.sh       ← tool request governance
+│   └── webdash/              ← web dashboard (Python stdlib server)
+│       ├── server.py         ← HTTP server + routing
+│       ├── graph_builder.py  ← graph topology builder (port of Go graph.go)
+│       ├── api_handlers.py   ← API endpoint handlers
+│       ├── learning_handlers.py ← learning JSONL readers
+│       └── static/           ← frontend (HTML/CSS/JS from Station)
+│           ├── index.html
+│           ├── css/dashboard.css
+│           ├── js/*.js       ← 8 app modules (api, graph, layout, panels, etc.)
+│           └── js/vendor/    ← vendored Cytoscape.js, dagre, plugins
 ├── cmd/
 │   ├── init.sh               ← orbit init
 │   ├── doctor.sh             ← orbit doctor
@@ -122,7 +132,7 @@ orbit/                        ← repository root
 │   ├── status.sh             ← orbit status
 │   ├── registry_cmd.sh       ← orbit registry
 │   ├── log.sh                ← orbit log
-│   ├── dashboard.sh          ← orbit dashboard (TUI via gum)
+│   ├── dashboard.sh          ← orbit dashboard (TUI via gum + web via python3)
 │   ├── learning.sh           ← orbit decisions/insights/feedback
 │   ├── tools_cli.sh          ← orbit tools (pending/grant/deny/log)
 │   ├── cron_cli.sh           ← orbit cron (list/clear/preview)
