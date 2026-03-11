@@ -1,0 +1,23 @@
+mission: research
+status: active
+
+sensors:
+  schedule:
+    cron: "0 8 * * 1"
+
+stages:
+  - name: decompose
+    component: topic-decomposer
+    waypoint: true
+
+  - name: investigate
+    component: researcher
+    depends_on: [decompose]
+    orbits_to: decompose
+    max_orbits: 200
+
+    orbit_exit:
+      when: bash
+      condition: |
+        jq -e '[.tasks[] | select(.done == false)] | length == 0' \
+          .orbit/plans/research/tasks.json

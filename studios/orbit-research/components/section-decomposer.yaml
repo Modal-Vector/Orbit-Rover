@@ -1,0 +1,12 @@
+component: section-decomposer
+prompt: prompts/section-decomposer.md
+
+delivers:
+  - .orbit/plans/research/write-tasks.json
+
+success:
+  when: file
+  path: .orbit/plans/research/write-tasks.json
+
+orbits:
+  max: 3

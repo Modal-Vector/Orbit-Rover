@@ -1,0 +1,20 @@
+{
+  "tasks": [
+    {
+      "id": "T-001",
+      "title": "Introduction and Scope",
+      "description": "Write the introduction section covering the research objective and methodology",
+      "acceptance_criteria": "Must state the research question, scope boundaries, and methodology used",
+      "context_files": ["findings/T-001.md"],
+      "done": false
+    },
+    {
+      "id": "T-002",
+      "title": "Loop-Based Patterns Analysis",
+      "description": "Write the detailed analysis of loop-based orchestration patterns",
+      "acceptance_criteria": "Must include comparison table, architecture diagrams, and trade-off analysis",
+      "context_files": ["findings/T-001.md", "findings/T-001-A.md"],
+      "done": false
+    }
+  ]
+}

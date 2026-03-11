@@ -1,0 +1,19 @@
+{
+  "topic_id": "T-001",
+  "atomic_tasks": [
+    {
+      "id": "T-001-A",
+      "title": "ReAct pattern analysis",
+      "source_url": "https://arxiv.org/abs/2210.03629",
+      "focus": "Extract the core loop structure, reasoning/action interleaving, and termination conditions",
+      "done": true
+    },
+    {
+      "id": "T-001-B",
+      "title": "AutoGPT loop architecture",
+      "source_url": "https://github.com/Significant-Gravitas/AutoGPT",
+      "focus": "Document the task planning and execution loop, memory integration, and failure modes",
+      "done": false
+    }
+  ]
+}

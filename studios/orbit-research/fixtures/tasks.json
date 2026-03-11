@@ -1,0 +1,20 @@
+{
+  "tasks": [
+    {
+      "id": "T-001",
+      "title": "Loop-based orchestration patterns",
+      "description": "Research deterministic loop patterns (ReAct, Ralph loop, AutoGPT-style). Document how each handles state, checkpoints, and termination.",
+      "sources": ["https://arxiv.org/abs/2210.03629"],
+      "synthesis_goal": "Comparison table of loop-based approaches with pros/cons",
+      "done": true
+    },
+    {
+      "id": "T-002",
+      "title": "Graph-based orchestration",
+      "description": "Investigate DAG and state-machine approaches (LangGraph, Prefect, Temporal). Focus on how they handle branching, parallelism, and error recovery.",
+      "sources": ["https://langchain-ai.github.io/langgraph/"],
+      "synthesis_goal": "Architecture diagram and trade-off analysis vs loop-based",
+      "done": false
+    }
+  ]
+}
