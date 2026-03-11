@@ -1,0 +1,16 @@
+2026-03-10T14:30:01Z INFO  Starting health check cycle
+2026-03-10T14:30:02Z INFO  Database connection pool: 8/20 active
+2026-03-10T14:30:15Z WARN  Database connection pool: 19/20 active
+2026-03-10T14:30:22Z ERROR Connection refused to database on port 5432
+2026-03-10T14:30:22Z ERROR Connection refused to database on port 5432
+2026-03-10T14:30:23Z ERROR Connection refused to database on port 5432
+2026-03-10T14:30:30Z INFO  Worker-1 processing request /api/v2/ingest
+2026-03-10T14:30:45Z INFO  Worker-2 processing request /api/v2/query
+2026-03-10T14:31:00Z WARN  Worker-3 memory usage at 1.8GB (limit: 2.0GB)
+2026-03-10T14:31:15Z WARN  Worker-3 memory usage at 1.95GB (limit: 2.0GB)
+2026-03-10T14:31:22Z CRITICAL OOM killer invoked for process worker-3 (RSS 2.1GB)
+2026-03-10T14:31:22Z ERROR Worker-3 terminated unexpectedly
+2026-03-10T14:31:30Z INFO  Worker-3 restart initiated
+2026-03-10T14:31:45Z ERROR Request timeout after 30s on /api/v2/process
+2026-03-10T14:31:45Z ERROR Request timeout after 30s on /api/v2/process
+2026-03-10T14:32:00Z INFO  Health check cycle complete — 3 anomalies detected

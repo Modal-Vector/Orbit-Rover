@@ -1,13 +1,7 @@
-# watchlist.yaml — Sources to monitor
-# Each entry defines a source for the intelligence monitoring pipeline.
+# Example watchlist for intelligence monitoring
+# Replace these with your actual sources of interest.
 
 sources:
-  - name: "Orbit GitHub Releases"
-    url: "https://github.com/Modal-Vector/orbit/releases.atom"
-    type: rss
-    priority: high
-    tags: [product, releases]
-
   - name: "Hacker News Front Page"
     url: "https://hnrss.org/frontpage"
     type: rss
@@ -19,6 +13,12 @@ sources:
     type: rss
     priority: medium
     tags: [research, papers]
+
+  - name: "GitHub Trending Repositories"
+    url: "https://github.com/trending?since=daily"
+    type: web
+    priority: low
+    tags: [open-source, trends]
 
   - name: "NIST Cybersecurity Advisories"
     url: "https://nvd.nist.gov/feeds/xml/cve/misc/nvd-rss.xml"

@@ -1,0 +1,24 @@
+{
+  "anomalies": [
+    {
+      "id": "A-001",
+      "source": "app.log",
+      "pattern": "ERROR: Connection refused to database on port 5432",
+      "severity": "high"
+    },
+    {
+      "id": "A-002",
+      "source": "app.log",
+      "pattern": "CRITICAL: OOM killer invoked for process worker-3 (RSS 2.1GB)",
+      "severity": "critical"
+    },
+    {
+      "id": "A-003",
+      "source": "app.log",
+      "pattern": "ERROR: Request timeout after 30s on /api/v2/process",
+      "severity": "medium"
+    }
+  ],
+  "total_count": 3,
+  "generated_at": "2026-03-10T14:32:00Z"
+}

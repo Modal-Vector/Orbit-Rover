@@ -1,0 +1,34 @@
+{
+  "tasks": [
+    {
+      "id": "T-001",
+      "title": "Notify operator of critical OOM event",
+      "description": "Send operator notification about OOM killer invocation on worker-3",
+      "anomaly_id": "A-002",
+      "tool": "notify-operator",
+      "risk_level": "low",
+      "verification": "Notification file exists in .orbit/notifications/",
+      "done": true
+    },
+    {
+      "id": "T-002",
+      "title": "Restart database service",
+      "description": "Restart PostgreSQL to resolve connection refused errors",
+      "anomaly_id": "A-001",
+      "tool": "restart-service",
+      "risk_level": "high",
+      "verification": "check-health returns healthy for database service",
+      "done": false
+    },
+    {
+      "id": "T-003",
+      "title": "Apply memory limit configuration",
+      "description": "Increase worker-3 memory limit to prevent OOM recurrence",
+      "anomaly_id": "A-002",
+      "tool": "apply-config-patch",
+      "risk_level": "medium",
+      "verification": "Config file updated and service healthy after restart",
+      "done": false
+    }
+  ]
+}

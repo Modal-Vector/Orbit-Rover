@@ -1,0 +1,28 @@
+{
+  "tasks": [
+    {
+      "id": "T-001",
+      "title": "Hacker News Front Page",
+      "description": "Monitor this source for changes and signals",
+      "source_url": "https://hnrss.org/frontpage",
+      "source_type": "rss",
+      "done": true
+    },
+    {
+      "id": "T-002",
+      "title": "arXiv AI Papers",
+      "description": "Monitor this source for changes and signals",
+      "source_url": "https://arxiv.org/rss/cs.AI",
+      "source_type": "rss",
+      "done": false
+    },
+    {
+      "id": "T-003",
+      "title": "NIST Cybersecurity Advisories",
+      "description": "Monitor this source for changes and signals",
+      "source_url": "https://nvd.nist.gov/feeds/xml/cve/misc/nvd-rss.xml",
+      "source_type": "rss",
+      "done": false
+    }
+  ]
+}
