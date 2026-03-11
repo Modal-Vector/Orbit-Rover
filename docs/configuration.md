@@ -1,6 +1,6 @@
 ---
 title: Configuration
-last_updated: 2026-03-10
+last_updated: 2026-03-11
 ---
 
 [← Back to Index](index.md)
