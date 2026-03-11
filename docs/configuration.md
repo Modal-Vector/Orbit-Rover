@@ -81,7 +81,7 @@ orbits:
     when: bash                # file | bash
     condition: >
       jq '[.tasks[] | select(.done == false)] | length == 0'
-      .orbit/plans/docsmith/tasks.json
+      .orbit/plans/research/tasks.json
   deadlock:
     threshold: 3
     action: perspective       # perspective | abort
