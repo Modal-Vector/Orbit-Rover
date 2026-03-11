@@ -1,6 +1,6 @@
 ---
 title: Architecture
-last_updated: 2026-03-10
+last_updated: 2026-03-11
 ---
 
 [← Back to Index](index.md)
@@ -43,72 +43,85 @@ time (the decomposer pattern), not detected at runtime.
 
 The Ralph loop is the core execution pattern:
 
-```
-┌─────────────────────────────────────────┐
-│              orbit_run_component         │
-│                                         │
-│  1. Load checkpoint from disk           │
-│  2. Render prompt template              │
-│     - Inject {orbit.n}, {orbit.max}     │
-│     - Inject {orbit.checkpoint}         │
-│     - Inject perspective (if deadlock)  │
-│  3. Invoke adapter (agent subprocess)   │
-│  4. Extract checkpoint from output      │
-│  5. Parse learning tags                 │
-│  6. Hash delivers (deadlock detection)  │
-│  7. Check success condition             │
-│     ├── Success → exit loop             │
-│     └── Not yet → next orbit            │
-│  8. Deadlock check                      │
-│     ├── Threshold hit → perspective     │
-│     └── Or abort                        │
-│  9. Retry on adapter failure            │
-│                                         │
-│  Repeat until success or ceiling hit    │
-└─────────────────────────────────────────┘
+```mermaid
+flowchart TD
+    START([orbit_run_component]) --> LOAD[Load checkpoint from disk]
+    LOAD --> RENDER[Render prompt template]
+    RENDER --> PREFLIGHT[Run preflight hooks]
+    PREFLIGHT --> INVOKE[Invoke adapter — fresh subprocess]
+    INVOKE --> EXTRACT[Extract checkpoint from output]
+    EXTRACT --> PARSE[Parse learning tags]
+    PARSE --> HASH[Hash delivers — deadlock detection]
+    HASH --> CHECK{Success condition met?}
+    CHECK -- Yes --> EXIT([Exit loop ✓])
+    CHECK -- No --> DEADLOCK{Stall count ≥ threshold?}
+    DEADLOCK -- No --> CEILING{Orbit ceiling hit?}
+    DEADLOCK -- Yes --> PERSPECTIVE[Inject perspective prompt]
+    PERSPECTIVE --> CEILING
+    CEILING -- No --> LOAD
+    CEILING -- Yes --> ABORT([Exit — ceiling reached])
 ```
 
 ## Data Flow
 
-```
-orbit.yaml
-    │
-    ▼
-config_load_system() ──► ORBIT_SYSTEM{}
-                              │
-components/*.yaml             │
-    │                         │
-    ▼                         ▼
-registry_build() ──► .orbit/registry.json
-    │
-    ▼
-Manual trigger / Sensor fire
-    │
-    ▼
-orbit_run_component()
-    ├── render_template()       ─► prompt with variables
-    ├── _invoke_adapter()       ─► agent subprocess
-    ├── parse_learning_tags()   ─► insights / decisions / feedback
-    ├── extract_checkpoint()    ─► .orbit/state/{component}/checkpoint.md
-    ├── hash_delivers()         ─► deadlock detection
-    └── _check_success()        ─► exit or continue
+```mermaid
+flowchart LR
+    subgraph Config
+        OY[orbit.yaml] --> CLS[config_load_system]
+        CY[components/*.yaml] --> RB[registry_build]
+        MY[missions/*.yaml] --> RB
+    end
+
+    CLS --> SYS[ORBIT_SYSTEM]
+    RB --> REG[.orbit/registry.json]
+
+    subgraph Trigger
+        SENSOR[Sensor fire]
+        MANUAL[Manual trigger]
+        LAUNCH[orbit launch]
+    end
+
+    SENSOR --> ORC
+    MANUAL --> ORC
+    LAUNCH --> ORC
+
+    subgraph Orbit["orbit_run_component()"]
+        ORC[render_template] --> ADAPT[_invoke_adapter]
+        ADAPT --> LEARN[parse_learning_tags]
+        LEARN --> CKPT[extract_checkpoint]
+        CKPT --> HASH[hash_delivers]
+        HASH --> SUCC[_check_success]
+    end
+
+    ADAPT --> |agent subprocess| AGENT((AI Agent))
+    LEARN --> |JSONL| STORE[.orbit/learning/]
+    CKPT --> |markdown| STATE[.orbit/state/]
 ```
 
 ## Two-Tier Mission Pattern
 
 Complex work uses a planning tier followed by an implementation tier:
 
-```
-Mission: transform
-    │
-    ├── Stage 1: decompose (one-shot)
-    │   └── Produces tasks.json with subtasks
-    │
-    └── Stage 2: execute (loops via orbits_to)
-        ├── Orbit 1: pick task, do work, mark done
-        ├── Orbit 2: pick next task, do work, mark done
-        ├── ...
-        └── Orbit N: all tasks done → exit condition met
+```mermaid
+flowchart TD
+    M([Mission start]) --> S1
+
+    subgraph S1[Stage 1: decompose]
+        DEC[Decomposer component]
+        DEC --> TASKS[tasks.json created]
+    end
+
+    S1 --> S2
+
+    subgraph S2[Stage 2: execute — loops via orbits_to]
+        PICK[Pick first undone task] --> WORK[Do work in one orbit]
+        WORK --> MARK[Mark task done]
+        MARK --> EXIT_CHECK{All tasks done?}
+        EXIT_CHECK -- No --> PICK
+        EXIT_CHECK -- Yes --> DONE
+    end
+
+    DONE([Mission complete ✓])
 ```
 
 The decomposer breaks work into atomic tasks stored in `.orbit/plans/`. The
@@ -117,30 +130,34 @@ mechanism loops the worker stage back to itself until all tasks are done.
 
 ## Component Lifecycle
 
-```
-                  ┌──────────┐
-                  │  active   │ ◄── default status
-                  └────┬─────┘
-                       │
-              ┌────────┼────────┐
-              ▼        ▼        ▼
-         ┌────────┐ ┌───────┐ ┌──────┐
-         │ sensor │ │ orbit │ │ orbit│
-         │ trigger│ │  run  │ │launch│
-         └────┬───┘ └───┬───┘ └──┬───┘
-              │         │        │
-              ▼         ▼        ▼
-         orbit_run_component()
-              │
-              ├── preflight hooks
-              ├── orbit loop (1..max)
-              │   ├── render template
-              │   ├── invoke adapter
-              │   ├── extract checkpoint
-              │   ├── parse learning tags
-              │   ├── deadlock check
-              │   └── success check
-              └── postflight hooks
+```mermaid
+flowchart TD
+    ACTIVE([Component: active]) --> TRIGGER
+
+    TRIGGER{How triggered?}
+    TRIGGER --> |sensor fire| SENSOR[File / interval / cron]
+    TRIGGER --> |manual| RUN[orbit run]
+    TRIGGER --> |mission| LAUNCH[orbit launch]
+
+    SENSOR --> ORC
+    RUN --> ORC
+    LAUNCH --> ORC
+
+    ORC[orbit_run_component]
+    ORC --> PRE[Preflight hooks]
+    PRE --> LOOP
+
+    subgraph LOOP[Orbit loop — 1..max]
+        TMPL[Render template] --> AGENT[Invoke adapter]
+        AGENT --> CKPT[Extract checkpoint]
+        CKPT --> LEARN[Parse learning tags]
+        LEARN --> DL[Deadlock check]
+        DL --> SC{Success?}
+        SC -- No --> TMPL
+    end
+
+    SC -- Yes --> POST[Postflight hooks]
+    POST --> DONE([Complete ✓])
 ```
 
 ## Atomic Writes

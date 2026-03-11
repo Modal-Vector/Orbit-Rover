@@ -1,6 +1,6 @@
 ---
 title: Orbit Loop
-last_updated: 2026-03-10
+last_updated: 2026-03-11
 ---
 
 [← Back to Index](index.md)
@@ -16,6 +16,28 @@ detection, and retry logic across orbits.
 ## Execution Flow
 
 Each call to `orbit_run_component()` runs the following loop:
+
+```mermaid
+flowchart TD
+    A([Start orbit_run_component]) --> B[1. Load checkpoint from disk]
+    B --> C[2. Render prompt template]
+    C --> D[3. Run preflight hooks]
+    D --> E[4. Invoke adapter — fresh subprocess]
+    E --> F[5. Extract checkpoint → save to disk]
+    F --> G[6. Parse learning tags → JSONL stores]
+    G --> H[7. Hash delivers — SHA256 content]
+    H --> I{8. Success condition met?}
+    I -- Yes --> K[10. Run postflight hooks]
+    K --> L([Exit ✓])
+    I -- No --> J{9. Deadlock detected?}
+    J -- "Stalls < threshold" --> M{Orbit ceiling?}
+    J -- "Stalls ≥ threshold" --> N[Inject perspective]
+    N --> M
+    M -- No --> B
+    M -- Yes --> O([Exit — ceiling hit])
+```
+
+Steps in detail:
 
 1. **Load checkpoint** from `.orbit/state/{component}/checkpoint.md`
 2. **Render prompt** via `render_template()` with variables:

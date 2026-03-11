@@ -1,6 +1,6 @@
 ---
 title: Mission Safety
-last_updated: 2026-03-10
+last_updated: 2026-03-11
 ---
 
 [← Back to Index](index.md)
@@ -84,18 +84,15 @@ stages:
 
 ### Gate Lifecycle
 
-```
-Mission reaches gate stage
-    │
-    ▼
-gate_open() — creates prompt.json
-    │
-    ▼
-Polling loop (every 0.5s)
-    │
-    ├── response.json found → read choice, continue
-    │
-    └── timeout reached → apply default option
+```mermaid
+flowchart TD
+    MISSION[Mission reaches gate stage] --> OPEN[gate_open — creates prompt.json]
+    OPEN --> POLL{Polling loop — every 0.5s}
+    POLL --> |response.json found| READ[Read choice]
+    POLL --> |timeout reached| DEFAULT[Apply default option]
+    POLL --> |no response yet| POLL
+    READ --> CONTINUE([Continue mission])
+    DEFAULT --> CONTINUE
 ```
 
 ### File Structure
@@ -227,22 +224,17 @@ Retry delays support multiple formats:
 
 ### Decision Flow
 
-```
-Adapter exits non-zero
-    │
-    ▼
-retry_should_retry(attempt, max, exit_code, on_timeout)
-    │
-    ├── exit 0 → don't retry (success)
-    ├── exit 124 + on_timeout=false → don't retry
-    ├── attempt > max → don't retry (exhausted)
-    └── otherwise → retry
-            │
-            ▼
-    retry_delay(attempt, backoff, initial, max)
-            │
-            ▼
-    sleep(delay) → next attempt
+```mermaid
+flowchart TD
+    FAIL[Adapter exits non-zero] --> CHECK[retry_should_retry]
+    CHECK --> |exit 0| NO1([Don't retry — success])
+    CHECK --> |"exit 124 + on_timeout=false"| NO2([Don't retry — timeout])
+    CHECK --> |"attempt > max"| NO3([Don't retry — exhausted])
+    CHECK --> |otherwise| DELAY[retry_delay — calculate wait]
+    DELAY --> |constant| CONST[initial_delay every time]
+    DELAY --> |exponential| EXP["delay × 2^attempt, capped at max_delay"]
+    CONST --> SLEEP[sleep] --> NEXT([Next attempt])
+    EXP --> SLEEP
 ```
 
 [← Back to Index](index.md)

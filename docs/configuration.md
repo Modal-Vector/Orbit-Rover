@@ -177,6 +177,17 @@ flight_rules:
     message: "Approaching orbit ceiling"
 ```
 
+```mermaid
+flowchart TD
+    D[decompose: section-decomposer] --> W[write: section-writer]
+    W -->|orbits_to: decompose| D
+    W --> G{review-gate}
+    G -->|approve| DONE([Mission complete])
+    G -->|reject| W
+
+    FR["⚠ Flight rules checked after each stage"]
+```
+
 ### Stage Fields
 
 | Field | Type | Description |

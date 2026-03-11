@@ -1,6 +1,6 @@
 ---
 title: Compatibility
-last_updated: 2026-03-10
+last_updated: 2026-03-11
 ---
 
 [← Back to Index](index.md)
@@ -32,6 +32,25 @@ implementation at `github.com/Modal-Vector/orbit`:
 | `internal/decision/` | Decision JSONL entry schema |
 | `internal/feedback/` | Feedback JSONL entry schema |
 | `internal/manual/` | Gate prompt/response file format |
+
+```mermaid
+flowchart LR
+    subgraph Rover["Rover — bash 4+"]
+        R_YAML[orbit.yaml]
+        R_STATE[.orbit/]
+        R_COMP[components/]
+    end
+
+    subgraph Station["Station — Go"]
+        S_YAML[orbit.yaml]
+        S_STATE[.orbit/]
+        S_COMP[components/]
+        S_EXTRA[+ webhooks, streams, postgres]
+    end
+
+    Rover -->|"promote — no migration"| Station
+    Station -->|"demote — warnings on unsupported fields"| Rover
+```
 
 ## Promotion: Rover to Station
 

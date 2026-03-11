@@ -1,6 +1,6 @@
 ---
 title: Tool System
-last_updated: 2026-03-10
+last_updated: 2026-03-11
 ---
 
 [← Back to Index](index.md)
@@ -121,10 +121,13 @@ via XML tags:
 
 ### Request Lifecycle
 
-```
-pending ──► granted (tool access enabled)
-    │
-    └──► denied (with reason)
+```mermaid
+stateDiagram-v2
+    [*] --> pending : agent emits tool_request
+    pending --> granted : orbit tools grant
+    pending --> denied : orbit tools deny
+    granted --> [*] : auth key issued
+    denied --> [*] : logged to denied.jsonl
 ```
 
 ### Schema
@@ -142,6 +145,25 @@ pending ──► granted (tool access enabled)
 ```
 
 ### Governance Workflow
+
+```mermaid
+sequenceDiagram
+    participant Agent
+    participant Rover
+    participant Human
+
+    Agent->>Rover: Output contains <tool_request>
+    Rover->>Rover: Append to pending.jsonl
+    Rover->>Human: orbit tools pending
+    alt Grant
+        Human->>Rover: orbit tools grant <tool> <component>
+        Rover->>Rover: Generate auth key
+        Rover->>Agent: Key available in next orbit
+    else Deny
+        Human->>Rover: orbit tools deny <tool> <component>
+        Rover->>Rover: Move to denied.jsonl
+    end
+```
 
 1. Agent output is scanned for `<tool_request>` tags
 2. Requests are appended to `.orbit/tool-requests/pending.jsonl`

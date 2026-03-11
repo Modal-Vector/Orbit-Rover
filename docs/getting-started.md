@@ -1,6 +1,6 @@
 ---
 title: Getting Started
-last_updated: 2026-03-10
+last_updated: 2026-03-11
 ---
 
 [← Back to Index](index.md)
@@ -149,6 +149,11 @@ stages:
     component: my-worker
     depends_on:
       - plan
+```
+
+```mermaid
+flowchart LR
+    PLAN[plan: my-planner] --> EXEC[execute: my-worker]
 ```
 
 ## Launching a Mission

@@ -1,6 +1,6 @@
 ---
 title: Learning System
-last_updated: 2026-03-10
+last_updated: 2026-03-11
 ---
 
 [← Back to Index](index.md)
@@ -39,6 +39,21 @@ Strongly agree with this feedback.
 
 **Source:** `lib/learning/parse_tags.sh`
 
+```mermaid
+flowchart LR
+    OUTPUT[Agent output] --> PARSE[parse_learning_tags]
+
+    PARSE --> INS["&lt;insight&gt; tags"]
+    PARSE --> DEC["&lt;decision&gt; tags"]
+    PARSE --> FB["&lt;feedback&gt; tags"]
+    PARSE --> VOTE["&lt;vote&gt; tags"]
+
+    INS --> |validate target| INS_STORE[insights/*.jsonl]
+    DEC --> |handle supersedes| DEC_STORE[decisions/*.jsonl]
+    FB --> FB_STORE[feedback/*.jsonl]
+    VOTE --> |update counts| FB_STORE
+```
+
 The `parse_learning_tags()` function processes agent output after each orbit:
 
 1. Extract all `<insight>` tags → validate targets against registry → append
@@ -51,6 +66,21 @@ The `parse_learning_tags()` function processes agent output after each orbit:
 Unknown targets produce warnings but don't halt processing.
 
 ## Scope Hierarchy
+
+```mermaid
+flowchart TD
+    PROJECT[project scope] --> MISSION[mission scope]
+    MISSION --> COMPONENT[component scope]
+    COMPONENT --> MODULE[module scope]
+
+    PROJECT -.-> |"visible to all"| MISSION
+    MISSION -.-> |"visible within mission"| COMPONENT
+
+    style PROJECT fill:#e1d5e7,stroke:#9673a6
+    style MISSION fill:#dae8fc,stroke:#6c8ebf
+    style COMPONENT fill:#d5e8d4,stroke:#82b366
+    style MODULE fill:#fff2cc,stroke:#d6b656
+```
 
 Learning entries are scoped to control visibility and assembly:
 
@@ -180,12 +210,14 @@ review and supersession.
 
 ### Lifecycle
 
-```
-proposed ──► accepted
-    │
-    ├──► rejected
-    │
-    └──► superseded (by new decision)
+```mermaid
+stateDiagram-v2
+    [*] --> proposed
+    proposed --> accepted
+    proposed --> rejected
+    proposed --> superseded
+    accepted --> superseded
+    superseded --> [*] : linked to replacement
 ```
 
 - **proposed** — initial state, agent has suggested this decision

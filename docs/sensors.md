@@ -1,6 +1,6 @@
 ---
 title: Sensors
-last_updated: 2026-03-10
+last_updated: 2026-03-11
 ---
 
 [← Back to Index](index.md)
@@ -59,6 +59,15 @@ When `cascade: block` is set, the file sensor checks
 `.orbit/cascade/active.json` before firing. If the component itself is listed
 as active (i.e., it produced the file change during its own execution), the
 trigger is suppressed. This prevents infinite self-triggering loops.
+
+```mermaid
+flowchart TD
+    CHANGE[File change detected] --> MODE{cascade setting?}
+    MODE -- allow --> FIRE[Create trigger file]
+    MODE -- block --> ACTIVE{Component in active.json?}
+    ACTIVE -- No --> FIRE
+    ACTIVE -- "Yes — self-triggered" --> SUPPRESS[Suppress trigger]
+```
 
 ## Interval Schedule Sensor
 
@@ -138,6 +147,34 @@ orbit cron preview
 **Source:** `lib/watch.sh`
 
 The `orbit watch` command starts the main sensor polling loop:
+
+```mermaid
+flowchart TD
+    START([orbit watch]) --> LOAD[Load system config]
+    LOAD --> REG[Build component registry]
+    REG --> INIT[Initialize state directories]
+    INIT --> TRAP[Set cleanup trap — SIGINT/SIGTERM]
+    TRAP --> SENSORS
+
+    subgraph SENSORS[Start sensors]
+        FW[File watch sensors] ~~~ IV[Interval sensors] ~~~ CR[Cron sensors]
+    end
+
+    SENSORS --> POLL
+
+    subgraph POLL[Trigger polling loop]
+        CHECK[Check .orbit/triggers/] --> FOUND{Trigger file?}
+        FOUND -- No --> SLEEP[Sleep 1s]
+        SLEEP --> CHECK
+        FOUND -- Yes --> NAME[Extract component name]
+        NAME --> CASCADE_ON[Mark active in cascade]
+        CASCADE_ON --> DISPATCH[Dispatch component execution]
+        DISPATCH --> CASCADE_OFF[Mark done in cascade]
+        CASCADE_OFF --> CHECK
+    end
+```
+
+Steps in detail:
 
 1. Load system config
 2. Build component registry

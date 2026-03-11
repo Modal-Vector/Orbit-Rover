@@ -23,6 +23,26 @@ document transformation patterns into a single end-to-end workflow.
 
 ### How It Works
 
+```mermaid
+flowchart LR
+    subgraph Plan["Mission: plan"]
+        RP[research-planner]
+        RP --> TJ[tasks.json]
+    end
+
+    subgraph Research["Mission: research ↻"]
+        TD[topic-decomposer] --> R[researcher]
+        R -->|orbits_to| TD
+    end
+
+    subgraph Write["Mission: write ↻"]
+        SD[section-decomposer] --> SW[section-writer]
+        SW -->|orbits_to| SD
+    end
+
+    Plan --> Research --> Write
+```
+
 1. **Plan mission:** `research-planner` reads the research brief and creates a
    topic-level task list in `.orbit/plans/research/tasks.json`
 2. **Research mission:** `topic-decomposer` breaks each topic into atomic tasks,
@@ -67,7 +87,20 @@ produces analysis.
 
 ### How It Works
 
-1. **File sensor** watches `watchlist.yaml` for changes
+```mermaid
+flowchart TD
+    CRON["⏰ Cron: daily 06:00"] --> DECOMPOSE
+
+    subgraph Monitor["Mission: monitor"]
+        DECOMPOSE[source-decomposer] --> ANALYSE[analyst]
+        ANALYSE -->|orbits_to| DECOMPOSE
+        ANALYSE --> GATE{brief-gate}
+        GATE -->|approve| DONE([Archive & reset])
+        GATE -->|reject| ANALYSE
+    end
+```
+
+1. **Cron sensor** triggers the monitor mission daily at 06:00
 2. When triggered, `source-decomposer` breaks the watchlist into individual
    source monitoring tasks
 3. `analyst` processes each source and produces intelligence reports
@@ -102,6 +135,27 @@ An autonomous operations studio for infrastructure incident response with
 governed tool access.
 
 ### How It Works
+
+```mermaid
+flowchart TD
+    TRIGGER["📁 File sensor: logs/anomaly-trigger"] --> DIAG
+
+    subgraph Respond["Mission: respond"]
+        DIAG[diagnostician] --> REM[remediator]
+        REM -->|orbits_to| DIAG
+    end
+
+    subgraph Tools["Tool policy: restricted"]
+        REM -.-> |available| NH[notify-operator]
+        REM -.-> |available| CH[check-health]
+        REM -.-> |requires auth| RS[restart-service]
+        REM -.-> |requires auth| ACP[apply-config-patch]
+    end
+
+    subgraph Safety["Flight rules"]
+        COST["cost-ceiling: $2.00 → abort"]
+    end
+```
 
 1. **Diagnostician** analyses system health using `read-logs` and
    `check-health` tools
