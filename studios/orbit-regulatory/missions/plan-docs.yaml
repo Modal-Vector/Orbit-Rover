@@ -1,7 +1,0 @@
-mission: plan-docs
-status: active
-
-stages:
-  - name: plan
-    component: doc-planner
-    waypoint: true
