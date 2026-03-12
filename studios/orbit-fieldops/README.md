@@ -11,7 +11,7 @@ orbit init
 
 # Set up log monitoring (reactive mode)
 orbit watch
-# Triggers when logs/anomaly-trigger is created
+# Triggers when logs/anomaly-trigger is created by your log processor
 
 # Or launch manually after anomaly detection
 orbit launch respond
@@ -19,7 +19,7 @@ orbit launch respond
 # Monitor remediation progress
 orbit status respond
 
-# Review tool access requests
+# Review and grant tool access requests
 orbit tools pending
 orbit tools grant <request-id>
 ```
@@ -35,26 +35,57 @@ cp orbit.yaml.edge orbit.yaml
 
 ## How It Works
 
-1. **Trigger**: External log processor writes `logs/anomaly-trigger`
-2. **Diagnose**: Preflight extracts anomaly patterns; diagnostician creates remediation tasks
-3. **Remediate**: One fix per orbit, validated by health checks, governed by tool policy
+### Mission: respond
+
+| Stage | Component | Behaviour |
+|-------|-----------|-----------|
+| `diagnose` (waypoint) | diagnostician | Preflight: `extract-anomalies.sh` parses log files and writes `logs/anomaly-report.json`. Diagnostician analyses patterns, correlates root causes, creates remediation tasks. |
+| `remediate` | remediator | Applies one fix per orbit using assigned tools. Postflight: `validate-fix.sh` checks health and verifies no tasks have `verification_failed`. Loops back to diagnose (max 20 orbits). |
+
+**Trigger**: The mission starts when an external log processor creates
+`logs/anomaly-trigger`. The sensor uses cascade blocking — a new trigger won't
+start a second mission while one is running.
+
+**Exit condition**: All tasks in the remediation plan marked `done: true`.
+
+**Flight rules**: Mission aborts if cumulative cost exceeds $2.00 USD.
+
+## Key Files
+
+| Path | Description |
+|------|-------------|
+| `logs/anomaly-trigger` | Marker file — external log processor creates this to trigger the mission |
+| `logs/anomaly-report.json` | Structured anomaly patterns (preflight output from `extract-anomalies.sh`) |
+| `.orbit/plans/fieldops/tasks.json` | Remediation task list (created by diagnostician, consumed by remediator) |
+| `.orbit/tool-auth/remediator.json` | Auth keys granted for restricted tools |
+| `.orbit/state/remediator/last-health-check.json` | Most recent health check result (written by `check-health` tool) |
+| `RISK-REGISTRY.md` | Risk classification and approval policy for all tools |
 
 ## Tool Governance
 
-| Tool | Classification | Auth Required |
-|------|----------------|---------------|
-| read-logs | available | no |
-| check-health | available | no |
-| notify-operator | available | no |
-| restart-service | restricted | yes |
-| apply-config-patch | restricted | yes |
+| Tool | Classification | Auth Required | Description |
+|------|----------------|---------------|-------------|
+| read-logs | available | no | Read specified log files |
+| check-health | available | no | Check service health endpoints |
+| notify-operator | available | no | Send operator notifications |
+| restart-service | restricted | yes | Restart a system service |
+| apply-config-patch | restricted | yes | Apply configuration changes |
 
-See `RISK-REGISTRY.md` for full risk classification.
+Restricted tools require a valid `ORBIT_TOOL_AUTH_KEY`. The `_auth-check.sh`
+script validates the key against `.orbit/tool-auth/{component}.json` before
+allowing execution.
 
-## Flight Rules
+See `RISK-REGISTRY.md` for full risk classification and `tools/INDEX.md` for
+tool documentation and instructions on adding new tools.
 
-- Cost ceiling: $2.00 USD per mission run (abort on violation)
-- Operator notification required before restricted tool use
+## Configuration
+
+| File | Purpose |
+|------|---------|
+| `orbit.yaml` | Model (sonnet), timeout (300s), orbit limits |
+| `orbit.yaml.edge` | Edge variant (ollama/qwen2.5-coder, 600s timeout) |
+| `missions/respond.yaml` | Mission definition — sensor, flight rules, stage flow |
+| `RISK-REGISTRY.md` | Tool risk classifications and approval policy |
 
 ## Requirements
 

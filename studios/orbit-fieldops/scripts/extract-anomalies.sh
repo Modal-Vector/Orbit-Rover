@@ -33,11 +33,20 @@ for logfile in $LOG_FILES; do
   # Look for error patterns
   while IFS= read -r line; do
     ANOMALY_COUNT=$((ANOMALY_COUNT + 1))
-    ESCAPED_LINE=$(echo "$line" | jq -Rs '.')
+
+    # Derive severity from log level keywords
+    SEVERITY="medium"
+    if echo "$line" | grep -iqE '(critical|fatal|oom|panic|segfault)'; then
+      SEVERITY="critical"
+    elif echo "$line" | grep -iqE '(error|refused|denied|exception)'; then
+      SEVERITY="high"
+    fi
+
     ANOMALIES=$(echo "$ANOMALIES" | jq --arg id "A-$(printf '%03d' $ANOMALY_COUNT)" \
       --arg src "$BASENAME" \
       --arg line "$line" \
-      '. + [{"id": $id, "source": $src, "pattern": $line, "severity": "medium"}]')
+      --arg sev "$SEVERITY" \
+      '. + [{"id": $id, "source": $src, "pattern": $line, "severity": $sev}]')
   done < <(grep -iE '(error|critical|fatal|oom|timeout|refused|denied|exception|panic|segfault)' "$logfile" 2>/dev/null | tail -50 || true)
 done
 

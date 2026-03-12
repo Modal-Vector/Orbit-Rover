@@ -1,7 +1,7 @@
 # orbit-research — Research Intelligence Studio
 
 Researches multi-faceted topics, synthesises findings, and writes them into
-structured documents using Orbit Rover's three-mission ralph loop pattern.
+structured documents using Orbit Rover's ralph loop pattern.
 
 ## Usage
 
@@ -9,7 +9,7 @@ structured documents using Orbit Rover's three-mission ralph loop pattern.
 # Initialise Orbit in this directory
 orbit init
 
-# Write your research brief to a file (e.g., brief.md)
+# Write your research brief to brief.md (see brief.md for the expected format)
 
 # Step 1: Plan the research
 orbit launch plan
@@ -40,28 +40,63 @@ cp orbit.yaml.local orbit.yaml
 
 ## How It Works
 
-### Planning Tier
-The `research-planner` reads your brief and creates a topic-level task list.
+### Missions
 
-### Research Tier
-1. **Decompose**: `topic-decomposer` picks the next topic and creates atomic tasks
+| Mission | Trigger | Stages |
+|---------|---------|--------|
+| `plan` | Manual | research-planner |
+| `research` | Cron (Mon 08:00) or manual | topic-decomposer → researcher (max 200 orbits) |
+| `write` | Manual | section-decomposer → section-writer (max 50 orbits) |
+
+### Planning (mission: plan)
+
+The `research-planner` reads `brief.md` and creates a topic-level task list.
+This is a waypoint — the mission pauses for review before continuing.
+
+### Research (mission: research)
+
+1. **Decompose** (waypoint): `topic-decomposer` picks the next incomplete topic
+   and breaks it into atomic research tasks
 2. **Investigate**: `researcher` processes one atomic task per orbit:
-   - Preflight fetches and distils sources (HTML/PDF → 8KB text)
-   - Researcher analyses distilled content, writes findings
-   - Loops until all atomic tasks are done, then moves to next topic
+   - Preflight: `distil-sources.sh` fetches source URLs and strips HTML/PDF to
+     8KB plain text; `extract-findings.sh` rebuilds `findings/index.md` from
+     all existing findings
+   - The researcher analyses distilled content and writes findings
+   - Loops back to decompose when the current topic is complete, until all
+     topics are done
 
-### Writing Tier
-1. **Decompose**: `section-decomposer` reads completed findings and creates section tasks
+### Writing (mission: write)
+
+1. **Decompose** (waypoint): `section-decomposer` reads completed findings and
+   creates section-level writing tasks with acceptance criteria
 2. **Write**: `section-writer` processes one section per orbit:
-   - Reads findings and task requirements
-   - Writes polished output to `output/`
+   - Reads `brief.md` for audience, voice, and output format
+   - Reads the findings listed in the task's `context_files`
+   - Writes polished prose to `output/`
    - Loops until all sections are complete
+
+## Key Files
+
+| Path | Description |
+|------|-------------|
+| `brief.md` | Research brief — objective, audience, voice, scope, output format |
+| `.orbit/plans/research/tasks.json` | Topic-level task list (created by planner) |
+| `.orbit/plans/research/atomic/current.json` | Atomic tasks for the current topic |
+| `.orbit/plans/research/write-tasks.json` | Section writing task list |
+| `sources/{task-id}/distilled.md` | Distilled source material (max 8KB, preflight output) |
+| `findings/{task-id}.md` | Per-task research findings |
+| `findings/index.md` | Auto-generated index of all findings (rebuilt each orbit by `extract-findings.sh`) |
+| `output/` | Final written sections |
 
 ## Configuration
 
-- `orbit.yaml`: Model, timeout, orbit limits
-- `orbit.yaml.local`: Local model variant (ollama/llama3.2)
-- `missions/research.yaml`: Cron schedule, max orbits
+| File | Purpose |
+|------|---------|
+| `orbit.yaml` | Model (sonnet), timeout (300s), orbit limits |
+| `orbit.yaml.local` | Local model variant (ollama/llama3.2, 600s timeout) |
+| `missions/plan.yaml` | Plan mission definition |
+| `missions/research.yaml` | Research mission — cron schedule, max orbits |
+| `missions/write.yaml` | Write mission — max orbits |
 
 ## Requirements
 

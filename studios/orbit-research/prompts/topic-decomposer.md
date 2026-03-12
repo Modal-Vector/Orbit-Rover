@@ -32,6 +32,19 @@ Break this topic into atomic research tasks and write them to `.orbit/plans/rese
 - Include specific source URLs where known
 - Order by information dependency — gather facts before synthesis
 - The final atomic task for each topic should be a synthesis step
+- **Source diversity**: Avoid clustering all atomic tasks on a single source or source type. Aim for at least two distinct source types per topic (e.g., documentation + blog post, paper + implementation). Different perspectives surface findings that a single source misses.
+
+### Task Granularity
+
+A well-sized atomic task:
+- Investigates one source or a small set of closely related sources
+- Has a clear, specific focus (not "research everything about X")
+- Produces findings that can stand alone — another researcher could read them without needing the source
+- Takes roughly one orbit of genuine analytical work, not just copying
+
+**Signs a task is too large:** the focus field contains "and" more than once, or the source is an entire documentation site rather than a specific page or section.
+
+**Signs a task is too small:** the expected findings would be a single sentence, or the task is just "confirm that X exists" with no analysis required.
 
 ### Progress
 

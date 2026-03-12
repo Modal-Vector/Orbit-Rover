@@ -6,6 +6,8 @@
       "description": "Monitor this source for changes and signals",
       "source_url": "https://hnrss.org/frontpage",
       "source_type": "rss",
+      "priority": "medium",
+      "tags": ["industry", "technology"],
       "done": true
     },
     {
@@ -14,14 +16,28 @@
       "description": "Monitor this source for changes and signals",
       "source_url": "https://arxiv.org/rss/cs.AI",
       "source_type": "rss",
+      "priority": "medium",
+      "tags": ["research", "papers"],
       "done": false
     },
     {
       "id": "T-003",
+      "title": "GitHub Trending Repositories",
+      "description": "Monitor this source for changes and signals",
+      "source_url": "https://github.com/trending?since=daily",
+      "source_type": "web",
+      "priority": "low",
+      "tags": ["open-source", "trends"],
+      "done": false
+    },
+    {
+      "id": "T-004",
       "title": "NIST Cybersecurity Advisories",
       "description": "Monitor this source for changes and signals",
       "source_url": "https://nvd.nist.gov/feeds/xml/cve/misc/nvd-rss.xml",
       "source_type": "rss",
+      "priority": "high",
+      "tags": ["security", "advisories"],
       "done": false
     }
   ]

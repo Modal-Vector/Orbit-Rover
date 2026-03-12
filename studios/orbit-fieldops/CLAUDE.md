@@ -11,16 +11,12 @@ The remediator operates under a **restricted** tool policy:
 - `restart-service` — **restricted**, requires auth approval
 - `apply-config-patch` — **restricted**, requires auth approval
 
-## Key Files
-
-- `logs/anomaly-report.json` — extracted anomaly patterns
-- `.orbit/plans/fieldops/tasks.json` — remediation task list
-- `.orbit/tool-auth/remediator.json` — granted auth keys for restricted tools
-
 ## Specialist Subagents
 
-| Agent | When to use |
-|-------|-------------|
-| `log-analyst` | Deep log parsing — root cause isolation, cascade reconstruction, pattern classification |
-| `remediation-sequencer` | After creating remediation tasks — validates fix ordering for cascade safety |
-| `fix-auditor` | After applying a fix — verifies the anomaly is resolved, not just that health checks pass |
+Use these via the Agent tool when working in this studio.
+
+| Agent | When to spawn | What it returns |
+|-------|---------------|-----------------|
+| `log-analyst` | Deep-dive on anomaly logs — pass it log files or anomaly report data | Root cause isolation, cascade reconstruction, pattern classification (transient/intermittent/persistent/cascading/periodic) |
+| `remediation-sequencer` | After creating remediation tasks — pass it the tasks file | Dependency analysis, cascade risk assessment, and fix ordering recommendations |
+| `fix-auditor` | After applying a fix — pass it the anomaly details and health check results | Four-layer verification (surface, anomaly-specific, recurrence, collateral) with a RESOLVED/NOT RESOLVED verdict |

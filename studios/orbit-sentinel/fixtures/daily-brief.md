@@ -2,7 +2,7 @@
 
 ## Executive Summary
 
-3 sources monitored. 1 high-priority security advisory identified. Agent
+4 sources monitored. 1 high-priority security advisory identified. Agent
 orchestration landscape continues to evolve with community preference shifting
 toward simpler architectures.
 
@@ -33,6 +33,7 @@ toward simpler architectures.
 |--------|--------|---------|
 | Hacker News | Analysed | 4 items flagged |
 | arXiv AI Papers | Analysed | 2 papers relevant |
+| GitHub Trending | Analysed | No significant new repositories |
 | NIST Advisories | Analysed | 1 critical CVE |
 
 ## Next Run

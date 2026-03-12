@@ -18,6 +18,8 @@ Read the watchlist at `watchlist.yaml`. For each source entry, create a task in 
       "description": "Monitor this source for changes and signals",
       "source_url": "https://example.com/feed",
       "source_type": "rss|github|web",
+      "priority": "high|medium|low",
+      "tags": ["tag1", "tag2"],
       "done": false
     }
   ]
@@ -27,7 +29,7 @@ Read the watchlist at `watchlist.yaml`. For each source entry, create a task in 
 ### Rules
 
 - One task per source in the watchlist
-- Preserve the source URL and type from the watchlist
+- Preserve the source URL, type, priority, and tags from the watchlist
 - Number tasks sequentially: T-001, T-002, etc.
 
 ### Progress

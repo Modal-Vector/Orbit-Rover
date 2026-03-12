@@ -17,7 +17,8 @@ Apply the remediation using ONLY the assigned tools:
 
 1. Execute the remediation tool specified in the task
 2. Verify the fix using the task's verification criteria
-3. Mark the task as `done: true` in `tasks.json`
+3. If verification fails, set `"verification_failed": true` on the task and leave notes for the next orbit
+4. If verification passes, mark the task as `done: true` in `tasks.json`
 
 ### Tool Policy
 

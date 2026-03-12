@@ -9,7 +9,7 @@ using Orbit Rover's ralph loop pattern.
 # Initialise Orbit in this directory
 orbit init
 
-# Edit watchlist.yaml to add your sources
+# Edit watchlist.yaml to add your sources (see Watchlist Format below)
 
 # Launch the monitor mission manually
 orbit launch monitor
@@ -21,25 +21,65 @@ orbit watch
 # Check monitoring status
 orbit status monitor
 
-# Review pending intelligence brief gate
+# Review the daily intelligence brief before it archives
 orbit pending
-orbit approve monitor
+orbit approve monitor    # approve the brief
+orbit reject monitor     # reject to iterate further
 ```
 
 ## How It Works
 
-1. **Decompose stage**: Reads `watchlist.yaml`, creates one task per source
-2. **Analyse stage**: For each source (one per orbit):
-   - Preflight fetches and distils the content to 8KB max
-   - Analyst reads distilled content and writes findings
-   - Insights accumulate in the learning system
-3. **Brief gate**: Manual approval gate for the daily intelligence brief
+### Mission: monitor
+
+| Stage | Component | Behaviour |
+|-------|-----------|-----------|
+| `decompose` (waypoint) | source-decomposer | Reads `watchlist.yaml`, creates one task per source with URL, type, priority, and tags. |
+| `analyse` | analyst | One source per orbit. Preflight: `fetch-source.sh` downloads the source; `distil-content.sh` strips HTML and caps at 8KB. Analyst writes findings. Loops back to decompose (max 100 orbits). |
+| `brief-gate` | manual gate | Pauses for human review of `intelligence/daily-brief.md`. 12h timeout — defaults to approve if no action taken. |
+
+**Trigger**: Cron schedule, daily at 06:00 UTC.
+
+**Exit condition**: All tasks in the task list marked `done: true`, then the
+brief gate passes.
+
+## Watchlist Format
+
+Edit `watchlist.yaml` to define your monitoring sources:
+
+```yaml
+sources:
+  - name: "Source display name"
+    url: "https://example.com/feed"
+    type: rss          # rss, github, or web
+    priority: high     # high, medium, or low
+    tags: [security, advisories]
+```
+
+| Field | Required | Description |
+|-------|----------|-------------|
+| `name` | yes | Display name used as the task title |
+| `url` | yes | Source URL to fetch |
+| `type` | yes | `rss`, `github`, or `web` — determines how the preflight fetches content |
+| `priority` | yes | `high`, `medium`, or `low` — carried through to tasks for triage |
+| `tags` | yes | Category tags — carried through to tasks for filtering |
+
+## Key Files
+
+| Path | Description |
+|------|-------------|
+| `watchlist.yaml` | Sources to monitor — name, URL, type, priority, tags |
+| `.orbit/plans/sentinel/tasks.json` | Per-run task list (one task per watchlist source) |
+| `sources/{task-id}/distilled.md` | Distilled source content, max 8KB (preflight output) |
+| `findings/{task-id}.md` | Analyst findings per source |
+| `intelligence/daily-brief.md` | Consolidated daily intelligence brief |
 
 ## Configuration
 
-- `watchlist.yaml`: Add/remove monitoring sources
-- `orbit.yaml`: Change model, timeout, or orbit limits
-- `missions/monitor.yaml`: Adjust cron schedule or gate timeout
+| File | Purpose |
+|------|---------|
+| `watchlist.yaml` | Add, remove, or reprioritise monitoring sources |
+| `orbit.yaml` | Model (sonnet), timeout (300s), orbit limits |
+| `missions/monitor.yaml` | Cron schedule, gate timeout, max orbits |
 
 ## Requirements
 
