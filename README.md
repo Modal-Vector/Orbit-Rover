@@ -153,6 +153,12 @@ Three example projects in `studios/`:
 | [State Directory](docs/state-directory.md) | `.orbit/` layout and schemas |
 | [Studios](docs/studios.md) | Example projects |
 
+## Contributing
+
+Development instructions for Orbit Rover are in
+[CONTRIBUTING.md](CONTRIBUTING.md). To activate development mode for Claude Code
+sessions, swap the CLAUDE.md files as described in that file.
+
 ## Testing
 
 ```bash

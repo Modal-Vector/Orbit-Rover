@@ -69,6 +69,16 @@ flowchart LR
 | `research` | Iterative (decompose → investigate, weekly cron) |
 | `write` | Iterative (decompose → write, loops via `orbits_to`) |
 
+### Specialist Subagents
+
+When using the `claude-code` adapter, these subagents are available within an
+orbit for delegation via the Agent tool:
+
+| Agent | Purpose |
+|-------|---------|
+| `source-evaluator` | Scores source credibility, currency, depth, and relevance before committing an orbit to analysis |
+| `synthesis-validator` | Cross-checks findings for contradictions, unsupported claims, and coverage gaps |
+
 ### Extras
 
 - `orbit.yaml.local` — override file for local model/adapter settings
@@ -117,6 +127,16 @@ flowchart TD
 | Mission | Pattern |
 |---------|---------|
 | `monitor` | Sequential (decompose → analyse) |
+
+### Specialist Subagents
+
+When using the `claude-code` adapter, these subagents are available within an
+orbit for delegation via the Agent tool:
+
+| Agent | Purpose |
+|-------|---------|
+| `signal-correlator` | Detects patterns across multiple sources and prior monitoring runs |
+| `threat-enricher` | Adds CVSS scores, MITRE ATT&CK mappings, and exploit context to CVEs and security advisories |
 
 ### Key Design Choices
 
@@ -176,6 +196,17 @@ flowchart TD
 |---------|---------|
 | `respond` | Sequential (diagnose → remediate) |
 
+### Specialist Subagents
+
+When using the `claude-code` adapter, these subagents are available within an
+orbit for delegation via the Agent tool:
+
+| Agent | Purpose |
+|-------|---------|
+| `log-analyst` | Deep log parsing — root cause isolation, cascade reconstruction, pattern classification |
+| `remediation-sequencer` | Validates remediation task ordering for cascade safety and dependency correctness |
+| `fix-auditor` | Verifies a fix resolved the original anomaly, not just that health checks pass |
+
 ### Key Design Choices
 
 - All tool scripts validate auth keys before execution
@@ -186,6 +217,27 @@ flowchart TD
 
 ---
 
+## Studio CLAUDE.md Files
+
+Each studio includes a `CLAUDE.md` file with in-session context for the
+`claude-code` adapter. When Claude Code is invoked from a studio directory, it
+automatically loads this file, giving the agent awareness of key file locations
+and available specialist subagents.
+
+Studio `CLAUDE.md` files should contain only information useful during an agent
+session — not orbit mechanics (which belong in the component prompts).
+
+## Specialist Subagents
+
+Studios can include specialist subagent definitions in `.claude/agents/`. These
+are narrow experts that the main agent can delegate to within a single orbit
+via the Agent tool. Subagents are only available when using the `claude-code`
+adapter.
+
+Subagent definitions are Markdown files with YAML frontmatter specifying the
+agent's name, description, available tools, and model. See the existing
+definitions in `.claude/agents/` for examples.
+
 ## Creating Your Own Studio
 
 1. Run `orbit init my-studio` to scaffold the project
@@ -194,8 +246,10 @@ flowchart TD
 4. Define missions in `missions/*.yaml`
 5. Add lifecycle scripts in `scripts/`
 6. Add tools in `tools/` (if needed)
-7. Test with `orbit run <component>` for individual components
-8. Launch with `orbit launch <mission>` for full workflows
+7. Add a `CLAUDE.md` with key file paths and subagent references
+8. Add specialist subagents in `.claude/agents/` if using `claude-code`
+9. Test with `orbit run <component>` for individual components
+10. Launch with `orbit launch <mission>` for full workflows
 
 Study the existing studios for patterns that match your use case:
 

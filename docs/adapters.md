@@ -45,6 +45,14 @@ claude -p <prompt> --output-format json --model <model> --max-turns <N> \
 The adapter parses JSON output from `claude`, trying fields in order:
 `.result`, `.text`, `.content`. The extracted text is returned on stdout.
 
+### Subagents
+
+When using `claude-code`, specialist subagent definitions in `.claude/agents/`
+are available to the agent via the Agent tool. This allows the main agent to
+delegate subtasks (e.g. source evaluation, log analysis) to focused specialists
+within a single orbit. See [Studios](studios.md) for the subagents included
+with each studio.
+
 ## opencode Adapter
 
 **Source:** `lib/adapters/opencode.sh`

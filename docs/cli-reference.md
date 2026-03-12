@@ -77,9 +77,9 @@ Bootstraps a new Orbit project with full directory scaffolding.
 orbit init <project-name>
 ```
 
-Creates: `orbit.yaml`, `CLAUDE.md`, `RISK-REGISTRY.md`, `components/`,
-`missions/`, `modules/`, `prompts/`, `scripts/`, `tools/`, and the `.orbit/`
-state directory tree.
+Creates: `orbit.yaml`, `CLAUDE.md` (agent session context), `RISK-REGISTRY.md`,
+`components/`, `missions/`, `modules/`, `prompts/`, `scripts/`, `tools/`, and
+the `.orbit/` state directory tree.
 
 ## orbit doctor
 

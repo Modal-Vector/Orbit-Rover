@@ -58,7 +58,7 @@ This creates the full project scaffolding:
 ```
 my-project/
 ├── orbit.yaml            # System configuration
-├── CLAUDE.md             # Agent context template
+├── CLAUDE.md             # Agent context (loaded by claude-code in session)
 ├── RISK-REGISTRY.md      # Risk tracking template
 ├── components/           # Component YAML definitions
 ├── missions/             # Mission YAML definitions
