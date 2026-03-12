@@ -49,4 +49,15 @@ Pattern observation for future anomaly detection
 </insight>
 ```
 
-Write progress notes before exiting — the next orbit depends on them.
+### Progress
+
+Before exiting, emit a checkpoint so the next orbit knows where you left off:
+
+```xml
+<checkpoint>
+- Completed: what you diagnosed
+- Root causes: identified causes
+- Tasks created: count and severity breakdown
+- Next: what the next orbit should do
+</checkpoint>
+```

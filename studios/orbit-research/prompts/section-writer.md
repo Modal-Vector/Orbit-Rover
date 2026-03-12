@@ -23,4 +23,20 @@ If all tasks are complete, the loop will exit automatically.
 - Use the research findings as your primary source material
 - If you cannot complete the task, leave detailed notes in your checkpoint explaining what blocked you and what the next orbit should try
 
-Write progress notes before exiting — the next orbit depends on them.
+### Progress
+
+Before exiting, emit a checkpoint so the next orbit knows where you left off:
+
+```xml
+<checkpoint>
+- Completed: which section you wrote
+- Quality: whether acceptance criteria were met
+- Next: what the next orbit should do
+</checkpoint>
+```
+
+Rate the quality of the section you produced:
+
+```xml
+<feedback>Notes on writing quality, source coverage, or gaps</feedback>
+```

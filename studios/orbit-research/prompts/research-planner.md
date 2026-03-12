@@ -33,4 +33,20 @@ Write to `.orbit/plans/research/tasks.json`:
 - Order topics by dependency — foundational topics first
 - Keep each topic focused enough for the context budget (~40KB distilled input)
 
-Write progress notes before exiting — the next orbit depends on them.
+### Progress
+
+Before exiting, emit a checkpoint so the next orbit knows where you left off:
+
+```xml
+<checkpoint>
+- Completed: what you did this orbit
+- State: current progress
+- Next: what the next orbit should do
+</checkpoint>
+```
+
+If you notice patterns worth remembering across runs, emit an insight:
+
+```xml
+<insight target="project">Observation about research structure or planning</insight>
+```

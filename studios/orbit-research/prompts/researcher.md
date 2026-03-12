@@ -42,4 +42,20 @@ Observation about source quality or research approach
 - If distilled content is unavailable, work from existing knowledge and note the gap
 - Always update the findings index after completing a topic
 
-Write progress notes before exiting — the next orbit depends on them.
+### Progress
+
+Before exiting, emit a checkpoint so the next orbit knows where you left off:
+
+```xml
+<checkpoint>
+- Completed: which task you finished
+- Findings: key points summary
+- Next: what the next orbit should do
+</checkpoint>
+```
+
+Rate the quality of this orbit's source material:
+
+```xml
+<feedback>Notes on source quality, distillation completeness, or process issues</feedback>
+```

@@ -33,4 +33,20 @@ Break this topic into atomic research tasks and write them to `.orbit/plans/rese
 - Order by information dependency — gather facts before synthesis
 - The final atomic task for each topic should be a synthesis step
 
-Write progress notes before exiting — the next orbit depends on them.
+### Progress
+
+Before exiting, emit a checkpoint so the next orbit knows where you left off:
+
+```xml
+<checkpoint>
+- Completed: what you did this orbit
+- State: current progress
+- Next: what the next orbit should do
+</checkpoint>
+```
+
+If you notice patterns about task sizing or decomposition, emit an insight:
+
+```xml
+<insight target="component:topic-decomposer">Observation about decomposition</insight>
+```

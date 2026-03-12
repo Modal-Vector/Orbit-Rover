@@ -30,4 +30,14 @@ Read the watchlist at `watchlist.yaml`. For each source entry, create a task in 
 - Preserve the source URL and type from the watchlist
 - Number tasks sequentially: T-001, T-002, etc.
 
-Write progress notes before exiting — the next orbit depends on them.
+### Progress
+
+Before exiting, emit a checkpoint so the next orbit knows where you left off:
+
+```xml
+<checkpoint>
+- Completed: what you did this orbit
+- State: current progress
+- Next: what the next orbit should do
+</checkpoint>
+```

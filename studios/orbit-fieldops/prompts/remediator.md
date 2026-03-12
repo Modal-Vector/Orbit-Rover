@@ -38,4 +38,27 @@ reason: Why this tool is needed for the current remediation
 - If a fix fails verification, leave detailed notes for the next orbit
 - Do NOT attempt to use tools outside your assigned set
 
-Write progress notes before exiting — the next orbit depends on them.
+### Progress
+
+Before exiting, emit a checkpoint so the next orbit knows where you left off:
+
+```xml
+<checkpoint>
+- Completed: which task you worked on
+- Action: what tool was used and what it did
+- Verification: health check result
+- Next: what the next orbit should do
+</checkpoint>
+```
+
+Report on remediation effectiveness:
+
+```xml
+<feedback>Notes on whether the fix worked, unexpected side effects, or process issues</feedback>
+```
+
+Emit insights for recurring operational patterns:
+
+```xml
+<insight target="project">Pattern worth tracking across incidents</insight>
+```

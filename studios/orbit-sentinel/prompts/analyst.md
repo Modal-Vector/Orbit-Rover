@@ -44,4 +44,20 @@ Observation about source quality or access patterns
 - If the distilled content is empty or missing, mark the task done with a note
 - Write findings before marking the task done
 
-Write progress notes before exiting — the next orbit depends on them.
+### Progress
+
+Before exiting, emit a checkpoint so the next orbit knows where you left off:
+
+```xml
+<checkpoint>
+- Completed: which source you analysed
+- Signals: key findings summary
+- Next: what the next orbit should do
+</checkpoint>
+```
+
+Rate the quality of this orbit's source material:
+
+```xml
+<feedback>Notes on source quality, signal-to-noise ratio, or access issues</feedback>
+```
