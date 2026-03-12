@@ -45,6 +45,12 @@ knowledge across orbits.
 |----------|-------------|
 | [Dashboard](dashboard.md) | TUI and web dashboard — topology visualization, run history, costs |
 
+## Deployment
+
+| Document | Description |
+|----------|-------------|
+| [Docker](docker.md) | Running Orbit Rover in a Docker container with auth setup |
+
 ## Reference
 
 | Document | Description |

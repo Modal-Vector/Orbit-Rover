@@ -1,0 +1,14 @@
+.git
+.orbit
+.claude
+.env
+.env.*
+.DS_Store
+Design/
+tests/
+__pycache__
+*.pyc
+*.tmp
+*.bak
+*.swp
+*.swo

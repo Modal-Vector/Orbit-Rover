@@ -1,0 +1,13 @@
+services:
+  orbit:
+    build: .
+    volumes:
+      - .:/workspace
+      - orbit-claude-config:/root/.claude
+    env_file:
+      - .env
+    ports:
+      - "8777:8777"
+
+volumes:
+  orbit-claude-config:
