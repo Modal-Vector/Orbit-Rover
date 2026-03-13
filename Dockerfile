@@ -26,10 +26,13 @@ RUN npm install -g @anthropic-ai/claude-code
 ARG GO_VERSION=1.23.6
 RUN ARCH=$(dpkg --print-architecture) && \
     curl -sL "https://go.dev/dl/go${GO_VERSION}.linux-${ARCH}.tar.gz" | tar -C /usr/local -xz
-ENV PATH="/usr/local/go/bin:/root/go/bin:${PATH}"
+ENV PATH="/usr/local/go/bin:/usr/local/go-bin:${PATH}"
+ENV GOPATH="/usr/local/go-pkg"
+ENV GOBIN="/usr/local/go-bin"
 
-# Install opencode
-RUN go install github.com/opencode-ai/opencode@latest
+# Install opencode (into shared path so non-root user can access it)
+RUN mkdir -p /usr/local/go-bin /usr/local/go-pkg && \
+    go install github.com/opencode-ai/opencode@latest
 
 # Install yq (latest stable)
 ARG YQ_VERSION=v4.44.6
@@ -53,12 +56,18 @@ COPY . /opt/orbit-rover
 RUN chmod +x /opt/orbit-rover/orbit && \
     ln -s /opt/orbit-rover/orbit /usr/local/bin/orbit
 
+# Create non-root user (claude-code requires non-root invocation)
+RUN useradd -m -s /bin/bash orbit
+
 # Default workspace for user projects
-RUN mkdir -p /workspace
+RUN mkdir -p /workspace && chown orbit:orbit /workspace
 WORKDIR /workspace
 
-# Verify installation
+# Verify installation (still as root, before switching user)
 RUN orbit doctor
+
+# Run as non-root user
+USER orbit
 
 ENTRYPOINT ["orbit"]
 CMD ["--help"]

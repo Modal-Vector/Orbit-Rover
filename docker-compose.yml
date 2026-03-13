@@ -3,7 +3,7 @@ services:
     build: .
     volumes:
       - .:/workspace
-      - orbit-claude-config:/root/.claude
+      - orbit-claude-config:/home/orbit/.claude
     env_file:
       - .env
     ports:

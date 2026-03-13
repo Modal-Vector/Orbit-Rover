@@ -1,6 +1,6 @@
 ---
 title: Running in Docker
-last_updated: 2026-03-12
+last_updated: 2026-03-13
 ---
 
 [← Back to Index](index.md)
@@ -63,8 +63,8 @@ Then run:
 claude login
 ```
 
-Credentials are stored in a named Docker volume (`orbit-claude-config`) and
-persist across container runs.
+Credentials are stored in a named Docker volume (`orbit-claude-config`,
+mounted at `/home/orbit/.claude`) and persist across container runs.
 
 ## Interactive Shell
 
@@ -123,6 +123,9 @@ docker compose run --rm orbit watch
 
 ## Tips
 
+- **The container runs as a non-root user (`orbit`).** Claude Code requires
+  non-root invocation, so the Dockerfile creates a dedicated user. All runtime
+  commands execute as this user automatically.
 - **Don't put API keys in the Dockerfile or image.** Always use the `.env` file.
 - **The `.orbit/` state directory** lives inside your mounted project, so state
   persists between container runs automatically.
