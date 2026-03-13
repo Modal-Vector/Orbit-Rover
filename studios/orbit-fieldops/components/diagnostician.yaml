@@ -7,9 +7,8 @@ preflight:
 delivers:
   - .orbit/plans/fieldops/tasks.json
 
-success:
-  when: file
-  path: .orbit/plans/fieldops/tasks.json
-
 orbits:
   max: 5
+  success:
+    when: file
+    condition: .orbit/plans/fieldops/tasks.json

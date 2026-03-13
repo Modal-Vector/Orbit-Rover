@@ -15,15 +15,14 @@ tools:
 delivers:
   - .orbit/plans/fieldops/tasks.json
 
-success:
-  when: bash
-  condition: |
-    jq -e '[.tasks[] | select(.done == false)] | length == 0' \
-      .orbit/plans/fieldops/tasks.json
-
 orbits:
   max: 20
   deadlock_threshold: 3
+  success:
+    when: bash
+    condition: |
+      jq -e '[.tasks[] | select(.done == false)] | length == 0' \
+        .orbit/plans/fieldops/tasks.json
 
 perspective: |
   You are stuck in the remediation loop. Try:

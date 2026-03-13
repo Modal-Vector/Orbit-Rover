@@ -8,15 +8,14 @@ preflight:
 delivers:
   - findings/
 
-success:
-  when: bash
-  condition: |
-    jq -e '[.tasks[] | select(.done == false)] | length == 0' \
-      .orbit/plans/research/tasks.json
-
 orbits:
   max: 200
   deadlock_threshold: 5
+  success:
+    when: bash
+    condition: |
+      jq -e '[.tasks[] | select(.done == false)] | length == 0' \
+        .orbit/plans/research/tasks.json
 
 perspective: |
   You are stuck researching. Try:

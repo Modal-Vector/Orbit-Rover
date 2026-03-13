@@ -4,9 +4,8 @@ prompt: prompts/source-decomposer.md
 delivers:
   - .orbit/plans/sentinel/tasks.json
 
-success:
-  when: file
-  path: .orbit/plans/sentinel/tasks.json
-
 orbits:
   max: 3
+  success:
+    when: file
+    condition: .orbit/plans/sentinel/tasks.json
