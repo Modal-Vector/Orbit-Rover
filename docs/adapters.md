@@ -1,6 +1,6 @@
 ---
 title: Adapters
-last_updated: 2026-03-10
+last_updated: 2026-03-13
 ---
 
 [← Back to Index](index.md)
@@ -31,12 +31,25 @@ Unknown aliases are passed through unchanged.
 ### Invocation
 
 ```bash
-claude -p <prompt> --output-format json --model <mapped-model> --max-turns <N>
+claude -p --dangerously-skip-permissions <prompt> \
+  --output-format json --model <mapped-model> --max-turns <N>
 ```
+
+**Full permissions mode:** The `--dangerously-skip-permissions` flag is always
+passed automatically. Claude Code runs in non-interactive mode (`-p`) where it
+cannot prompt for tool approval — without this flag, the agent cannot use
+built-in tools like Write, Edit, or Bash. This means the agent has unrestricted
+access to the filesystem and shell within its execution environment.
+
+**Run Orbit in a Docker container** to contain the blast radius of agent actions.
+The included [Dockerfile](docker.md) runs as a non-root user with your project
+mounted at `/workspace`, providing isolation from the host system. This is
+strongly advised for any unattended or production use.
 
 When `tools.policy` is `restricted` and tools are assigned:
 ```bash
-claude -p <prompt> --output-format json --model <model> --max-turns <N> \
+claude -p --dangerously-skip-permissions <prompt> \
+  --output-format json --model <model> --max-turns <N> \
   --allowedTools <tool1>,<tool2>,...
 ```
 

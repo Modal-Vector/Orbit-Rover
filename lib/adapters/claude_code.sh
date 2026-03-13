@@ -28,6 +28,7 @@ _claude_build_args() {
   mapped_model=$(_claude_model_map "$model")
 
   echo "-p"
+  echo "--dangerously-skip-permissions"
   echo "--output-format"
   echo "json"
   echo "--model"
@@ -55,7 +56,7 @@ adapter_claude_code() {
   local mapped_model
   mapped_model=$(_claude_model_map "$model")
 
-  args+=("-p" "--output-format" "json" "--model" "$mapped_model" "--max-turns" "$max_turns")
+  args+=("-p" "--dangerously-skip-permissions" "--output-format" "json" "--model" "$mapped_model" "--max-turns" "$max_turns")
 
   if [ "$tools_policy" = "restricted" ] && [ -n "$tools_assigned" ]; then
     args+=("--allowedTools" "$tools_assigned")

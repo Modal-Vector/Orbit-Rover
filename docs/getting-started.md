@@ -1,6 +1,6 @@
 ---
 title: Getting Started
-last_updated: 2026-03-11
+last_updated: 2026-03-13
 ---
 
 [← Back to Index](index.md)
@@ -37,6 +37,18 @@ last_updated: 2026-03-11
 |------------|---------|
 | inotifywait | Efficient file watching (falls back to polling) |
 | ollama | Local model inference |
+
+## Important: Agent Permissions
+
+Orbit invokes Claude Code in non-interactive mode with full permissions
+(`--dangerously-skip-permissions`). This is necessary for the agent to read,
+write, and execute within the orbit loop — but it means the agent has
+unrestricted access to the filesystem and shell.
+
+**Running Orbit inside a Docker container is strongly advised.** The included
+[Dockerfile](docker.md) provides an isolated environment with a non-root user,
+limiting the impact of any undesirable agent actions. This is especially
+important for unattended or scheduled runs.
 
 ## Verify Dependencies
 

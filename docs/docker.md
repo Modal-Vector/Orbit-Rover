@@ -5,12 +5,20 @@ last_updated: 2026-03-13
 
 [← Back to Index](index.md)
 
-# Running Orbit Rover in Docker
+# Running Orbit Rover in Docker (Recommended)
+
+**Running Orbit in a Docker container is the recommended deployment method.**
+Orbit invokes Claude Code with full permissions
+(`--dangerously-skip-permissions`) so the agent can operate autonomously within
+the orbit loop. This gives the agent unrestricted access to the filesystem and
+shell. A container provides isolation from the host system, limiting the blast
+radius of any undesirable agent actions — especially important for unattended,
+scheduled, or production runs.
 
 The included Dockerfile builds a self-contained image with Orbit Rover and all
 dependencies pre-installed (bash, jq, yq, python3, claude-code, opencode, gum,
-cron, inotify-tools). Your project directory is mounted into the container at
-runtime.
+cron, inotify-tools). It runs as a non-root user, and your project directory is
+mounted into the container at runtime.
 
 A `docker-compose.yml` is provided so you don't need to repeat volume mounts,
 env files, and port mappings on every command.
