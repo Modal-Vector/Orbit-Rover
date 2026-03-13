@@ -19,7 +19,8 @@ source of truth between orbits and between sessions. It should be gitignored.
 │
 ├── state/
 │   └── {component}/
-│       └── checkpoint.md               # Latest checkpoint for component
+│       ├── checkpoint.md               # Latest checkpoint for component
+│       └── progress.md                 # Append-only operational log (per run)
 │
 ├── runs/
 │   └── {run-id}/

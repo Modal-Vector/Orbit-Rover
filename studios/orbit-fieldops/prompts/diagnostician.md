@@ -5,6 +5,9 @@ You are in a loop. You will not exit this loop until the promise flag is written
 Prior progress:
 {orbit.checkpoint}
 
+What has happened so far:
+{orbit.progress}
+
 ## Task
 
 The preflight script has extracted anomaly data from system logs. Read the structured anomaly report at `logs/anomaly-report.json`.
@@ -50,6 +53,16 @@ Pattern observation for future anomaly detection
 ```
 
 ### Progress
+
+Emit a progress note (~200 words) recording what happened this orbit:
+
+```xml
+<progress>
+- Done: what was completed
+- Skipped: what was blocked and why
+- Failed: what was tried and didn't work
+</progress>
+```
 
 Before exiting, emit a checkpoint so the next orbit knows where you left off:
 

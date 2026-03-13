@@ -14,6 +14,7 @@ Missing variables are left as literal `{name}` text.
 |----------|---------|--------|
 | `{orbit.n}` | Current orbit number (1-based) | Runtime |
 | `{orbit.checkpoint}` | Progress note from previous orbit | `.orbit/state/{component}/checkpoint.md` |
+| `{orbit.progress}` | Accumulated operational log from this run | `.orbit/state/{component}/progress.md` |
 | `{orbit.max}` | Maximum orbits configured | Component config |
 | `{decisions.summary}` | Active decisions for current scope | Learning system |
 | `{insights}` | Relevant insights for current scope | Learning system |
@@ -100,7 +101,40 @@ Injected into the next orbit via `{orbit.checkpoint}`. Only the latest is kept.
 If the agent doesn't emit `<checkpoint>`, the engine takes the last 500 words
 of the raw output. Either way, capped at 500 words.
 
-**How to instruct the agent:** Don't just show the tag — tell the agent *when*
+### Progress Notes
+
+Append-only operational log of what happened across orbits in this run. Extracted
+from `<progress>` tags and appended to `.orbit/state/{component}/progress.md`
+with orbit number headers. Injected into the next orbit via `{orbit.progress}`.
+The file is cleared at the start of each component run.
+
+Unlike checkpoint, progress has **no fallback extraction** — if the agent doesn't
+emit `<progress>`, nothing is appended. ~200 word soft limit per entry.
+
+```xml
+<progress>
+- Done: analysed source T-003, wrote findings
+- Skipped: T-004 source unavailable (404)
+- Failed: distillation script timed out on T-005
+</progress>
+```
+
+**How to instruct the agent:** Place progress emission instructions in the
+"Progress" section alongside the checkpoint:
+
+```markdown
+### Progress
+
+Emit a progress note (~200 words) recording what happened this orbit:
+
+<progress>
+- Done: what was completed
+- Skipped: what was blocked and why
+- Failed: what was tried and didn't work
+</progress>
+```
+
+**How to instruct the agent (checkpoint):** Don't just show the tag — tell the agent *when*
 to emit it and what to include. Place this at the end of the prompt in a
 "Progress" section:
 

@@ -26,7 +26,8 @@ flowchart TD
     C --> D[3. Run preflight hooks]
     D --> E[4. Invoke adapter — fresh subprocess]
     E --> F[5. Extract checkpoint → save to disk]
-    F --> G[6. Parse learning tags → JSONL stores]
+    F --> F2[5b. Extract progress → append to log]
+    F2 --> G[6. Parse learning tags → JSONL stores]
     G --> H[7. Hash delivers — SHA256 content]
     H --> I{8. Success condition met?}
     I -- Yes --> K[10. Run postflight hooks]
@@ -55,6 +56,7 @@ Steps in detail:
 3. **Run preflight hooks** — scripts listed in component config
 4. **Invoke adapter** — spawns agent as fresh subprocess
 5. **Extract checkpoint** from agent output and save to disk
+5b. **Extract progress** from `<progress>` tags and append to progress log
 6. **Parse learning tags** — route insights, decisions, feedback to stores
 7. **Hash delivers** — SHA256 of deliverable file contents
 8. **Check success condition** — evaluate file existence or bash expression
@@ -78,6 +80,32 @@ stateless, the checkpoint is the only mechanism for passing context forward.
 
 **Template injection:** The checkpoint is injected into the prompt template as
 `{orbit.checkpoint}`, giving the agent its own previous notes.
+
+## Progress Notes
+
+Progress notes provide an append-only operational log across orbits within a
+single run. Unlike checkpoints (which overwrite each orbit), progress
+accumulates — orbit 10 can see what orbits 1-9 did, what failed, and what was
+skipped.
+
+**Extraction rules:**
+- If agent output contains `<progress>...</progress>`, that content is appended
+- No fallback — if the agent doesn't emit a `<progress>` tag, nothing is appended
+- ~200 word soft limit per entry (prompt-level guidance, no engine trimming)
+
+**Storage:** `.orbit/state/{component}/progress.md` — append-only within a run.
+Each entry is prefixed with an `## Orbit N` header. The file is cleared at the
+start of each component run (fresh per run, not carried across runs).
+
+**Template injection:** The accumulated progress is injected into the prompt
+template as `{orbit.progress}`, giving the agent the full operational history
+from this run.
+
+**Progress vs Checkpoint:**
+- **Checkpoint** (`{orbit.checkpoint}`) — scratchpad for the next orbit. "Where
+  to pick up." Overwritten each orbit.
+- **Progress** (`{orbit.progress}`) — operational log. "What happened so far."
+  Append-only across orbits.
 
 ## Success Conditions
 
@@ -168,6 +196,7 @@ Variables available in prompt templates:
 | `{orbit.n}` | Current orbit number (1-indexed) |
 | `{orbit.max}` | Orbit ceiling |
 | `{orbit.checkpoint}` | Previous orbit's checkpoint text |
+| `{orbit.progress}` | Accumulated operational log from this run |
 | `{component.name}` | Component name |
 
 Variables are substituted using `{key}` syntax. Missing variables are left

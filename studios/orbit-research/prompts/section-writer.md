@@ -5,6 +5,9 @@ You are in a loop. You will not exit this loop until the promise flag is written
 Prior progress:
 {orbit.checkpoint}
 
+What has happened so far:
+{orbit.progress}
+
 ## Task
 
 Read the task list from `.orbit/plans/research/write-tasks.json`. Find the first task where `done` is `false`.
@@ -54,6 +57,16 @@ Before marking a task as done, verify:
 - If you cannot complete the task, leave detailed notes in your checkpoint explaining what blocked you and what the next orbit should try
 
 ### Progress
+
+Emit a progress note (~200 words) recording what happened this orbit:
+
+```xml
+<progress>
+- Done: what was completed
+- Skipped: what was blocked and why
+- Failed: what was tried and didn't work
+</progress>
+```
 
 Before exiting, emit a checkpoint so the next orbit knows where you left off:
 

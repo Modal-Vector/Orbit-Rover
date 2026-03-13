@@ -295,6 +295,13 @@ after each worker completion the engine checks `orbit_exit.condition`. If false,
 it loops back to the named stage and runs it again. `max_orbits` is a ceiling
 across the entire outer loop, not per inner cycle.
 
+**Progress notes:** agent output may contain `<progress>...</progress>` tags.
+Content is appended (not overwritten) to `.orbit/state/{component}/progress.md`
+with an orbit number header. The accumulated progress is injected into prompts as
+`{orbit.progress}`. ~200 word soft limit per entry. No engine trimming. The
+progress file is cleared at the start of each component run. No fallback
+extraction — if no `<progress>` tag is found, nothing is appended.
+
 **Manual gate timeout:** `timeout: 72h` means 72 hours from gate open time, not
 from mission start. Store `timeout_at` as ISO-8601 in `prompt.json`. The polling
 loop compares `date -u +%s` to the parsed `timeout_at` epoch on every iteration.

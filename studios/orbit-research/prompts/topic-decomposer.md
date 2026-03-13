@@ -5,6 +5,9 @@ You are in a loop. You will not exit this loop until the promise flag is written
 Prior progress:
 {orbit.checkpoint}
 
+What has happened so far:
+{orbit.progress}
+
 ## Task
 
 Read `.orbit/plans/research/tasks.json`. Find the next incomplete topic (first where `done` is `false`).
@@ -47,6 +50,16 @@ A well-sized atomic task:
 **Signs a task is too small:** the expected findings would be a single sentence, or the task is just "confirm that X exists" with no analysis required.
 
 ### Progress
+
+Emit a progress note (~200 words) recording what happened this orbit:
+
+```xml
+<progress>
+- Done: what was completed
+- Skipped: what was blocked and why
+- Failed: what was tried and didn't work
+</progress>
+```
 
 Before exiting, emit a checkpoint so the next orbit knows where you left off:
 

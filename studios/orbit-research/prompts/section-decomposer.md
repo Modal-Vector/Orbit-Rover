@@ -5,6 +5,9 @@ You are in a loop. You will not exit this loop until the promise flag is written
 Prior progress:
 {orbit.checkpoint}
 
+What has happened so far:
+{orbit.progress}
+
 ## Task
 
 Read the completed research findings in `findings/`. Decompose the findings into sections for sequential writing.
@@ -51,6 +54,16 @@ Each task's `acceptance_criteria` field directly guides the section-writer. Weak
 - **Quality-aware**: Include at least one criterion about synthesis or analysis, not just coverage. E.g., "Identifies which pattern is best suited for stateless workloads and explains why."
 
 ### Progress
+
+Emit a progress note (~200 words) recording what happened this orbit:
+
+```xml
+<progress>
+- Done: what was completed
+- Skipped: what was blocked and why
+- Failed: what was tried and didn't work
+</progress>
+```
 
 Before exiting, emit a checkpoint so the next orbit knows where you left off:
 

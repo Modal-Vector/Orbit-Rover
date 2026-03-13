@@ -5,6 +5,9 @@ You are in a loop. You will not exit this loop until the promise flag is written
 Prior progress:
 {orbit.checkpoint}
 
+What has happened so far:
+{orbit.progress}
+
 ## Task
 
 Read the task list from `.orbit/plans/fieldops/tasks.json`. Find the first task where `done` is `false`.
@@ -40,6 +43,16 @@ reason: Why this tool is needed for the current remediation
 - Do NOT attempt to use tools outside your assigned set
 
 ### Progress
+
+Emit a progress note (~200 words) recording what happened this orbit:
+
+```xml
+<progress>
+- Done: what was completed
+- Skipped: what was blocked and why
+- Failed: what was tried and didn't work
+</progress>
+```
 
 Before exiting, emit a checkpoint so the next orbit knows where you left off:
 

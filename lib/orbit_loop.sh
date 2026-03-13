@@ -167,7 +167,11 @@ orbit_run_component() {
   # Setup state directory
   local comp_state_dir="${state_dir}/state/${component}"
   local checkpoint_file="${comp_state_dir}/checkpoint.md"
+  local progress_file="${comp_state_dir}/progress.md"
   mkdir -p "$comp_state_dir"
+
+  # Clear progress file for fresh run
+  : > "$progress_file"
   mkdir -p "${state_dir}/learning/insights"
   mkdir -p "${state_dir}/learning/decisions"
   mkdir -p "${state_dir}/learning/feedback"
@@ -207,11 +211,18 @@ orbit_run_component() {
       checkpoint=$(cat "$checkpoint_file")
     fi
 
+    # Load accumulated progress from this run
+    local progress=""
+    if [ -f "$progress_file" ]; then
+      progress=$(cat "$progress_file")
+    fi
+
     # Render template
     local rendered_prompt
     rendered_prompt=$(render_template "$prompt" \
       "orbit.n=$orbit_count" \
       "orbit.checkpoint=$checkpoint" \
+      "orbit.progress=$progress" \
       "orbit.max=$orbits_max" \
       "component.name=$component")
 
@@ -284,6 +295,18 @@ ${rendered_prompt}"
     new_checkpoint=$(extract_checkpoint "$output")
     if [ -n "$new_checkpoint" ]; then
       _atomic_write "$checkpoint_file" "$new_checkpoint"
+    fi
+
+    # Extract and append progress notes
+    local new_progress
+    new_progress=$(extract_progress "$output")
+    if [ -n "$new_progress" ]; then
+      {
+        echo ""
+        echo "## Orbit ${orbit_count}"
+        echo ""
+        echo "$new_progress"
+      } >> "$progress_file"
     fi
 
     # Run postflight hooks

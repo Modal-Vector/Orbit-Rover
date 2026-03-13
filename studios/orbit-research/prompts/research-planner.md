@@ -5,6 +5,9 @@ You are in a loop. You will not exit this loop until the promise flag is written
 Prior progress:
 {orbit.checkpoint}
 
+What has happened so far:
+{orbit.progress}
+
 ## Task
 
 Read the research brief at `brief.md`. Create a structured research plan with one task per topic area.
@@ -42,6 +45,16 @@ Write to `.orbit/plans/research/tasks.json`:
 - **Prefer building topics**: Order topics so later ones build on earlier findings where possible. A topic that compares approaches should come after the topics that investigate each approach individually.
 
 ### Progress
+
+Emit a progress note (~200 words) recording what happened this orbit:
+
+```xml
+<progress>
+- Done: what was completed
+- Skipped: what was blocked and why
+- Failed: what was tried and didn't work
+</progress>
+```
 
 Before exiting, emit a checkpoint so the next orbit knows where you left off:
 

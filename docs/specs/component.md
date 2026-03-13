@@ -146,6 +146,13 @@ orbits:
 | `tools.assigned` | list | — | Tool names for this component |
 | `tools.policy` | string | `standard` | `standard` or `restricted` |
 
+## Prompt Template Variables
+
+In addition to `{orbit.n}`, `{orbit.checkpoint}`, `{orbit.max}`, and
+`{component.name}`, prompts can use `{orbit.progress}` — the accumulated
+operational log from the current run. See `docs/specs/prompt.md` for the full
+variable list and `<progress>` tag documentation.
+
 ## Common Mistakes
 
 **`success:` at top level instead of under `orbits:`**

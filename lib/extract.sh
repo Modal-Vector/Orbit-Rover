@@ -86,6 +86,14 @@ extract_tag_attr() {
   '
 }
 
+# Extract progress note from agent output.
+# Returns content of <progress> tag, or empty string if not found.
+# No fallback extraction — progress must be explicit.
+extract_progress() {
+  local output="$1"
+  extract_tag "$output" "progress" || true
+}
+
 # Extract checkpoint from agent output.
 # If <checkpoint> tag exists, use its content. Otherwise last 500 words.
 # Cap at 500 words either way.
