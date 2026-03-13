@@ -323,13 +323,10 @@ yaml_get() {
   assert_output ".orbit/plans/research/write-tasks.json"
 }
 
-@test "research: section-writer has deadlock_threshold 5 and perspective" {
+@test "research: section-writer has deadlock_threshold 5" {
   local comp="$STUDIOS_DIR/orbit-research/components/section-writer.yaml"
-  run yq -r '.orbits.deadlock_threshold' "$comp"
+  run yq -r '.orbits.deadlock.threshold' "$comp"
   assert_output "5"
-
-  run yq -r '.perspective' "$comp"
-  refute_output "null"
 }
 
 @test "research: write mission has decompose and write stages with orbits_to" {

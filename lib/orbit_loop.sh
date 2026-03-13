@@ -187,6 +187,12 @@ orbit_run_component() {
   while true; do
     orbit_count=$((orbit_count + 1))
 
+    # Check for stop signal (mission context only)
+    if [[ -n "$run_id" ]] && stop_is_requested "$run_id" "$state_dir"; then
+      orbit_info "Stop signal received — finishing orbit for '$component'"
+      return 3
+    fi
+
     # Check ceiling
     if [ "$orbit_count" -gt "$orbits_max" ]; then
       orbit_error "Orbit ceiling reached ($orbits_max) for component '$component'"

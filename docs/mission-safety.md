@@ -1,14 +1,93 @@
 ---
 title: Mission Safety
-last_updated: 2026-03-11
+last_updated: 2026-03-13
 ---
 
 [← Back to Index](index.md)
 
 # Mission Safety
 
-Mission safety encompasses four mechanisms that protect mission execution:
-flight rules, manual approval gates, waypoints for resume, and retry logic.
+Mission safety encompasses five mechanisms that protect mission execution:
+graceful stop, flight rules, manual approval gates, waypoints for resume, and
+retry logic.
+
+## Graceful Stop
+
+**Source:** `lib/stop.sh`, `cmd/stop.sh`
+
+The stop command provides a clean way to halt a running mission from another
+terminal without killing the process. It uses file-based signaling, consistent
+with the "disk is the only memory" invariant.
+
+### Usage
+
+```bash
+# From another terminal while a mission is running:
+orbit stop my-mission
+
+# Or by run ID:
+orbit stop run-a1b2c3d4e5f6
+```
+
+### How It Works
+
+1. `orbit stop` writes a signal file at `.orbit/runs/{run_id}/stop.json`
+2. The orbit loop checks for this file at the **top of each orbit** (before the
+   ceiling check) and at the **top of each stage** (before starting the next stage)
+3. The current orbit always completes — the agent is never interrupted mid-work
+4. A checkpoint is saved and a waypoint is recorded at the current stage
+5. The mission status is set to `"stopped"` and the signal file is cleared
+
+### Stop vs Other Exits
+
+| Exit Mechanism | Status | Exit Code | Resumable |
+|----------------|--------|-----------|-----------|
+| Success (promise flag) | `complete` | 0 | N/A |
+| Orbit ceiling | `failed` | 1 | Yes |
+| Flight rule abort | `aborted` | 2 | Yes |
+| **Graceful stop** | **`stopped`** | **3** | **Yes** |
+| Manual gate rejection | `rejected` | 1 | No |
+| Deadlock abort | `failed` | 1 | Yes |
+
+### Resume After Stop
+
+A stopped mission is fully resumable:
+
+```bash
+orbit launch my-mission --resume
+```
+
+The waypoint saved at stop time ensures execution picks up at the correct stage.
+
+### Signal File
+
+```json
+{
+  "run_id": "run-a1b2c3d4e5f6",
+  "requested_at": "2026-03-13T10:30:00Z"
+}
+```
+
+Stored at: `.orbit/runs/{run_id}/stop.json`
+
+### Status Display
+
+While a stop is pending but the current orbit is still running, `orbit status`
+shows the mission as `stop-requested`:
+
+```bash
+orbit status my-mission
+# Status: stop-requested
+```
+
+### Functions
+
+| Function | Description |
+|----------|-------------|
+| `stop_request()` | Write stop signal for a run |
+| `stop_is_requested()` | Check if stop signal exists |
+| `stop_find_running_run()` | Find run ID for a running mission by name |
+| `stop_clear()` | Remove stop signal after acknowledgment |
 
 ## Flight Rules
 

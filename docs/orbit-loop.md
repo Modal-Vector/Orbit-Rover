@@ -1,6 +1,6 @@
 ---
 title: Orbit Loop
-last_updated: 2026-03-11
+last_updated: 2026-03-13
 ---
 
 [← Back to Index](index.md)
@@ -19,7 +19,9 @@ Each call to `orbit_run_component()` runs the following loop:
 
 ```mermaid
 flowchart TD
-    A([Start orbit_run_component]) --> B[1. Load checkpoint from disk]
+    A([Start orbit_run_component]) --> STOP{0. Stop signal?}
+    STOP -- Yes --> STOP_EXIT([Exit — stopped, code 3])
+    STOP -- No --> B[1. Load checkpoint from disk]
     B --> C[2. Render prompt template]
     C --> D[3. Run preflight hooks]
     D --> E[4. Invoke adapter — fresh subprocess]
@@ -33,12 +35,16 @@ flowchart TD
     J -- "Stalls < threshold" --> M{Orbit ceiling?}
     J -- "Stalls ≥ threshold" --> N[Inject perspective]
     N --> M
-    M -- No --> B
+    M -- No --> STOP2{Stop signal?}
+    STOP2 -- Yes --> STOP_EXIT
+    STOP2 -- No --> B
     M -- Yes --> O([Exit — ceiling hit])
 ```
 
 Steps in detail:
 
+0. **Check stop signal** — if `stop.json` exists for the current run, exit
+   immediately with code 3. Only applies in mission context (`--run-id` set).
 1. **Load checkpoint** from `.orbit/state/{component}/checkpoint.md`
 2. **Render prompt** via `render_template()` with variables:
    - `{orbit.n}` — current orbit number
@@ -122,6 +128,17 @@ perspective injection.
 
 **`abort`** — Terminates the orbit loop immediately. The component exits with
 a failure status.
+
+## Stop Signal
+
+When running inside a mission (`--run-id` is set), the orbit loop checks for a
+stop signal file at `.orbit/runs/{run_id}/stop.json` at the top of each
+iteration. If the file exists, the loop exits with code 3 without starting a new
+orbit. The current orbit always completes before the check fires, ensuring the
+agent is never interrupted mid-work.
+
+See [Mission Safety — Graceful Stop](mission-safety.md#graceful-stop) for the
+full lifecycle and CLI usage.
 
 ## Promise Flag
 

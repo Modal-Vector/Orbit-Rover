@@ -86,6 +86,16 @@ _status_mission() {
     return 0
   fi
 
+  # Show run status — override to "stop-requested" if stop.json exists while still running
+  local run_status
+  run_status=$(jq -r '.status // "unknown"' "${run_dir}mission.json" 2>/dev/null)
+  local run_id_display
+  run_id_display=$(basename "$run_dir")
+  if [[ "$run_status" == "running" ]] && [[ -f "${run_dir}stop.json" ]]; then
+    run_status="stop-requested"
+  fi
+  echo "Status: ${run_status}"
+
   local stages_dir="${run_dir}stages"
   if [[ ! -d "$stages_dir" ]]; then
     echo "No stage data found."

@@ -143,6 +143,21 @@ cmd_launch() {
     local stage_type
     stage_type=$(echo "$stage_json" | jq -r '.type // empty')
 
+    # Check for stop signal before starting next stage
+    if stop_is_requested "$run_id" "$state_dir"; then
+      _write_run_state "$run_dir" "stopped"
+      stop_clear "$run_id" "$state_dir"
+      # Save waypoint at previous stage if there was one
+      if [[ $i -gt 0 ]]; then
+        local prev_idx="${sorted_stages[$((i - 1))]}"
+        local prev_stage
+        prev_stage=$(echo "${ORBIT_MISSION_STAGES[$prev_idx]}" | jq -r '.name')
+        waypoint_save "$prev_stage" "$mission_name" "$run_id" "$state_dir" 2>/dev/null || true
+      fi
+      echo "Mission '${mission_name}' stopped before stage '${stage_name}'."
+      return 0
+    fi
+
     # Write stage state: running
     _write_stage_state "$run_dir" "$stage_name" "running" ""
 
@@ -187,10 +202,30 @@ cmd_launch() {
     orbits_to=$(echo "$stage_json" | jq -r '.orbits_to // empty')
 
     if [[ -n "$orbits_to" ]]; then
-      _execute_orbits_to_loop "$stage_json" "$project_dir" "$state_dir" "$run_dir" total_orbits
+      _execute_orbits_to_loop "$stage_json" "$project_dir" "$state_dir" "$run_dir" total_orbits "$run_id" || {
+        local ot_exit=$?
+        if [[ $ot_exit -eq 3 ]]; then
+          _write_stage_state "$run_dir" "$stage_name" "stopped" "operator stop"
+          waypoint_save "$stage_name" "$mission_name" "$run_id" "$state_dir"
+          _write_run_state "$run_dir" "stopped"
+          stop_clear "$run_id" "$state_dir"
+          echo "Mission '${mission_name}' stopped at stage '${stage_name}'."
+          return 0
+        fi
+        return $ot_exit
+      }
     else
       echo "Executing stage '$stage_name' (component: $comp_name)"
-      _execute_stage_component "$stage_json" "$project_dir" "$state_dir" || {
+      _execute_stage_component "$stage_json" "$project_dir" "$state_dir" "$run_id" || {
+        local stage_exit=$?
+        if [[ $stage_exit -eq 3 ]]; then
+          _write_stage_state "$run_dir" "$stage_name" "stopped" "operator stop"
+          waypoint_save "$stage_name" "$mission_name" "$run_id" "$state_dir"
+          _write_run_state "$run_dir" "stopped"
+          stop_clear "$run_id" "$state_dir"
+          echo "Mission '${mission_name}' stopped at stage '${stage_name}'."
+          return 0
+        fi
         _write_stage_state "$run_dir" "$stage_name" "failed" ""
         echo "Stage '$stage_name' failed." >&2
         _write_run_state "$run_dir" "failed"
@@ -394,6 +429,7 @@ _execute_orbits_to_loop() {
   local state_dir="$3"
   local run_dir="$4"
   local -n _total_orbits=$5
+  local run_id="${6:-}"
 
   local stage_name orbits_to max_orbits
   stage_name=$(echo "$stage_json" | jq -r '.name')
@@ -408,6 +444,11 @@ _execute_orbits_to_loop() {
 
   local loop_count=0
   while true; do
+    # Check for stop signal
+    if [[ -n "$run_id" ]] && stop_is_requested "$run_id" "$state_dir"; then
+      return 3
+    fi
+
     loop_count=$((loop_count + 1))
     _total_orbits=$((_total_orbits + 1))
 
@@ -417,7 +458,13 @@ _execute_orbits_to_loop() {
     fi
 
     # Execute the stage component
-    _execute_stage_component "$stage_json" "$project_dir" "$state_dir" || true
+    _execute_stage_component "$stage_json" "$project_dir" "$state_dir" "$run_id" || {
+      local comp_exit=$?
+      if [[ $comp_exit -eq 3 ]]; then
+        return 3
+      fi
+      true
+    }
 
     # Check exit condition
     if _check_orbit_exit "$exit_when" "$exit_condition"; then
@@ -445,6 +492,7 @@ _execute_stage_component() {
   local stage_json="$1"
   local project_dir="$2"
   local state_dir="$3"
+  local run_id="${4:-}"
 
   local comp_name
   comp_name=$(echo "$stage_json" | jq -r '.component // empty')
@@ -465,6 +513,7 @@ _execute_stage_component() {
 
   local args=()
   _build_component_args args "$comp_name" "$state_dir"
+  [[ -n "$run_id" ]] && args+=(--run-id "$run_id")
   orbit_run_component "${args[@]}"
 }
 

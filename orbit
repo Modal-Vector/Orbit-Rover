@@ -43,6 +43,7 @@ source "$ORBIT_LIB_DIR/manual_gate.sh"
 source "$ORBIT_LIB_DIR/flight_rules.sh"
 source "$ORBIT_LIB_DIR/waypoints.sh"
 source "$ORBIT_LIB_DIR/retry.sh"
+source "$ORBIT_LIB_DIR/stop.sh"
 
 # Source all cmd files
 for cmd_file in "$ORBIT_ROOT"/cmd/*.sh; do
@@ -90,6 +91,7 @@ Commands:
   doctor                   Check system dependencies
   watch                    Start watch mode (reactive sensors)
   launch <mission>         Launch a mission
+  stop <mission|run-id>    Request graceful mission stop
   run <target>             Run a component or module
   trigger <name>           Manually trigger a component/mission
   status [mission]         Show status
@@ -161,6 +163,7 @@ main() {
     doctor)     cmd_doctor "$@" ;;
     watch)      cmd_watch "$@" ;;
     launch)     cmd_launch "$@" ;;
+    stop)       cmd_stop "$@" ;;
     run)        cmd_run "$@" ;;
     trigger)    cmd_trigger "$@" ;;
     status)     cmd_status "$@" ;;

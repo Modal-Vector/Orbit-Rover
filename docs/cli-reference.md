@@ -1,6 +1,6 @@
 ---
 title: CLI Reference
-last_updated: 2026-03-11
+last_updated: 2026-03-13
 ---
 
 [← Back to Index](index.md)
@@ -130,6 +130,28 @@ dependencies are detected and rejected. Manual gate stages pause for human
 approval. The `--resume` flag finds the last completed waypoint and restarts
 from the next stage.
 
+## orbit stop
+
+Requests a graceful stop of a running mission.
+
+```bash
+# Stop by mission name
+orbit stop <mission-name>
+
+# Stop by run ID directly
+orbit stop <run-id>
+```
+
+The stop command writes a signal file (`.orbit/runs/{run_id}/stop.json`) that
+the running mission checks between orbits and between stages. The current orbit
+always completes before the mission exits, ensuring a clean checkpoint is saved.
+
+After stopping, the mission status is set to `"stopped"` and a waypoint is saved
+at the current stage, making the mission resumable with `orbit launch <mission> --resume`.
+
+If the argument starts with `run-`, it is treated as a run ID directly. Otherwise
+Rover scans for a running mission matching the given name.
+
 ## orbit watch
 
 Starts reactive sensor monitoring.
@@ -169,7 +191,9 @@ orbit status <mission-name>
 ```
 
 Overall status shows: last run ID, active sensor count, pending gates, pending
-tool requests. Mission status shows each stage with its completion state.
+tool requests. Mission status shows each stage with its completion state. If a
+stop has been requested but the mission is still running, the status displays as
+`stop-requested`.
 
 ## orbit registry
 

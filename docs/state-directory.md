@@ -1,6 +1,6 @@
 ---
 title: State Directory
-last_updated: 2026-03-10
+last_updated: 2026-03-13
 ---
 
 [← Back to Index](index.md)
@@ -25,6 +25,9 @@ source of truth between orbits and between sessions. It should be gitignored.
 │   └── {run-id}/
 │       ├── mission.json                # Run metadata (mission, status, timestamps)
 │       ├── metrics.json                # Runtime metrics (tokens, cost, duration)
+│       ├── stop.json                   # Stop signal (present only while stop is pending)
+│       ├── stages/
+│       │   └── {stage-name}.json       # Stage execution state
 │       └── waypoints/
 │           └── {stage-name}.json       # Stage completion markers
 │
@@ -116,7 +119,7 @@ source of truth between orbits and between sessions. It should be gitignored.
 }
 ```
 
-Status values: `running`, `completed`, `rejected`, `aborted`, `failed`.
+Status values: `running`, `complete`, `stopped`, `rejected`, `aborted`, `failed`.
 
 ### metrics.json
 
@@ -128,6 +131,18 @@ Status values: `running`, `completed`, `rejected`, `aborted`, `failed`.
   "orbit_count": 15
 }
 ```
+
+### stop.json (stop signal)
+
+```json
+{
+  "run_id": "run-a1b2c3d4e5f6",
+  "requested_at": "2026-03-13T10:30:00Z"
+}
+```
+
+Written by `orbit stop`, checked by the orbit loop and stage loop. Removed after
+the mission acknowledges the stop and exits cleanly.
 
 ### active.json (cascade tracking)
 

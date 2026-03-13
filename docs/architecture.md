@@ -1,6 +1,6 @@
 ---
 title: Architecture
-last_updated: 2026-03-11
+last_updated: 2026-03-13
 ---
 
 [← Back to Index](index.md)
@@ -45,7 +45,9 @@ The Ralph loop is the core execution pattern:
 
 ```mermaid
 flowchart TD
-    START([orbit_run_component]) --> LOAD[Load checkpoint from disk]
+    START([orbit_run_component]) --> STOP{Stop signal?}
+    STOP -- Yes --> STOPPED([Exit — stopped])
+    STOP -- No --> LOAD[Load checkpoint from disk]
     LOAD --> RENDER[Render prompt template]
     RENDER --> PREFLIGHT[Run preflight hooks]
     PREFLIGHT --> INVOKE[Invoke adapter — fresh subprocess]
@@ -210,5 +212,14 @@ echo -n "${timestamp}${content}${RANDOM}" | sha256sum | head -c 12
 
 Prefixed by type: `fb-` (feedback), `ins-` (insight), `dec-` (decision),
 `req-` (tool request), `run-` (run).
+
+## Exit Codes
+
+| Code | Meaning |
+|------|---------|
+| 0 | Success — promise flag satisfied |
+| 1 | Failure — ceiling reached, deadlock abort, or stage failure |
+| 2 | Flight rule abort |
+| 3 | Graceful stop — operator requested via `orbit stop` |
 
 [← Back to Index](index.md)
