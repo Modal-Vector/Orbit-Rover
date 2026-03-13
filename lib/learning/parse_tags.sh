@@ -2,6 +2,19 @@
 set -euo pipefail
 
 # parse_tags.sh — Route extracted XML learning tags to the appropriate stores
+#
+# Routing matrix — each XML tag type maps to a specific learning store:
+#   <insight target="...">    → insights JSONL (scope-routed by target)
+#   <decision target="...">   → decisions JSONL (scope-routed, with lifecycle)
+#   <feedback>                → feedback JSONL (component-scoped)
+#   <vote id="..." weight=""> → feedback votes (updates existing entry)
+#
+# Target parsing: the "target" attribute determines scope routing:
+#   "project"           → project scope
+#   "mission"           → current mission scope
+#   "mission:NAME"      → named mission scope
+#   "component:NAME"    → named component scope (validated against registry)
+#   "run"               → current run scope
 
 ORBIT_LIB_DIR="${ORBIT_LIB_DIR:-$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)}"
 

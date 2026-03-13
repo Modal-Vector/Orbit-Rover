@@ -2,14 +2,23 @@
 set -euo pipefail
 
 # manual_gate.sh — Manual approval gates for mission safety
-# File-based polling mechanism: write prompt.json, poll for response.json
+#
+# File-based polling mechanism: the gate writes prompt.json (with options,
+# timeout_at, default) and then polls for response.json to appear. An
+# external actor (human via `orbit approve/reject`) writes response.json.
+#
+# Timeout calculation: timeout_at is computed as ISO-8601 from gate open
+# time (not mission start). The polling loop compares `date -u +%s` to
+# the stored timeout_at epoch on every iteration. Platform fallbacks for
+# epoch conversion: GNU date -d, macOS date -r, python3 datetime.
 
 # Sleep helper with sub-second fallback
 _sleep_poll() {
   sleep 0.5 2>/dev/null || sleep 1
 }
 
-# Cross-platform ISO-8601 date parsing to epoch seconds
+# Cross-platform ISO-8601 date parsing to epoch seconds.
+# Three-tier fallback: GNU date -d → macOS date -j -f → python3 datetime.
 _iso_to_epoch() {
   local iso="$1"
   # Try GNU date first

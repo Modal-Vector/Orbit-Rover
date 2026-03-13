@@ -94,7 +94,14 @@ sensor_interval_stop() {
   fi
 }
 
-# Register a cron entry for a component
+# --- Cron Registration ---
+# Tagged-comment strategy: each cron entry ends with "# orbit-rover:{name}"
+# on the same line. This tag is the sole mechanism for identifying and
+# cleaning up Rover-managed entries. Registration filters out any existing
+# entry for this component (by tag), then appends the new entry.
+# Unregistration removes lines matching the tag without disturbing
+# user-owned crontab entries.
+#
 # Usage: sensor_cron_register component_name cron_expr project_dir state_dir
 sensor_cron_register() {
   local component="$1"

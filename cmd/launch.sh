@@ -71,7 +71,9 @@ cmd_launch() {
     return 1
   fi
 
-  # Topological sort
+  # Topological sort — determines execution order from depends_on edges.
+  # Uses Kahn's algorithm: repeatedly select stages whose dependencies are
+  # all satisfied. Detects cycles by aborting if a full pass adds no stages.
   local sorted_stages=()
   _topological_sort sorted_stages
 
@@ -126,7 +128,11 @@ cmd_launch() {
 
   echo "Launching mission '${mission_name}' (run: ${run_id})"
 
-  # Execute stages in sorted order
+  # --- Stage Execution Loop ---
+  # Walks sorted_stages in topological order, executing each component.
+  # For stages with orbits_to, delegates to the outer/inner loop pattern.
+  # After each stage: saves waypoint (if flagged), updates metrics, and
+  # evaluates flight rules. A flight rule abort (exit 2) halts the mission.
   local total_orbits=0
   for ((i = start_index; i < ${#sorted_stages[@]}; i++)); do
     local stage_idx="${sorted_stages[$i]}"
@@ -207,7 +213,8 @@ cmd_launch() {
     total_orbits=$((total_orbits + 1))
     metrics_update "$run_id" "$total_orbits" "$start_epoch" "$state_dir"
 
-    # Check flight rules after each stage
+    # Flight rules: evaluate metric-based constraints after each stage.
+    # A "warn" result logs but continues; an "abort" (exit 2) halts the mission.
     if [[ "$flight_rules_json" != "[]" ]]; then
       local current_metrics
       current_metrics=$(metrics_read "$run_id" "$state_dir")
@@ -245,8 +252,12 @@ _parse_timeout_hours() {
 }
 
 # --------------------------------------------------------------------------
-# Topological sort — iterative, detects cycles
+# Topological sort — Kahn's algorithm, iterative, detects cycles
 # --------------------------------------------------------------------------
+# Produces an execution order that respects depends_on edges between stages.
+# Each pass scans all unscheduled stages and emits those whose dependencies
+# are already in the completed set. If a full pass emits nothing, a cycle
+# exists (stages form a circular dependency chain that can never resolve).
 _topological_sort() {
   local -n _sorted=$1
   _sorted=()
@@ -255,7 +266,7 @@ _topological_sort() {
   local -A completed=()
   local -A stage_name_to_idx=()
 
-  # Build name→index map
+  # Build name→index map for O(1) dependency lookups
   local i
   for ((i = 0; i < stage_count; i++)); do
     local name
@@ -295,6 +306,7 @@ _topological_sort() {
       fi
     done
 
+    # No progress on this pass = unsatisfiable cycle
     if [[ "$added_this_pass" == "false" ]]; then
       echo "Error: cycle detected in mission stages." >&2
       return 1
@@ -369,8 +381,13 @@ _find_resume_point() {
 }
 
 # --------------------------------------------------------------------------
-# Execute orbits_to loop
+# Execute orbits_to loop — outer/inner loop pattern
 # --------------------------------------------------------------------------
+# orbits_to creates a repeating cycle between stages: after the worker stage
+# completes one unit of work, control loops back to the named stage (typically
+# a decomposer) which re-evaluates remaining work. The orbit_exit condition
+# (usually a "promise flag" file check) determines when to break out.
+# max_orbits is a safety ceiling across the entire outer loop, not per cycle.
 _execute_orbits_to_loop() {
   local stage_json="$1"
   local project_dir="$2"

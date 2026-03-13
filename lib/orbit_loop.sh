@@ -172,7 +172,12 @@ orbit_run_component() {
   mkdir -p "${state_dir}/learning/decisions"
   mkdir -p "${state_dir}/learning/feedback"
 
-  # Orbit loop
+  # --- Orbit Loop ---
+  # The orbit loop is the core execution cycle. Each iteration ("orbit") renders
+  # the prompt template, invokes the agent adapter, extracts learning tags and
+  # checkpoint, then checks for deadlock and success. The loop exits only when
+  # the success condition is met (the "promise flag" pattern) or the orbit
+  # ceiling is reached as a safety stop.
   local orbit_count=0
   local deadlock_count=0
   local perspective_inject=""
@@ -204,7 +209,8 @@ orbit_run_component() {
       "orbit.max=$orbits_max" \
       "component.name=$component")
 
-    # Inject perspective prompt if deadlock was detected
+    # Perspective reframe: if the previous orbit triggered deadlock with
+    # action=perspective, prepend the reframe prompt to force a new approach
     if [ -n "$perspective_inject" ]; then
       rendered_prompt="${perspective_inject}
 
@@ -221,7 +227,11 @@ ${rendered_prompt}"
       fi
     done
 
-    # Pre-hash delivers (deadlock detection)
+    # --- Deadlock Detection: Pre-Hash ---
+    # Hash the content of all files in delivers[] BEFORE the agent runs.
+    # After the agent completes, we hash again and compare. If the hashes
+    # match (no file content changed), the deadlock counter increments.
+    # An empty delivers list disables deadlock detection entirely.
     local pre_hash=""
     if [ ${#delivers[@]} -gt 0 ]; then
       pre_hash=$(hash_delivers "${delivers[@]}")
@@ -232,7 +242,10 @@ ${rendered_prompt}"
     local exit_code=0
     output=$(_invoke_adapter "$adapter" "$rendered_prompt" "$model" "$max_turns" "$tools_policy" "$tools_assigned") || exit_code=$?
 
-    # Handle adapter error with retry logic
+    # --- Retry on Adapter Failure ---
+    # Retry handles transient adapter failures (non-zero exit, timeouts).
+    # It does NOT apply to deadlock (handled below) or flight rule aborts.
+    # Backoff strategy (constant or exponential) is configured per component.
     if [ $exit_code -ne 0 ]; then
       orbit_warn "Adapter returned exit code $exit_code on orbit $orbit_count"
 
@@ -272,12 +285,17 @@ ${rendered_prompt}"
       bash "$hook" || orbit_warn "Postflight hook failed: $hook"
     done
 
-    # Deadlock detection (only if delivers are configured)
+    # --- Deadlock Detection: Post-Hash Compare ---
+    # Compare pre- and post-orbit content hashes of delivers[] files.
+    # If both hashes are empty, files don't exist yet — not a deadlock.
+    # If hashes match (agent made no progress), increment the counter.
+    # At threshold: "perspective" resets the counter and prepends a reframe
+    # prompt to the next orbit; "abort" fails the component immediately.
+    # Any content change resets the counter to zero.
     if [ ${#delivers[@]} -gt 0 ]; then
       local post_hash
       post_hash=$(hash_delivers "${delivers[@]}")
 
-      # Both empty = no files exist yet, not deadlock
       if [ -n "$pre_hash" ] || [ -n "$post_hash" ]; then
         if [ "$pre_hash" = "$post_hash" ]; then
           deadlock_count=$((deadlock_count + 1))

@@ -74,7 +74,11 @@ tool_request_list_pending() {
   fi
 }
 
-# Grant a tool request. Updates pending.jsonl status, calls tool_auth_grant.
+# --- Grant Update Loop ---
+# Scans pending.jsonl for a matching request (by ID or by tool+component),
+# flips its status to "granted", then calls tool_auth_grant to register the
+# tool in the auth keyring so subsequent adapter invocations can use it.
+#
 # Usage: tool_request_grant request_id_or_tool component state_dir [auth_key]
 tool_request_grant() {
   local id_or_tool="$1"

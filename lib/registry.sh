@@ -10,8 +10,11 @@ source "$ORBIT_LIB_DIR/config.sh"
 # --------------------------------------------------------------------------
 # registry_build project_dir
 # --------------------------------------------------------------------------
-# Scans components/*.yaml and missions/*.yaml in project_dir,
-# builds .orbit/registry.json (atomic write).
+# Scan-and-assemble pattern: walks components/*.yaml and missions/*.yaml,
+# extracts metadata (name, status, description, delivers, has_sensors) from
+# each file, and assembles a single registry.json. Offline components/missions
+# are excluded. Unsupported Station-tier field warnings are collected and
+# stored in the registry's "warnings" array for later display by `orbit doctor`.
 registry_build() {
   local project_dir="$1"
   local state_dir="${project_dir}/.orbit"
@@ -38,6 +41,7 @@ registry_build() {
 
       status=$(yaml_get "$yaml_file" "status")
       [[ -z "$status" ]] && status="active"
+      [[ "$status" == "offline" ]] && continue
       description=$(yaml_get "$yaml_file" "description")
 
       # Get delivers as JSON array
@@ -89,6 +93,7 @@ registry_build() {
 
       status=$(yaml_get "$yaml_file" "status")
       [[ -z "$status" ]] && status="active"
+      [[ "$status" == "offline" ]] && continue
 
       rel_path="missions/$(basename "$yaml_file")"
 

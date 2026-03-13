@@ -90,6 +90,31 @@ docker compose run --rm --service-ports orbit dashboard --web
 Then open `http://localhost:8777` in your browser. The `--service-ports` flag
 is needed so compose maps port 8777 to the host.
 
+## Offline Mode with Ollama
+
+Orbit Rover can run fully offline using Ollama on the host machine. The compose
+file is pre-configured to route Ollama traffic to the host — no extra setup
+needed if Ollama is running on the default port (11434).
+
+Make sure Ollama is running on your host:
+
+```bash
+ollama serve
+```
+
+Then run components that use Ollama-backed models as normal:
+
+```bash
+docker compose run --rm orbit run my-component
+```
+
+The container reaches Ollama via `host.docker.internal:11434`. If Ollama is on
+a different port, update `OLLAMA_HOST` in your `.env` file:
+
+```
+OLLAMA_HOST=http://host.docker.internal:11500
+```
+
 ## Watch Mode
 
 ```bash

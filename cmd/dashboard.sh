@@ -59,8 +59,13 @@ _dash_icon() {
 }
 
 # --------------------------------------------------------------------------
-# Load state from .orbit/
+# Load state from .orbit/ — registry, runs, sensors, gates, requests
 # --------------------------------------------------------------------------
+# Reads all dashboard-relevant state from disk into parallel arrays and
+# counters. Called at the start of each render cycle so the TUI reflects
+# the latest state. Sources: registry.json (components/missions), runs/
+# (mission execution state), sensors/*.pid, manual/ (pending gates),
+# tool-requests/pending.jsonl, cascade/active.json.
 _dash_load_state() {
   local state_dir="${ORBIT_STATE_DIR:-.orbit}"
 
@@ -163,8 +168,12 @@ _dash_load_state() {
 }
 
 # --------------------------------------------------------------------------
-# Render helpers (gum)
+# Render helpers — gum vs plain text branching
 # --------------------------------------------------------------------------
+# When gum (charmbracelet) is available and terminal is wide enough (≥60 cols),
+# panels use gum style with borders and ANSI colors. Otherwise, plain text
+# with simple headers and indentation. The banner uses per-character gradient
+# coloring in gum mode, with three width-adaptive variants (full/compact/mini).
 _dash_gum_style() {
   # Wrapper for gum style with consistent padding
   gum style --padding "0 1" "$@"
@@ -479,24 +488,23 @@ _dash_render() {
 }
 
 # --------------------------------------------------------------------------
-# Main loop
+# Main loop — refresh cycle with keyboard input
 # --------------------------------------------------------------------------
+# Clears screen, renders all panels, then blocks on read with a timeout
+# equal to the refresh interval. 'q' exits, 'r' forces immediate refresh,
+# any other key or timeout triggers the next cycle.
 _dash_loop() {
   local refresh="$1"
 
-  # Clean exit on ctrl-c
   trap 'printf "\033[?25h"; exit 0' INT TERM
 
-  # Hide cursor
   printf '\033[?25l'
 
   while true; do
-    # Clear screen
     printf '\033[2J\033[H'
 
     _dash_render
 
-    # Read with timeout — 'q' quits, 'r' refreshes immediately
     local key=""
     read -rsn1 -t "$refresh" key 2>/dev/null || true
     case "$key" in

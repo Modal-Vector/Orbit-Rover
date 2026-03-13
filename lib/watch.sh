@@ -194,30 +194,31 @@ watch_start() {
 
   orbit_info "Watch mode active — polling for triggers"
 
-  # Trigger polling loop
+  # --- Trigger Polling Loop ---
+  # Sensors write trigger files (e.g. state_dir/triggers/mycomp-filewatch)
+  # asynchronously. This loop polls every second, picks up any trigger files,
+  # extracts the component name by stripping the known suffix (-filewatch,
+  # -schedule, -cron), removes the file to prevent re-dispatch, then hands
+  # off to _watch_dispatch. Cascade active/done markers bracket the dispatch
+  # so file sensors with cascade=block can detect self-triggered changes.
   while true; do
     for trigger_file in "${state_dir}/triggers/"*; do
       [[ -f "$trigger_file" ]] || continue
 
-      # Extract component name from trigger filename
       local basename
       basename=$(basename "$trigger_file")
-      # Strip known suffixes: -filewatch, -schedule, -cron
       local name="${basename%-filewatch}"
       name="${name%-schedule}"
       name="${name%-cron}"
 
-      # Remove trigger file before dispatch
       rm -f "$trigger_file"
 
       orbit_info "Trigger fired for '$name' (source: $basename)"
 
-      # Generate run ID and manage cascade
       local run_id
       run_id=$(_orbit_gen_id "run-" "$name")
       cascade_mark_active "$name" "$run_id" "$state_dir"
 
-      # Dispatch
       _watch_dispatch "$name" "$project_dir" "$state_dir" || true
 
       cascade_mark_done "$name" "$run_id" "$state_dir"

@@ -156,7 +156,9 @@ config_load_system() {
 # config_load_component path [system_config_path]
 # --------------------------------------------------------------------------
 # Parses a component YAML file. Returns values via global ORBIT_COMPONENT.
-# If system config is loaded (ORBIT_SYSTEM set), applies defaults for missing fields.
+# Merge strategy: component values override system defaults. For each field
+# (agent, model, timeout, max_turns), the component's value is used if set;
+# otherwise the corresponding ORBIT_SYSTEM[defaults.*] value applies.
 config_load_component() {
   local file="$1"
 
@@ -207,7 +209,8 @@ config_load_component() {
   ORBIT_COMPONENT[sensors.schedule.every]=$(yaml_get "$file" "sensors.schedule.every")
   ORBIT_COMPONENT[sensors.schedule.cron]=$(yaml_get "$file" "sensors.schedule.cron")
 
-  # Has sensors?
+  # Sensor detection: a component has sensors if any trigger source is configured
+  # (file paths for file_watch, interval for schedule, or cron expression)
   if [[ -n "${ORBIT_COMPONENT[sensors.paths]}" || -n "${ORBIT_COMPONENT[sensors.schedule.every]}" || -n "${ORBIT_COMPONENT[sensors.schedule.cron]}" ]]; then
     ORBIT_COMPONENT[has_sensors]="true"
   else

@@ -2,6 +2,21 @@
 set -euo pipefail
 
 # decisions.sh — Decision JSONL with lifecycle management
+#
+# Decision lifecycle state machine:
+#   proposed → accepted    (decision_accept)
+#   proposed → rejected    (decision_reject)
+#   proposed → superseded  (decision_supersede — creates a new decision referencing the old)
+#   accepted → superseded  (decision_supersede)
+#
+# Scope-based file routing: decisions are stored per-scope in JSONL files:
+#   project       → project.jsonl
+#   mission:NAME  → mission.NAME.jsonl
+#   component:NAME → component.NAME.jsonl
+#   module:NAME   → module.NAME.jsonl
+#
+# Hierarchical assembly (decision_assemble) merges project + mission + component
+# scopes with newest-first ordering, capped at a configurable limit.
 
 ORBIT_LIB_DIR="${ORBIT_LIB_DIR:-$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)}"
 
@@ -200,7 +215,10 @@ decision_read_active() {
 # --------------------------------------------------------------------------
 # decision_assemble context_component context_mission limit state_dir
 # --------------------------------------------------------------------------
-# Hierarchical assembly with status labels.
+# Hierarchical scope assembly: collects active decisions (proposed/accepted)
+# from project → mission → component scopes (broadest to narrowest), sorts
+# by newest first, and caps at limit. This gives agents a combined view of
+# all applicable decisions for their current execution context.
 decision_assemble() {
   local context_component="$1"
   local context_mission="$2"

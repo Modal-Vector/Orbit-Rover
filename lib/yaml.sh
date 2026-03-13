@@ -2,7 +2,12 @@
 set -euo pipefail
 
 # yaml.sh — Low-level YAML helpers using yq
-# Falls back to python3 + PyYAML if yq is unavailable.
+# Dual-path strategy: yq (Go binary) is preferred for speed; python3 + PyYAML
+# is the fallback when yq is not installed. Every public function (yaml_get,
+# yaml_get_array, yaml_get_map, yaml_exists, yaml_to_json) checks availability
+# at call time, so both paths produce identical output for the same input.
+# Key handling: dot notation (e.g. "defaults.agent") is split into nested
+# traversal by yq natively and by the python helpers via key.split('.').
 
 _yaml_has_yq() {
   command -v yq >/dev/null 2>&1
@@ -84,6 +89,8 @@ PYEOF
 
 # yaml_get file key — get scalar value
 # Key uses dot notation: "defaults.agent"
+# Null handling: yq's `// ""` coalesces null to empty string, and the sed
+# strip catches the literal "null" output that yq emits for absent keys.
 yaml_get() {
   local file="$1" key="$2"
   if _yaml_has_yq; then

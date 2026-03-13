@@ -69,7 +69,19 @@ _hash_watched_paths() {
   echo -n "$combined" | _md5_cross_platform | awk '{print $1}'
 }
 
-# Start file watch sensor
+# --- File Watch Sensor ---
+# Two-mode architecture:
+#   1. inotifywait mode (Linux): real-time filesystem event notification via
+#      inotifywait -m, with a separate debounce loop that waits for a quiet
+#      period before firing the trigger.
+#   2. Polling fallback (macOS/any): hashes all files matching glob patterns
+#      every second. On change, starts a debounce timer; fires trigger only
+#      after the debounce period elapses with no further changes.
+# Both modes write a trigger file to state_dir/triggers/ which the watch
+# loop (watch.sh) picks up and dispatches. Cascade block is checked before
+# writing the trigger — if the component is currently active and cascade=block,
+# the file change is silently consumed to prevent self-retriggering.
+#
 # Usage: sensor_file_watch_start component_name paths events debounce cascade state_dir project_dir
 sensor_file_watch_start() {
   local component="$1"
