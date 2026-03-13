@@ -17,17 +17,10 @@ delivers:
 
 orbits:
   max: 20
-  deadlock_threshold: 3
+  deadlock:
+    threshold: 3
   success:
     when: bash
     condition: |
       jq -e '[.tasks[] | select(.done == false)] | length == 0' \
         .orbit/plans/fieldops/tasks.json
-
-perspective: |
-  You are stuck in the remediation loop. Try:
-  - Check if the health endpoint confirms the issue is already resolved
-  - Verify the fix was actually applied by reading the service state
-  - If a restricted tool is needed, use <tool_request> to request access
-  - Consider if a different remediation approach is needed
-  - Notify the operator if the issue requires manual intervention

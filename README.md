@@ -162,6 +162,7 @@ Three example projects in `studios/`:
 | [CLI Reference](docs/cli-reference.md) | All commands |
 | [State Directory](docs/state-directory.md) | `.orbit/` layout and schemas |
 | [Studios](docs/studios.md) | Example projects |
+| [Config Specs](docs/specs/) | Quick-reference YAML schemas for AI-assisted authoring |
 
 ## Contributing
 

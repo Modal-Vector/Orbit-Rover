@@ -10,16 +10,10 @@ delivers:
 
 orbits:
   max: 200
-  deadlock_threshold: 5
+  deadlock:
+    threshold: 5
   success:
     when: bash
     condition: |
       jq -e '[.tasks[] | select(.done == false)] | length == 0' \
         .orbit/plans/research/tasks.json
-
-perspective: |
-  You are stuck researching. Try:
-  - Check if distilled source material exists at sources/{task-id}/distilled.md
-  - If sources are unavailable, synthesise from what you know and mark done
-  - Verify you are working on the correct task from tasks.json
-  - Review prior findings in findings/ for context

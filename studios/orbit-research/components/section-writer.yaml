@@ -6,17 +6,10 @@ delivers:
 
 orbits:
   max: 50
-  deadlock_threshold: 5
+  deadlock:
+    threshold: 5
   success:
     when: bash
     condition: |
       jq -e '[.tasks[] | select(.done == false)] | length == 0' \
         .orbit/plans/research/write-tasks.json
-
-perspective: |
-  You are stuck in a loop. Try a different approach:
-  - Re-read the task requirements carefully
-  - Check if the output file already exists and needs updating rather than creating
-  - Verify you are writing to the correct path
-  - Review the findings in findings/ for source material
-  - Consider if you need to mark the task as done in write-tasks.json

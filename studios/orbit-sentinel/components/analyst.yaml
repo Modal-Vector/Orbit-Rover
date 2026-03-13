@@ -10,15 +10,10 @@ delivers:
 
 orbits:
   max: 100
-  deadlock_threshold: 5
+  deadlock:
+    threshold: 5
   success:
     when: bash
     condition: |
       jq -e '[.tasks[] | select(.done == false)] | length == 0' \
         .orbit/plans/sentinel/tasks.json
-
-perspective: |
-  You are stuck analysing a source. Try:
-  - Check if the distilled content file exists at sources/{task-id}/distilled.md
-  - If the source is empty or inaccessible, mark the task done with a note
-  - Verify you are reading the correct task from tasks.json
