@@ -9,6 +9,11 @@ last_updated: 2026-03-11
 
 All configuration is in YAML, parsed via `yq` with a `python3` fallback.
 
+> **Tip:** The [Config Specs](specs/) directory has concise, annotated schema
+> references designed for use as AI context. Paste the relevant spec doc into
+> Claude, Cursor, Copilot, or any AI dev tool when authoring or debugging
+> Orbit configs.
+
 ## System Configuration — `orbit.yaml`
 
 The root configuration file for an Orbit project.

@@ -240,10 +240,15 @@ definitions in `.claude/agents/` for examples.
 
 ## Creating Your Own Studio
 
+> **Tip:** Use the [Config Specs](specs/) as AI context when authoring configs.
+> Paste `docs/specs/component.md` into Claude, Cursor, or Copilot and describe
+> what your component should do — the AI will produce valid YAML matching the
+> actual schema.
+
 1. Run `orbit init my-studio` to scaffold the project
-2. Define components in `components/*.yaml`
-3. Write prompt templates in `prompts/*.md`
-4. Define missions in `missions/*.yaml`
+2. Define components in `components/*.yaml` (see [component spec](specs/component.md))
+3. Write prompt templates in `prompts/*.md` (see [prompt spec](specs/prompt.md))
+4. Define missions in `missions/*.yaml` (see [mission spec](specs/mission.md))
 5. Add lifecycle scripts in `scripts/`
 6. Add tools in `tools/` (if needed)
 7. Add a `CLAUDE.md` with key file paths and subagent references

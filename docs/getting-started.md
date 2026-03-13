@@ -81,6 +81,19 @@ my-project/
     └── logs/             # Event JSONL logs
 ```
 
+## Using AI Tools to Author Configs
+
+The `docs/specs/` directory contains concise, annotated YAML schema references
+designed to be used as context with any AI development tool. When asking Claude,
+Cursor, Copilot, or any other AI assistant to help create Orbit configurations:
+
+1. Paste the relevant spec doc as context (e.g. `docs/specs/component.md`)
+2. Describe what you want the component/mission to do
+3. The AI will produce valid YAML that matches the actual schema
+
+Each spec doc includes the complete schema, minimal and real-world examples,
+a field reference table, and common mistakes to avoid.
+
 ## Defining a Component
 
 Create `components/my-worker.yaml`:

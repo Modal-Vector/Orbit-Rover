@@ -39,6 +39,7 @@ with bash 4+, no compiled runtime required.
 | `SPEC.md` | Complete implementation specification — source of truth for all behaviour |
 | `PROMPTS.md` | Phase-by-phase build prompts with deliverables, constraints, and verification checklists |
 | `docs/` | User-facing documentation (architecture, CLI reference, configuration, etc.) |
+| `docs/specs/` | Quick-reference YAML schemas (component, mission, module, system, prompt) — read these when creating or debugging Orbit configs |
 | `.orbit/progress.md` | Append-only build log from the initial 8-phase implementation |
 
 Consult `SPEC.md` when modifying behaviour to ensure changes remain spec-compliant.
