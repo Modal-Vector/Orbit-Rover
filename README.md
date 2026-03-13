@@ -33,6 +33,16 @@ cd my-project
 ./orbit dashboard --web
 ```
 
+> **Note:** `orbit` is a local script, not an installed binary. Run it with
+> `./orbit` from the repository root. To use `orbit` from anywhere (including
+> the example studios), add the repo root to your PATH:
+>
+> ```bash
+> export PATH="/path/to/Orbit-Rover:$PATH"
+> ```
+>
+> Or add that line to your `~/.zshrc` / `~/.bashrc` for persistence.
+
 ## Features
 
 - **Orbit loop** — deterministic agent invocations with checkpoints, deadlock

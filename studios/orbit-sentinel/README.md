@@ -3,6 +3,19 @@
 Monitors a watchlist of sources and produces periodic intelligence summaries
 using Orbit Rover's ralph loop pattern.
 
+## Setup
+
+The `orbit` command is a script in the Orbit Rover repository root — it is not
+installed on your PATH by default. Before running the commands below, do one of:
+
+```bash
+# Option 1: Add Orbit Rover to your PATH (recommended)
+export PATH="/path/to/Orbit-Rover:$PATH"
+
+# Option 2: Use a relative path from this directory
+alias orbit='../../orbit'
+```
+
 ## Usage
 
 ```bash
