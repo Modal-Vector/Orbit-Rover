@@ -370,6 +370,21 @@ yaml_get() {
   [ "$output" -gt 0 ]
 }
 
+@test "sentinel: monitor mission has assemble stage before brief-gate" {
+  local mission="$STUDIOS_DIR/orbit-sentinel/missions/monitor.yaml"
+  run yq -r '.stages[] | select(.name == "assemble") | .component' "$mission"
+  assert_output "brief-writer"
+
+  run yq -r '.stages[] | select(.name == "brief-gate") | .depends_on[0]' "$mission"
+  assert_output "assemble"
+}
+
+@test "sentinel: brief-writer delivers daily-brief.md" {
+  local comp="$STUDIOS_DIR/orbit-sentinel/components/brief-writer.yaml"
+  run yq -r '.delivers[0]' "$comp"
+  assert_output "intelligence/daily-brief.md"
+}
+
 @test "sentinel: analyst has preflight scripts" {
   local comp="$STUDIOS_DIR/orbit-sentinel/components/analyst.yaml"
   run yq -r '.preflight[0]' "$comp"

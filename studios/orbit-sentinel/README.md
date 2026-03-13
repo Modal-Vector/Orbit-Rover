@@ -48,6 +48,7 @@ orbit reject monitor     # reject to iterate further
 |-------|-----------|-----------|
 | `decompose` (waypoint) | source-decomposer | Reads `watchlist.yaml`, creates one task per source with URL, type, priority, and tags. |
 | `analyse` | analyst | One source per orbit. Preflight: `fetch-source.sh` downloads the source; `distil-content.sh` strips HTML and caps at 8KB. Analyst writes findings. Loops back to decompose (max 100 orbits). |
+| `assemble` | brief-writer | Reads all `findings/*.md` and synthesises `intelligence/daily-brief.md` with priority grouping and executive summary. |
 | `brief-gate` | manual gate | Pauses for human review of `intelligence/daily-brief.md`. 12h timeout — defaults to approve if no action taken. |
 
 **Trigger**: Cron schedule, daily at 06:00 UTC.

@@ -22,6 +22,10 @@ stages:
         jq -e '[.tasks[] | select(.done == false)] | length == 0' \
           .orbit/plans/sentinel/tasks.json
 
+  - name: assemble
+    component: brief-writer
+    depends_on: [analyse]
+
   - name: brief-gate
     type: manual
     prompt: |
@@ -31,4 +35,4 @@ stages:
     options: [approve, reject]
     timeout: 12h
     default: approve
-    depends_on: [analyse]
+    depends_on: [assemble]

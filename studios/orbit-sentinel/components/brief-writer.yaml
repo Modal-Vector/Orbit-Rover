@@ -1,0 +1,11 @@
+component: brief-writer
+prompt: prompts/brief-writer.md
+
+delivers:
+  - intelligence/daily-brief.md
+
+orbits:
+  max: 3
+  success:
+    when: file
+    condition: intelligence/daily-brief.md

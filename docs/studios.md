@@ -104,7 +104,8 @@ flowchart TD
     subgraph Monitor["Mission: monitor"]
         DECOMPOSE[source-decomposer] --> ANALYSE[analyst]
         ANALYSE -->|orbits_to| DECOMPOSE
-        ANALYSE --> GATE{brief-gate}
+        ANALYSE --> ASSEMBLE[brief-writer]
+        ASSEMBLE --> GATE{brief-gate}
         GATE -->|approve| DONE([Archive & reset])
         GATE -->|reject| ANALYSE
     end
@@ -113,7 +114,8 @@ flowchart TD
 1. **Cron sensor** triggers the monitor mission daily at 06:00
 2. When triggered, `source-decomposer` breaks the watchlist into individual
    source monitoring tasks
-3. `analyst` processes each source and produces intelligence reports
+3. `analyst` processes each source and produces intelligence findings
+4. `brief-writer` synthesises all findings into `intelligence/daily-brief.md`
 
 ### Components
 
@@ -121,12 +123,13 @@ flowchart TD
 |-----------|---------|
 | `source-decomposer` | Breaks watchlist into source tasks |
 | `analyst` | Analyses individual sources |
+| `brief-writer` | Synthesises findings into daily intelligence brief |
 
 ### Mission
 
 | Mission | Pattern |
 |---------|---------|
-| `monitor` | Sequential (decompose → analyse) |
+| `monitor` | Sequential (decompose → analyse → assemble) |
 
 ### Specialist Subagents
 
