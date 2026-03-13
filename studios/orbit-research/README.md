@@ -18,10 +18,10 @@ alias orbit='../../orbit'
 
 ## Usage
 
-```bash
-# Initialise Orbit in this directory
-orbit init
+This studio is pre-configured — no `orbit init` needed. Just set up your PATH
+(see above) and run the commands below from this directory.
 
+```bash
 # Write your research brief to brief.md (see brief.md for the expected format)
 
 # Step 1: Plan the research

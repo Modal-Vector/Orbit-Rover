@@ -18,10 +18,10 @@ alias orbit='../../orbit'
 
 ## Usage
 
-```bash
-# Initialise Orbit in this directory
-orbit init
+This studio is pre-configured — no `orbit init` needed. Just set up your PATH
+(see above) and run the commands below from this directory.
 
+```bash
 # Set up log monitoring (reactive mode)
 orbit watch
 # Triggers when logs/anomaly-trigger is created by your log processor
