@@ -86,6 +86,7 @@ sources:
 | `sources/{task-id}/distilled.md` | Distilled source content, max 8KB (preflight output) |
 | `findings/{task-id}.md` | Analyst findings per source |
 | `intelligence/daily-brief.md` | Consolidated daily intelligence brief |
+| `intelligence/briefs/brief-*.md` | Timestamped archive of each brief |
 
 ## Configuration
 
