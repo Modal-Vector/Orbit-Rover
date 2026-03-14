@@ -1,5 +1,5 @@
 component: brief-writer
-prompt: prompts/brief-writer.md
+prompt: components/brief-writer/brief-writer.md
 
 delivers:
   - intelligence/daily-brief.md

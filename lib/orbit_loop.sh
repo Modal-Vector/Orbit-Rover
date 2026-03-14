@@ -174,7 +174,6 @@ orbit_run_component() {
   : > "$progress_file"
   mkdir -p "${state_dir}/learning/insights"
   mkdir -p "${state_dir}/learning/decisions"
-  mkdir -p "${state_dir}/learning/feedback"
 
   # --- Orbit Loop ---
   # The orbit loop is the core execution cycle. Each iteration ("orbit") renders

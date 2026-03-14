@@ -23,8 +23,9 @@ is stateless and ephemeral — it starts fresh every orbit.
 
 ### Disk is the Only Memory
 
-State lives in `.orbit/`. Learning lives in `.orbit/learning/`. Task state
-lives in `.orbit/plans/`. Nothing of value lives in memory between invocations.
+State lives in `.orbit/`. Insights and decisions live in `.orbit/learning/`.
+Feedback is co-located with components. Task state lives in `.orbit/plans/`.
+Nothing of value lives in memory between invocations.
 Checkpoints bridge orbits by persisting agent context to disk.
 
 ### Promise Flag Exit
@@ -70,7 +71,7 @@ flowchart TD
 flowchart LR
     subgraph Config
         OY[orbit.yaml] --> CLS[config_load_system]
-        CY[components/*.yaml] --> RB[registry_build]
+        CY[components/*/*.yaml] --> RB[registry_build]
         MY[missions/*.yaml] --> RB
     end
 
@@ -178,7 +179,7 @@ packages are required.
 
 ```mermaid
 flowchart LR
-    YAML[missions/*.yaml<br>components/*.yaml] -->|yq -o=json| CACHE[.orbit/webdash-cache/*.json]
+    YAML[missions/*.yaml<br>components/*/*.yaml] -->|yq -o=json| CACHE[.orbit/webdash-cache/*.json]
     CACHE --> PY[Python HTTP server<br>stdlib only]
     STATE[.orbit/ runtime state] --> PY
     PY -->|/api/graph| BROWSER[Browser: Cytoscape.js]

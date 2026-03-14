@@ -50,7 +50,7 @@ flowchart LR
 
     INS --> |validate target| INS_STORE[insights/*.jsonl]
     DEC --> |handle supersedes| DEC_STORE[decisions/*.jsonl]
-    FB --> FB_STORE[feedback/*.jsonl]
+    FB --> FB_STORE[components/*//*.feedback.jsonl]
     VOTE --> |update counts| FB_STORE
 ```
 
@@ -84,13 +84,16 @@ flowchart TD
 
 Learning entries are scoped to control visibility and assembly:
 
-| Scope | Format | File Path | Description |
+| Scope | Format | File Path (insights/decisions) | Description |
 |-------|--------|-----------|-------------|
 | `project` | `project` | `learning/{type}/project.jsonl` | Visible to all components |
 | `mission` | `mission:<name>` | `learning/{type}/mission.<name>.jsonl` | Visible within mission |
 | `component` | `component:<name>` | `learning/{type}/component.<name>.jsonl` | Component-specific |
 | `module` | `module:<name>` | `learning/{type}/module.<name>.jsonl` | Module-specific |
 | `run` | `run` | `state/run-insights.tmp` | Current run only (temporary) |
+
+Feedback uses a separate path: `components/{name}/{name}.feedback.jsonl`,
+co-located with the component configuration and prompt.
 
 Assembly collects entries hierarchically: project → mission → component,
 deduplicates by content, and caps output.
@@ -246,12 +249,16 @@ orbit decisions supersede <id> <title> <content>  # Replace
 
 ## Storage
 
-All learning data is stored as JSONL (JSON Lines) in `.orbit/learning/`:
+Learning data is stored as JSONL (JSON Lines). Insights and decisions live in
+`.orbit/learning/`, while feedback is co-located with its component in
+`components/{name}/{name}.feedback.jsonl`:
 
 ```
+components/
+└── section-writer/
+    └── section-writer.feedback.jsonl
+
 .orbit/learning/
-├── feedback/
-│   └── section-writer.jsonl
 ├── insights/
 │   ├── project.jsonl
 │   ├── mission.transform.jsonl

@@ -1,5 +1,5 @@
 component: researcher
-prompt: prompts/researcher.md
+prompt: components/researcher/researcher.md
 
 preflight:
   - scripts/distil-sources.sh

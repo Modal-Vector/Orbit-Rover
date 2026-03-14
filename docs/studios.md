@@ -249,8 +249,7 @@ definitions in `.claude/agents/` for examples.
 > actual schema.
 
 1. Run `orbit init my-studio` to scaffold the project
-2. Define components in `components/*.yaml` (see [component spec](specs/component.md))
-3. Write prompt templates in `prompts/*.md` (see [prompt spec](specs/prompt.md))
+2. Define components in `components/{name}/{name}.yaml` with co-located prompts at `components/{name}/{name}.md` (see [component spec](specs/component.md) and [prompt spec](specs/prompt.md))
 4. Define missions in `missions/*.yaml` (see [mission spec](specs/mission.md))
 5. Add lifecycle scripts in `scripts/`
 6. Add tools in `tools/` (if needed)

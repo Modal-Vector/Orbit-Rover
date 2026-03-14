@@ -1,5 +1,5 @@
 component: remediator
-prompt: prompts/remediator.md
+prompt: components/remediator/remediator.md
 
 postflight:
   - scripts/validate-fix.sh

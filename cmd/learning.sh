@@ -108,6 +108,13 @@ cmd_insights() {
 
 cmd_feedback() {
   local state_dir="${ORBIT_STATE_DIR:-.orbit}"
+  local project_dir
+  if [[ "$state_dir" == ".orbit" ]]; then
+    project_dir="."
+  else
+    project_dir="${state_dir%/.orbit}"
+    [[ -z "$project_dir" || "$project_dir" == "$state_dir" ]] && project_dir="."
+  fi
 
   if [[ $# -eq 0 ]]; then
     echo "Usage: orbit feedback <component> | orbit feedback clear <component>" >&2
@@ -120,14 +127,14 @@ cmd_feedback() {
       echo "Usage: orbit feedback clear <component>" >&2
       return 1
     fi
-    feedback_clear "$1" "$state_dir"
+    feedback_clear "$1" "$project_dir"
     echo "Feedback cleared for '${1}'."
     return 0
   fi
 
   local component="$1"
   local output
-  output=$(feedback_assemble "$component" "10" "$state_dir" 2>/dev/null)
+  output=$(feedback_assemble "$component" "10" "$project_dir" 2>/dev/null)
   if [[ -z "$output" ]]; then
     echo "No feedback found for '${component}'."
   else

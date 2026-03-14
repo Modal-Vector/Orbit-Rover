@@ -10,8 +10,9 @@ import os
 def handle_learning_summary(state_dir):
     """Handle /api/learning/summary — counts."""
     learning_dir = os.path.join(state_dir, 'learning')
+    project_dir = os.path.dirname(state_dir)
     counts = {
-        'feedback': _count_entries(os.path.join(learning_dir, 'feedback')),
+        'feedback': _count_feedback_entries(os.path.join(project_dir, 'components')),
         'insights': _count_entries(os.path.join(learning_dir, 'insights')),
         'decisions': _count_entries(os.path.join(learning_dir, 'decisions')),
     }
@@ -20,7 +21,8 @@ def handle_learning_summary(state_dir):
 
 def handle_learning_feedback(state_dir):
     """Handle /api/learning/feedback."""
-    return 200, _read_all_jsonl(os.path.join(state_dir, 'learning', 'feedback'))
+    project_dir = os.path.dirname(state_dir)
+    return 200, _read_feedback_jsonl(os.path.join(project_dir, 'components'))
 
 
 def handle_learning_insights(state_dir):
@@ -31,6 +33,53 @@ def handle_learning_insights(state_dir):
 def handle_learning_decisions(state_dir):
     """Handle /api/learning/decisions."""
     return 200, _read_all_jsonl(os.path.join(state_dir, 'learning', 'decisions'))
+
+
+def _count_feedback_entries(components_dir):
+    """Count total feedback JSONL entries across component directories."""
+    if not os.path.isdir(components_dir):
+        return 0
+    count = 0
+    for comp_name in os.listdir(components_dir):
+        comp_dir = os.path.join(components_dir, comp_name)
+        if not os.path.isdir(comp_dir):
+            continue
+        for fname in os.listdir(comp_dir):
+            if fname.endswith('.feedback.jsonl'):
+                try:
+                    with open(os.path.join(comp_dir, fname), 'r') as f:
+                        for line in f:
+                            if line.strip():
+                                count += 1
+                except OSError:
+                    continue
+    return count
+
+
+def _read_feedback_jsonl(components_dir):
+    """Read all feedback JSONL entries from component directories."""
+    if not os.path.isdir(components_dir):
+        return []
+    entries = []
+    for comp_name in sorted(os.listdir(components_dir)):
+        comp_dir = os.path.join(components_dir, comp_name)
+        if not os.path.isdir(comp_dir):
+            continue
+        for fname in sorted(os.listdir(comp_dir)):
+            if not fname.endswith('.feedback.jsonl'):
+                continue
+            try:
+                with open(os.path.join(comp_dir, fname), 'r') as f:
+                    for line in f:
+                        line = line.strip()
+                        if line:
+                            try:
+                                entries.append(json.loads(line))
+                            except json.JSONDecodeError:
+                                continue
+            except OSError:
+                continue
+    return entries
 
 
 def _count_entries(directory):

@@ -16,7 +16,7 @@ cmd_init() {
 
   # Create project directories
   local dirs=(
-    components missions modules prompts scripts tools
+    components missions modules scripts tools
     decisions requirements risks verification regulatory-docs
   )
   for d in "${dirs[@]}"; do
@@ -26,7 +26,7 @@ cmd_init() {
   # Create .orbit state directories (SPEC §16)
   local state_dirs=(
     state runs plans work
-    learning/feedback learning/insights learning/decisions
+    learning/insights learning/decisions
     manual tool-auth tool-requests
     cascade sensors triggers logs
   )

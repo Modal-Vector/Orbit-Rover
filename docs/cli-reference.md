@@ -78,8 +78,8 @@ orbit init <project-name>
 ```
 
 Creates: `orbit.yaml`, `CLAUDE.md` (agent session context), `RISK-REGISTRY.md`,
-`components/`, `missions/`, `modules/`, `prompts/`, `scripts/`, `tools/`, and
-the `.orbit/` state directory tree.
+`components/`, `missions/`, `modules/`, `scripts/`, `tools/`, and the `.orbit/`
+state directory tree.
 
 ## orbit doctor
 
@@ -203,7 +203,7 @@ Displays the component and mission registry.
 orbit registry
 ```
 
-Builds the registry from `components/*.yaml` and `missions/*.yaml`, then
+Builds the registry from `components/*/*.yaml` and `missions/*.yaml`, then
 displays each entry with its status and description.
 
 ## orbit log

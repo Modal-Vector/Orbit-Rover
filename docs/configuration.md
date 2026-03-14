@@ -42,13 +42,14 @@ All values have defaults — an empty `orbit.yaml` is valid.
 
 ## Component Configuration
 
-Component YAML files live in `components/` and define a single agent worker.
+Component YAML files live in `components/{name}/` directories alongside their
+prompt templates and define a single agent worker.
 
 ```yaml
 name: section-writer
 description: Writes document sections from task plan
-status: active                    # active | paused | disabled
-prompt: prompts/section-writer.md # Path to prompt template
+status: active                                          # active | paused | disabled
+prompt: components/section-writer/section-writer.md     # Path to prompt template
 
 # Agent settings (inherit from orbit.yaml defaults if omitted)
 agent: claude-code

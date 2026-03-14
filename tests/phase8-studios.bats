@@ -82,7 +82,7 @@ yaml_get() {
 
       for comp in $components; do
         [ -z "$comp" ] && continue
-        local comp_file="$studio/components/${comp}.yaml"
+        local comp_file="$studio/components/${comp}/${comp}.yaml"
         if [ ! -f "$comp_file" ]; then
           echo "FAIL: $studio_name/$mission_name references component '$comp' but $comp_file does not exist" >&2
           return 1
@@ -102,7 +102,7 @@ yaml_get() {
     local studio_name
     studio_name=$(basename "$studio")
 
-    for comp_file in "$studio"/components/*.yaml; do
+    for comp_file in "$studio"/components/*/*.yaml; do
       [ -f "$comp_file" ] || continue
       local comp_name
       comp_name=$(basename "$comp_file" .yaml)
@@ -129,7 +129,7 @@ yaml_get() {
     local studio_name
     studio_name=$(basename "$studio")
 
-    for comp_file in "$studio"/components/*.yaml; do
+    for comp_file in "$studio"/components/*/*.yaml; do
       [ -f "$comp_file" ] || continue
       local comp_name
       comp_name=$(basename "$comp_file" .yaml)
@@ -176,11 +176,11 @@ yaml_get() {
 @test "studios: every prompt contains {orbit.checkpoint}" {
   local failures=()
   for studio in "$STUDIOS_DIR"/orbit-*/; do
-    [ -d "$studio/prompts" ] || continue
+    [ -d "$studio/components" ] || continue
     local studio_name
     studio_name=$(basename "$studio")
 
-    for prompt_file in "$studio"/prompts/*.md; do
+    for prompt_file in "$studio"/components/*/*.md; do
       [ -f "$prompt_file" ] || continue
       if ! grep -q '{orbit.checkpoint}' "$prompt_file"; then
         failures+=("$studio_name/$(basename "$prompt_file")")
@@ -201,11 +201,11 @@ yaml_get() {
 @test "studios: worker prompts contain back-pressure instruction" {
   local failures=()
   for studio in "$STUDIOS_DIR"/orbit-*/; do
-    [ -d "$studio/prompts" ] || continue
+    [ -d "$studio/components" ] || continue
     local studio_name
     studio_name=$(basename "$studio")
 
-    for prompt_file in "$studio"/prompts/*.md; do
+    for prompt_file in "$studio"/components/*/*.md; do
       [ -f "$prompt_file" ] || continue
       if ! grep -q 'You are in a loop' "$prompt_file"; then
         failures+=("$studio_name/$(basename "$prompt_file")")
@@ -300,7 +300,7 @@ yaml_get() {
 }
 
 @test "research: researcher has preflight scripts" {
-  local comp="$STUDIOS_DIR/orbit-research/components/researcher.yaml"
+  local comp="$STUDIOS_DIR/orbit-research/components/researcher/researcher.yaml"
   run yq -r '.preflight[0]' "$comp"
   assert_output "scripts/distil-sources.sh"
 
@@ -318,13 +318,13 @@ yaml_get() {
 }
 
 @test "research: section-decomposer delivers write-tasks.json" {
-  local comp="$STUDIOS_DIR/orbit-research/components/section-decomposer.yaml"
+  local comp="$STUDIOS_DIR/orbit-research/components/section-decomposer/section-decomposer.yaml"
   run yq -r '.delivers[0]' "$comp"
   assert_output ".orbit/plans/research/write-tasks.json"
 }
 
 @test "research: section-writer has deadlock_threshold 5" {
-  local comp="$STUDIOS_DIR/orbit-research/components/section-writer.yaml"
+  local comp="$STUDIOS_DIR/orbit-research/components/section-writer/section-writer.yaml"
   run yq -r '.orbits.deadlock.threshold' "$comp"
   assert_output "5"
 }
@@ -380,13 +380,13 @@ yaml_get() {
 }
 
 @test "sentinel: brief-writer delivers daily-brief.md" {
-  local comp="$STUDIOS_DIR/orbit-sentinel/components/brief-writer.yaml"
+  local comp="$STUDIOS_DIR/orbit-sentinel/components/brief-writer/brief-writer.yaml"
   run yq -r '.delivers[0]' "$comp"
   assert_output "intelligence/daily-brief.md"
 }
 
 @test "sentinel: analyst has preflight scripts" {
-  local comp="$STUDIOS_DIR/orbit-sentinel/components/analyst.yaml"
+  local comp="$STUDIOS_DIR/orbit-sentinel/components/analyst/analyst.yaml"
   run yq -r '.preflight[0]' "$comp"
   assert_output "scripts/fetch-source.sh"
 
@@ -399,13 +399,13 @@ yaml_get() {
 # ============================================================
 
 @test "fieldops: remediator has restricted policy" {
-  local comp="$STUDIOS_DIR/orbit-fieldops/components/remediator.yaml"
+  local comp="$STUDIOS_DIR/orbit-fieldops/components/remediator/remediator.yaml"
   run yq -r '.tools.policy' "$comp"
   assert_output "restricted"
 }
 
 @test "fieldops: remediator has assigned tools" {
-  local comp="$STUDIOS_DIR/orbit-fieldops/components/remediator.yaml"
+  local comp="$STUDIOS_DIR/orbit-fieldops/components/remediator/remediator.yaml"
   local tools
   tools=$(yq -r '.tools.assigned[]' "$comp" | sort)
   echo "$tools" | grep -q "apply-config-patch"
@@ -460,7 +460,7 @@ yaml_get() {
 }
 
 @test "fieldops: diagnostician has preflight" {
-  local comp="$STUDIOS_DIR/orbit-fieldops/components/diagnostician.yaml"
+  local comp="$STUDIOS_DIR/orbit-fieldops/components/diagnostician/diagnostician.yaml"
   run yq -r '.preflight[0]' "$comp"
   assert_output "scripts/extract-anomalies.sh"
 }

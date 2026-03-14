@@ -2,8 +2,8 @@
 
 Prompt templates are Markdown files with `{variable}` placeholders that get
 substituted at runtime. They are the instructions given to the AI agent each
-orbit. Templates live in `prompts/` and are referenced by components via the
-`prompt:` field.
+orbit. Templates are co-located with their components in `components/{name}/` and are
+referenced by components via the `prompt:` field.
 
 ## Template Variables
 
@@ -153,7 +153,7 @@ Before exiting, emit a checkpoint so the next orbit knows where you left off:
 ### Feedback
 
 Self-improvement suggestions for the component's prompt. Stored in
-`.orbit/learning/feedback/{component}.jsonl`. Surfaced via `{feedback.summary}`.
+`components/{component}/{component}.feedback.jsonl`. Surfaced via `{feedback.summary}`.
 
 ```xml
 <feedback>
@@ -344,7 +344,7 @@ Before exiting, emit a checkpoint so the next orbit knows where you left off:
 
 ## Real-World Example
 
-The full `studios/orbit-fieldops/prompts/remediator.md` prompt. This
+The full `studios/orbit-fieldops/components/remediator/remediator.md` prompt. This
 demonstrates task-list driven workflow, restricted tool policy, tool request
 tags, rules, and progress with checkpoint + feedback + insight tags — all
 with instructional framing.

@@ -44,6 +44,16 @@ parse_learning_tags() {
   local state_dir="$6"
   local project_dir="${7:-}"
 
+  # Derive project_dir from state_dir if not provided
+  if [[ -z "$project_dir" ]]; then
+    if [[ "$state_dir" == ".orbit" ]]; then
+      project_dir="."
+    else
+      project_dir="${state_dir%/.orbit}"
+      [[ -z "$project_dir" || "$project_dir" == "$state_dir" ]] && project_dir="."
+    fi
+  fi
+
   # --- Insights ---
   local insights
   insights=$(extract_insight_targets "$output") || true
@@ -140,7 +150,7 @@ parse_learning_tags() {
       [ -z "$line" ] && continue
       local content
       content=$(echo "$line" | jq -r '.content')
-      feedback_append "${component:-unknown}" "$content" "$state_dir" "$run_id" >/dev/null
+      feedback_append "${component:-unknown}" "$content" "$project_dir" "$run_id" >/dev/null
     done <<< "$feedback"
   fi
 
@@ -153,7 +163,7 @@ parse_learning_tags() {
       local vote_id weight
       vote_id=$(echo "$line" | jq -r '.id')
       weight=$(echo "$line" | jq -r '.weight')
-      feedback_vote "$vote_id" "$weight" "${component:-unknown}" "$state_dir" 2>/dev/null || true
+      feedback_vote "$vote_id" "$weight" "${component:-unknown}" "$project_dir" 2>/dev/null || true
     done <<< "$votes"
   fi
 }

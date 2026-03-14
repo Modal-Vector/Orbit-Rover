@@ -1,5 +1,5 @@
 component: research-planner
-prompt: prompts/research-planner.md
+prompt: components/research-planner/research-planner.md
 
 delivers:
   - .orbit/plans/research/tasks.json

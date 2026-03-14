@@ -10,17 +10,18 @@ if ! declare -F orbit_info >/dev/null 2>&1; then
 fi
 
 # --------------------------------------------------------------------------
-# feedback_append component_name content state_dir [run_id]
+# feedback_append component_name content project_dir [run_id]
 # --------------------------------------------------------------------------
 # Appends a feedback entry to the component's JSONL file.
 # Schema: {id, component, content, votes, created_at, run_id}
 feedback_append() {
   local component="$1"
   local content="$2"
-  local state_dir="$3"
+  local project_dir="$3"
   local run_id="${4:-}"
 
-  local target="${state_dir}/learning/feedback/${component}.jsonl"
+  local target="${project_dir}/components/${component}/${component}.feedback.jsonl"
+  mkdir -p "$(dirname "$target")"
   local id
   id=$(_orbit_gen_id "fb-" "$content")
   local ts
@@ -40,16 +41,16 @@ feedback_append() {
 }
 
 # --------------------------------------------------------------------------
-# feedback_vote entry_id weight component_name state_dir
+# feedback_vote entry_id weight component_name project_dir
 # --------------------------------------------------------------------------
 # Finds entry by ID prefix and adds weight to its votes field.
 feedback_vote() {
   local entry_id="$1"
   local weight="$2"
   local component="$3"
-  local state_dir="$4"
+  local project_dir="$4"
 
-  local target="${state_dir}/learning/feedback/${component}.jsonl"
+  local target="${project_dir}/components/${component}/${component}.feedback.jsonl"
   if [ ! -f "$target" ]; then
     orbit_warn "No feedback file for component '$component'"
     return 1
@@ -80,14 +81,14 @@ feedback_vote() {
 }
 
 # --------------------------------------------------------------------------
-# feedback_read component_name state_dir
+# feedback_read component_name project_dir
 # --------------------------------------------------------------------------
 # Outputs all feedback for a component, sorted by votes descending.
 feedback_read() {
   local component="$1"
-  local state_dir="$2"
+  local project_dir="$2"
 
-  local target="${state_dir}/learning/feedback/${component}.jsonl"
+  local target="${project_dir}/components/${component}/${component}.feedback.jsonl"
   if [ ! -f "$target" ]; then
     return 0
   fi
@@ -96,16 +97,16 @@ feedback_read() {
 }
 
 # --------------------------------------------------------------------------
-# feedback_assemble component_name limit state_dir
+# feedback_assemble component_name limit project_dir
 # --------------------------------------------------------------------------
 # Assembles feedback as markdown for template injection.
 # Format: ## Feedback (top N by votes)\n[V votes] content
 feedback_assemble() {
   local component="$1"
   local limit="${2:-10}"
-  local state_dir="$3"
+  local project_dir="$3"
 
-  local target="${state_dir}/learning/feedback/${component}.jsonl"
+  local target="${project_dir}/components/${component}/${component}.feedback.jsonl"
   if [ ! -f "$target" ]; then
     return 0
   fi
@@ -134,13 +135,13 @@ feedback_assemble() {
 }
 
 # --------------------------------------------------------------------------
-# feedback_clear component_name state_dir
+# feedback_clear component_name project_dir
 # --------------------------------------------------------------------------
 # Removes the feedback JSONL file for a component.
 feedback_clear() {
   local component="$1"
-  local state_dir="$2"
+  local project_dir="$2"
 
-  local target="${state_dir}/learning/feedback/${component}.jsonl"
+  local target="${project_dir}/components/${component}/${component}.feedback.jsonl"
   rm -f "$target"
 }

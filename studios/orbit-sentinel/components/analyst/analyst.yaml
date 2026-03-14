@@ -1,5 +1,5 @@
 component: analyst
-prompt: prompts/analyst.md
+prompt: components/analyst/analyst.md
 
 preflight:
   - scripts/fetch-source.sh

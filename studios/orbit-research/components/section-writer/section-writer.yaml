@@ -1,5 +1,5 @@
 component: section-writer
-prompt: prompts/section-writer.md
+prompt: components/section-writer/section-writer.md
 
 delivers:
   - output/

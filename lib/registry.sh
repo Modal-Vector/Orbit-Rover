@@ -32,7 +32,7 @@ registry_build() {
 
   # Scan components
   if [[ -d "$comp_dir" ]]; then
-    for yaml_file in "$comp_dir"/*.yaml "$comp_dir"/*.yml; do
+    for yaml_file in "$comp_dir"/*.yaml "$comp_dir"/*.yml "$comp_dir"/*/*.yaml "$comp_dir"/*/*.yml; do
       [[ -f "$yaml_file" ]] || continue
 
       local name status description delivers has_sensors rel_path
@@ -59,7 +59,7 @@ registry_build() {
         has_sensors="true"
       fi
 
-      rel_path="components/$(basename "$yaml_file")"
+      rel_path="${yaml_file#"$project_dir"/}"
 
       # Collect warnings
       local warnings

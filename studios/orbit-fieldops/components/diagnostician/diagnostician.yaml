@@ -1,5 +1,5 @@
 component: diagnostician
-prompt: prompts/diagnostician.md
+prompt: components/diagnostician/diagnostician.md
 
 preflight:
   - scripts/extract-anomalies.sh

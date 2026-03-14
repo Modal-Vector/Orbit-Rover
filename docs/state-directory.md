@@ -37,9 +37,8 @@ source of truth between orbits and between sessions. It should be gitignored.
 │       ├── tasks.json                  # Decomposed task list
 │       └── atomic.json                 # Atomic task definitions
 │
-├── learning/
-│   ├── feedback/
-│   │   └── {component}.jsonl           # Component feedback entries
+├── learning/                           # Insights + decisions (feedback is
+│   │                                    # co-located at components/{name}/{name}.feedback.jsonl)
 │   ├── insights/
 │   │   ├── project.jsonl               # Project-scoped insights
 │   │   ├── mission.{name}.jsonl        # Mission-scoped insights
@@ -92,7 +91,7 @@ source of truth between orbits and between sessions. It should be gitignored.
   "built_at": "2026-03-10T14:30:00Z",
   "components": {
     "section-writer": {
-      "file": "components/section-writer.yaml",
+      "file": "components/section-writer/section-writer.yaml",
       "status": "active",
       "description": "Writes document sections",
       "delivers": ["output/sections/*.md"],

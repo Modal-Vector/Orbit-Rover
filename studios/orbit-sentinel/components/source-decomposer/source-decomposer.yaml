@@ -1,5 +1,5 @@
 component: source-decomposer
-prompt: prompts/source-decomposer.md
+prompt: components/source-decomposer/source-decomposer.md
 
 delivers:
   - .orbit/plans/sentinel/tasks.json

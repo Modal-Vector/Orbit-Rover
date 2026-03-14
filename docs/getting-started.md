@@ -72,10 +72,13 @@ my-project/
 ├── orbit.yaml            # System configuration
 ├── CLAUDE.md             # Agent context (loaded by claude-code in session)
 ├── RISK-REGISTRY.md      # Risk tracking template
-├── components/           # Component YAML definitions
+├── components/           # Component directories (YAML + prompt + feedback)
+│   └── {name}/
+│       ├── {name}.yaml            # Component configuration
+│       ├── {name}.md              # Prompt template
+│       └── {name}.feedback.jsonl  # Feedback (created at runtime)
 ├── missions/             # Mission YAML definitions
 ├── modules/              # Reusable module definitions
-├── prompts/              # Prompt templates (Markdown)
 ├── scripts/              # Lifecycle hooks and helpers
 ├── tools/                # Tool scripts and index
 │   └── _auth-check.sh   # Auth key validation helper
@@ -83,7 +86,7 @@ my-project/
     ├── state/            # Component checkpoints
     ├── runs/             # Mission run state
     ├── plans/            # Task decomposition plans
-    ├── learning/         # Feedback, insights, decisions
+    ├── learning/         # Insights and decisions
     ├── sensors/          # Active sensor state
     ├── triggers/         # Trigger signal files
     ├── manual/           # Approval gate state
@@ -108,12 +111,12 @@ a field reference table, and common mistakes to avoid.
 
 ## Defining a Component
 
-Create `components/my-worker.yaml`:
+Create `components/my-worker/my-worker.yaml`:
 
 ```yaml
 name: my-worker
 description: Processes tasks from the plan
-prompt: prompts/my-worker.md
+prompt: components/my-worker/my-worker.md
 
 agent: claude-code
 model: sonnet
@@ -133,7 +136,7 @@ orbits:
     action: perspective
 ```
 
-Create the prompt template at `prompts/my-worker.md`:
+Create the prompt template at `components/my-worker/my-worker.md`:
 
 ```markdown
 # My Worker — Orbit {orbit.n}/{orbit.max}

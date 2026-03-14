@@ -1,5 +1,5 @@
 component: topic-decomposer
-prompt: prompts/topic-decomposer.md
+prompt: components/topic-decomposer/topic-decomposer.md
 
 delivers:
   - .orbit/plans/research/atomic/

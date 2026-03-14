@@ -75,7 +75,7 @@ orbit dashboard --web
 ### How It Works
 
 1. The bash entry point (`cmd/dashboard.sh`) converts all `missions/*.yaml` and
-   `components/*.yaml` to JSON in `.orbit/webdash-cache/` using `yq`
+   `components/*/*.yaml` to JSON in `.orbit/webdash-cache/` using `yq`
 2. A Python stdlib HTTP server starts, serving the API and static frontend
 3. The server reads cached JSON configs + `.orbit/` runtime state
 4. On each API call, the server checks if YAML source files changed (by mtime)

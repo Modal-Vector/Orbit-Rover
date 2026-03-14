@@ -1,5 +1,5 @@
 component: section-decomposer
-prompt: prompts/section-decomposer.md
+prompt: components/section-decomposer/section-decomposer.md
 
 delivers:
   - .orbit/plans/research/write-tasks.json

@@ -7,16 +7,16 @@ They can run standalone (`orbit run`) or as stages within a mission.
 ## Complete Schema
 
 ```yaml
-# components/{name}.yaml
+# components/{name}/{name}.yaml
 
-component: worker                    # required — unique name, must match filename
+component: worker                    # required — unique name, must match directory and filename
 status: active                       # optional — active | offline (default: active)
 description: "Human-readable desc"   # optional — shown in registry and dashboard
 
 # Agent configuration (all override system defaults from orbit.yaml)
 agent: claude-code                   # optional — claude-code | opencode (default: from orbit.yaml defaults.agent)
 model: sonnet                        # optional — sonnet | opus | haiku (default: from orbit.yaml defaults.model)
-prompt: prompts/worker.md            # required — path to prompt template (relative to project root)
+prompt: components/worker/worker.md   # required — path to prompt template (relative to project root)
 timeout: 300                         # optional — seconds per orbit invocation (default: from orbit.yaml defaults.timeout)
 max_turns: 10                        # optional — agent turn limit per orbit (default: from orbit.yaml defaults.max_turns)
 
@@ -82,7 +82,7 @@ tools:                               # optional — tool governance
 
 ```yaml
 component: hello
-prompt: prompts/hello.md
+prompt: components/hello/hello.md
 
 orbits:
   max: 5
@@ -93,11 +93,11 @@ orbits:
 
 ## Real-World Example
 
-From `studios/orbit-fieldops/components/diagnostician.yaml`:
+From `studios/orbit-fieldops/components/diagnostician/diagnostician.yaml`:
 
 ```yaml
 component: diagnostician
-prompt: prompts/diagnostician.md
+prompt: components/diagnostician/diagnostician.md
 
 preflight:
   - scripts/extract-anomalies.sh
@@ -116,7 +116,7 @@ orbits:
 
 | Field | Type | Default | Notes |
 |-------|------|---------|-------|
-| `component` | string | — | **Required.** Unique name matching filename |
+| `component` | string | — | **Required.** Unique name matching directory and filename |
 | `status` | string | `active` | `active` or `offline` |
 | `description` | string | — | Human-readable, shown in registry |
 | `agent` | string | system default | `claude-code` or `opencode` |
