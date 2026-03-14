@@ -8,6 +8,14 @@ Prior progress:
 What has happened so far:
 {orbit.progress}
 
+## Context
+
+Prior insights:
+{insights}
+
+Active decisions:
+{decisions.summary}
+
 ## Task
 
 Read `.orbit/plans/research/tasks.json`. Find the next incomplete topic (first where `done` is `false`).

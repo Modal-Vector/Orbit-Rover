@@ -8,6 +8,14 @@ Prior progress:
 What has happened so far:
 {orbit.progress}
 
+## Context
+
+Prior insights:
+{insights}
+
+Active decisions:
+{decisions.summary}
+
 ## Task
 
 Read the task list from `.orbit/plans/research/write-tasks.json`. Find the first task where `done` is `false`.

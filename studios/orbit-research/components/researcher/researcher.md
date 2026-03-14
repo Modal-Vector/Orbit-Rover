@@ -8,6 +8,14 @@ Prior progress:
 What has happened so far:
 {orbit.progress}
 
+## Context
+
+Prior insights:
+{insights}
+
+Active decisions:
+{decisions.summary}
+
 ## Task
 
 Read the current atomic task from `.orbit/plans/research/atomic/current.json`. Find the first atomic task where `done` is `false`.

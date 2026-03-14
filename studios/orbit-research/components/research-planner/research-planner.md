@@ -8,6 +8,14 @@ Prior progress:
 What has happened so far:
 {orbit.progress}
 
+## Context
+
+Prior insights:
+{insights}
+
+Active decisions:
+{decisions.summary}
+
 ## Task
 
 Read the research brief at `brief.md`. Create a structured research plan with one task per topic area.
@@ -70,4 +78,12 @@ If you notice patterns worth remembering across runs, emit an insight:
 
 ```xml
 <insight target="project">Observation about research structure or planning</insight>
+```
+
+If you make a methodological decision that should persist across runs (e.g., scope boundaries, topic ordering rationale):
+
+```xml
+<decision target="component:research-planner">
+Decision about research methodology and rationale
+</decision>
 ```

@@ -1,12 +1,20 @@
 # Section Decomposer
 
-You are in a loop. You will not exit this loop until the promise flag is written.
+You are in a loop. You will not exit this loop until the promise flag is written. Make genuine progress this orbit or leave accurate notes so the next orbit can.
 
 Prior progress:
 {orbit.checkpoint}
 
 What has happened so far:
 {orbit.progress}
+
+## Context
+
+Prior insights:
+{insights}
+
+Active decisions:
+{decisions.summary}
 
 ## Task
 
@@ -52,6 +60,30 @@ Each task's `acceptance_criteria` field directly guides the section-writer. Weak
 - **Specific**: Name the concepts, comparisons, or arguments the section must include — don't just restate the title.
 - **Bounded**: Include a target word count range (e.g., 400-800 words) so the writer calibrates depth appropriately.
 - **Quality-aware**: Include at least one criterion about synthesis or analysis, not just coverage. E.g., "Identifies which pattern is best suited for stateless workloads and explains why."
+
+### Learning
+
+If you notice patterns about how findings map to document structure:
+
+```xml
+<insight target="component:section-decomposer">
+Observation about decomposition strategy or section sizing
+</insight>
+```
+
+If you make a structural decision that should persist across runs (e.g., ordering conventions, section grouping strategies):
+
+```xml
+<decision target="component:section-decomposer">
+Decision about document structure convention and rationale
+</decision>
+```
+
+Rate the quality of the decomposition:
+
+```xml
+<feedback>Notes on section structure, acceptance criteria quality, or gaps</feedback>
+```
 
 ### Progress
 
