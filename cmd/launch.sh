@@ -104,7 +104,7 @@ cmd_launch() {
 
   # Create run state
   local run_id
-  run_id=$(_orbit_gen_id "run-" "$mission_name")
+  run_id="$(_orbit_gen_id "run-" "$mission_name")-$(date -u +%Y%m%d-%H:%M)"
   local run_dir="${state_dir}/runs/${run_id}"
   mkdir -p "${run_dir}/stages"
 

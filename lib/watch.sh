@@ -216,7 +216,7 @@ watch_start() {
       orbit_info "Trigger fired for '$name' (source: $basename)"
 
       local run_id
-      run_id=$(_orbit_gen_id "run-" "$name")
+      run_id="$(_orbit_gen_id "run-" "$name")-$(date -u +%Y%m%d-%H:%M)"
       cascade_mark_active "$name" "$run_id" "$state_dir"
 
       _watch_dispatch "$name" "$project_dir" "$state_dir" || true
