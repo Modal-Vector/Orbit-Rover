@@ -271,8 +271,11 @@ component. Hash must use file *content*, not metadata (mtime, size).
 
 **Checkpoint extraction:** if agent output contains `<checkpoint>...</checkpoint>`,
 use that content verbatim. Otherwise take the last 500 words of the raw output.
-Cap at 500 words either way. Write to `.orbit/state/{component}/checkpoint.md`.
-Overwrite each orbit (only keep the latest checkpoint).
+Cap at 500 words either way. Write to the component state directory's
+`checkpoint.md`. In mission context (run_id set):
+`.orbit/runs/{run-id}/state/{component}/checkpoint.md`; standalone:
+`.orbit/state/{component}/checkpoint.md`. Overwrite each orbit (only keep the
+latest checkpoint).
 
 **Cron registration** adds a tagged comment on the same line as the entry:
 ```
@@ -296,11 +299,17 @@ it loops back to the named stage and runs it again. `max_orbits` is a ceiling
 across the entire outer loop, not per inner cycle.
 
 **Progress notes:** agent output may contain `<progress>...</progress>` tags.
-Content is appended (not overwritten) to `.orbit/state/{component}/progress.md`
-with an orbit number header. The accumulated progress is injected into prompts as
-`{orbit.progress}`. ~200 word soft limit per entry. No engine trimming. The
-progress file is cleared at the start of each component run. No fallback
-extraction — if no `<progress>` tag is found, nothing is appended.
+Content is appended (not overwritten) to the component state directory's
+`progress.md` (same run-scoping as checkpoint) with an orbit number header. The
+accumulated progress is injected into prompts as `{orbit.progress}`. ~200 word
+soft limit per entry. No engine trimming. The progress file is cleared at the
+start of each component run. No fallback extraction — if no `<progress>` tag is
+found, nothing is appended.
+
+**Rendered prompt saving:** the fully rendered prompt (after template variable
+substitution and perspective injection) is saved to
+`{comp_state_dir}/prompts/orbit-{n}.md` on every orbit. This provides a complete
+audit trail of what was sent to the agent.
 
 **Manual gate timeout:** `timeout: 72h` means 72 hours from gate open time, not
 from mission start. Store `timeout_at` as ISO-8601 in `prompt.json`. The polling

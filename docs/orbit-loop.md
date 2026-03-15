@@ -46,13 +46,14 @@ Steps in detail:
 
 0. **Check stop signal** — if `stop.json` exists for the current run, exit
    immediately with code 3. Only applies in mission context (`--run-id` set).
-1. **Load checkpoint** from `.orbit/state/{component}/checkpoint.md`
+1. **Load checkpoint** from component state directory
 2. **Render prompt** via `render_template()` with variables:
    - `{orbit.n}` — current orbit number
    - `{orbit.max}` — orbit ceiling
    - `{orbit.checkpoint}` — previous checkpoint text
    - `{component.name}` — component name
    - Perspective prompt (if deadlock was detected)
+2b. **Save rendered prompt** to `prompts/orbit-{n}.md` in the component state directory
 3. **Run preflight hooks** — scripts listed in component config
 4. **Invoke adapter** — spawns agent as fresh subprocess
 5. **Extract checkpoint** from agent output and save to disk
@@ -75,8 +76,10 @@ stateless, the checkpoint is the only mechanism for passing context forward.
 - Otherwise, take the last 500 words of the raw output
 - Cap at 500 words either way
 
-**Storage:** `.orbit/state/{component}/checkpoint.md` — overwritten each orbit
-(only the latest checkpoint is kept).
+**Storage:** `checkpoint.md` in the component state directory — overwritten each
+orbit (only the latest checkpoint is kept). In mission context, this is
+`.orbit/runs/{run-id}/state/{component}/checkpoint.md`; for standalone runs,
+`.orbit/state/{component}/checkpoint.md`.
 
 **Template injection:** The checkpoint is injected into the prompt template as
 `{orbit.checkpoint}`, giving the agent its own previous notes.
@@ -93,9 +96,16 @@ skipped.
 - No fallback — if the agent doesn't emit a `<progress>` tag, nothing is appended
 - ~200 word soft limit per entry (prompt-level guidance, no engine trimming)
 
-**Storage:** `.orbit/state/{component}/progress.md` — append-only within a run.
-Each entry is prefixed with an `## Orbit N` header. The file is cleared at the
-start of each component run (fresh per run, not carried across runs).
+**Storage:** `progress.md` in the component state directory — append-only within
+a run. Each entry is prefixed with an `## Orbit N` header. The file is cleared at
+the start of each component run (fresh per run, not carried across runs). Path
+follows the same run-scoping as checkpoint.
+
+### Rendered Prompts
+
+Every rendered prompt is saved to `prompts/orbit-{n}.md` in the component state
+directory. This provides a complete audit trail of exactly what was sent to the
+agent on each orbit invocation.
 
 **Template injection:** The accumulated progress is injected into the prompt
 template as `{orbit.progress}`, giving the agent the full operational history

@@ -13,8 +13,8 @@ Missing variables are left as literal `{name}` text.
 | Variable | Content | Source |
 |----------|---------|--------|
 | `{orbit.n}` | Current orbit number (1-based) | Runtime |
-| `{orbit.checkpoint}` | Progress note from previous orbit | `.orbit/state/{component}/checkpoint.md` |
-| `{orbit.progress}` | Accumulated operational log from this run | `.orbit/state/{component}/progress.md` |
+| `{orbit.checkpoint}` | Progress note from previous orbit | `checkpoint.md` in component state dir |
+| `{orbit.progress}` | Accumulated operational log from this run | `progress.md` in component state dir |
 | `{orbit.max}` | Maximum orbits configured | Component config |
 | `{decisions.summary}` | Active decisions for current scope | Learning system |
 | `{insights}` | Relevant insights for current scope | Learning system |
@@ -87,7 +87,9 @@ orbit and routes them to the appropriate subsystem.
 
 ### Checkpoint
 
-Captured from agent output and written to `.orbit/state/{component}/checkpoint.md`.
+Captured from agent output and written to `checkpoint.md` in the component state
+directory. In mission context: `.orbit/runs/{run-id}/state/{component}/checkpoint.md`;
+for standalone runs: `.orbit/state/{component}/checkpoint.md`.
 Injected into the next orbit via `{orbit.checkpoint}`. Only the latest is kept.
 
 ```xml
@@ -104,9 +106,10 @@ of the raw output. Either way, capped at 500 words.
 ### Progress Notes
 
 Append-only operational log of what happened across orbits in this run. Extracted
-from `<progress>` tags and appended to `.orbit/state/{component}/progress.md`
-with orbit number headers. Injected into the next orbit via `{orbit.progress}`.
-The file is cleared at the start of each component run.
+from `<progress>` tags and appended to `progress.md` in the component state
+directory (run-scoped when `run_id` is set, global otherwise) with orbit number
+headers. Injected into the next orbit via `{orbit.progress}`. The file is cleared
+at the start of each component run.
 
 Unlike checkpoint, progress has **no fallback extraction** — if the agent doesn't
 emit `<progress>`, nothing is appended. ~200 word soft limit per entry.

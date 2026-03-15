@@ -98,7 +98,7 @@ flowchart LR
 
     ADAPT --> |agent subprocess| AGENT((AI Agent))
     LEARN --> |JSONL| STORE[.orbit/learning/]
-    CKPT --> |markdown| STATE[.orbit/state/]
+    CKPT --> |markdown| STATE[component state dir]
 ```
 
 ## Two-Tier Mission Pattern

@@ -83,8 +83,12 @@ my-project/
 ├── tools/                # Tool scripts and index
 │   └── _auth-check.sh   # Auth key validation helper
 └── .orbit/               # Runtime state (gitignored)
-    ├── state/            # Component checkpoints
-    ├── runs/             # Mission run state
+    ├── state/            # Component state (standalone runs)
+    │   └── {component}/
+    │       ├── checkpoint.md
+    │       ├── progress.md
+    │       └── prompts/  # Rendered prompt per orbit
+    ├── runs/             # Mission run state (includes per-component state)
     ├── plans/            # Task decomposition plans
     ├── learning/         # Insights and decisions
     ├── sensors/          # Active sensor state

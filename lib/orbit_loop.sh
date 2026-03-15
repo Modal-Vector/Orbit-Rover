@@ -164,8 +164,13 @@ orbit_run_component() {
     IFS=',' read -ra postflight <<< "$postflight_str"
   fi
 
-  # Setup state directory
-  local comp_state_dir="${state_dir}/state/${component}"
+  # Setup state directory — scope to run directory when run_id is present
+  local comp_state_dir
+  if [[ -n "$run_id" ]]; then
+    comp_state_dir="${state_dir}/runs/${run_id}/state/${component}"
+  else
+    comp_state_dir="${state_dir}/state/${component}"
+  fi
   local checkpoint_file="${comp_state_dir}/checkpoint.md"
   local progress_file="${comp_state_dir}/progress.md"
   mkdir -p "$comp_state_dir"
@@ -233,6 +238,11 @@ orbit_run_component() {
 ${rendered_prompt}"
       perspective_inject=""
     fi
+
+    # Save rendered prompt for this orbit
+    local prompts_dir="${comp_state_dir}/prompts"
+    mkdir -p "$prompts_dir"
+    printf '%s' "$rendered_prompt" > "${prompts_dir}/orbit-${orbit_count}.md"
 
     # Run preflight hooks
     local preflight_failed=false
