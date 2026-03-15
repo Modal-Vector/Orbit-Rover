@@ -144,13 +144,19 @@ _dash_load_state() {
     _DASH_SENSOR_COUNT=$(ls -1 "${state_dir}/sensors/"*.pid 2>/dev/null | wc -l | tr -d ' ') || _DASH_SENSOR_COUNT=0
   fi
 
-  # Count pending gates
-  if [[ -d "${state_dir}/manual" ]]; then
-    for gate_dir in "${state_dir}/manual"/*/; do
-      [[ -d "$gate_dir" ]] || continue
-      if [[ -f "${gate_dir}prompt.json" ]] && [[ ! -f "${gate_dir}response.json" ]]; then
-        _DASH_GATE_COUNT=$((_DASH_GATE_COUNT + 1))
-      fi
+  # Count pending gates (scoped under runs/*/manual/*/)
+  if [[ -d "${state_dir}/runs" ]]; then
+    local run_dir
+    for run_dir in "${state_dir}/runs"/*/; do
+      [[ -d "$run_dir" ]] || continue
+      [[ -d "${run_dir}manual" ]] || continue
+      local gate_dir
+      for gate_dir in "${run_dir}manual"/*/; do
+        [[ -d "$gate_dir" ]] || continue
+        if [[ -f "${gate_dir}prompt.json" ]] && [[ ! -f "${gate_dir}response.json" ]]; then
+          _DASH_GATE_COUNT=$((_DASH_GATE_COUNT + 1))
+        fi
+      done
     done
   fi
 

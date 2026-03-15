@@ -49,7 +49,7 @@ manual_gate_open() {
   local default_option="$7"
   local state_dir="$8"
 
-  local gate_dir="${state_dir}/manual/${gate_id}"
+  local gate_dir="${state_dir}/runs/${run_id}/manual/${gate_id}"
   mkdir -p "$gate_dir"
 
   local now
@@ -101,8 +101,16 @@ manual_gate_open() {
     current_epoch=$(date -u +%s)
     if [[ $current_epoch -ge $timeout_epoch ]]; then
       orbit_warn "Gate '${gate_id}' timed out — applying default: ${default_option}"
-      # Write timeout response
-      manual_gate_respond "$gate_id" "$default_option" "$state_dir"
+      # Write timeout response directly using the already-scoped gate_dir
+      local timeout_now
+      timeout_now=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+      local timeout_response
+      timeout_response=$(jq -nc \
+        --arg gate_id "$gate_id" \
+        --arg option "$default_option" \
+        --arg responded_at "$timeout_now" \
+        '{gate_id: $gate_id, option: $option, responded_at: $responded_at}')
+      _atomic_write "${gate_dir}/response.json" "$timeout_response"
       echo "$default_option"
       return 0
     fi
@@ -112,14 +120,27 @@ manual_gate_open() {
 }
 
 # Write response.json for a gate
+# Scans runs/*/manual/{gate_id}/ for the pending gate (prompt.json without response.json).
 manual_gate_respond() {
   local gate_id="$1"
   local option="$2"
   local state_dir="$3"
 
-  local gate_dir="${state_dir}/manual/${gate_id}"
+  # Find the pending gate across all runs
+  local gate_dir=""
+  if [[ -d "${state_dir}/runs" ]]; then
+    local run_dir
+    for run_dir in "${state_dir}/runs"/*/; do
+      [[ -d "$run_dir" ]] || continue
+      local candidate="${run_dir}manual/${gate_id}"
+      if [[ -f "${candidate}/prompt.json" ]] && [[ ! -f "${candidate}/response.json" ]]; then
+        gate_dir="$candidate"
+        break
+      fi
+    done
+  fi
 
-  if [[ ! -d "$gate_dir" ]] || [[ ! -f "${gate_dir}/prompt.json" ]]; then
+  if [[ -z "$gate_dir" ]]; then
     orbit_error "Gate '${gate_id}' not found."
     return 1
   fi
@@ -136,34 +157,43 @@ manual_gate_respond() {
 }
 
 # List all pending gates (prompt.json exists, no response.json)
+# Scans runs/*/manual/*/ for pending gates.
 manual_gate_list_pending() {
   local state_dir="$1"
-  local manual_dir="${state_dir}/manual"
+  local runs_dir="${state_dir}/runs"
 
-  if [[ ! -d "$manual_dir" ]]; then
+  if [[ ! -d "$runs_dir" ]]; then
     echo "No pending gates."
     return 0
   fi
 
   local found=false
-  for gate_dir in "$manual_dir"/*/; do
-    [[ -d "$gate_dir" ]] || continue
-    if [[ -f "${gate_dir}prompt.json" ]] && [[ ! -f "${gate_dir}response.json" ]]; then
-      local gate_id mission options timeout_at created_at
-      gate_id=$(jq -r '.gate_id // ""' "${gate_dir}prompt.json" 2>/dev/null)
-      mission=$(jq -r '.mission // ""' "${gate_dir}prompt.json" 2>/dev/null)
-      options=$(jq -r '.options // [] | join(", ")' "${gate_dir}prompt.json" 2>/dev/null)
-      timeout_at=$(jq -r '.timeout_at // ""' "${gate_dir}prompt.json" 2>/dev/null)
-      created_at=$(jq -r '.created_at // ""' "${gate_dir}prompt.json" 2>/dev/null)
+  local run_dir
+  for run_dir in "$runs_dir"/*/; do
+    [[ -d "$run_dir" ]] || continue
+    [[ -d "${run_dir}manual" ]] || continue
+    local gate_dir
+    for gate_dir in "${run_dir}manual"/*/; do
+      [[ -d "$gate_dir" ]] || continue
+      if [[ -f "${gate_dir}prompt.json" ]] && [[ ! -f "${gate_dir}response.json" ]]; then
+        local gate_id mission run_id options timeout_at created_at
+        gate_id=$(jq -r '.gate_id // ""' "${gate_dir}prompt.json" 2>/dev/null)
+        mission=$(jq -r '.mission // ""' "${gate_dir}prompt.json" 2>/dev/null)
+        run_id=$(jq -r '.run_id // ""' "${gate_dir}prompt.json" 2>/dev/null)
+        options=$(jq -r '.options // [] | join(", ")' "${gate_dir}prompt.json" 2>/dev/null)
+        timeout_at=$(jq -r '.timeout_at // ""' "${gate_dir}prompt.json" 2>/dev/null)
+        created_at=$(jq -r '.created_at // ""' "${gate_dir}prompt.json" 2>/dev/null)
 
-      echo "Gate: ${gate_id}"
-      echo "  Mission: ${mission}"
-      echo "  Options: ${options}"
-      echo "  Timeout: ${timeout_at}"
-      echo "  Created: ${created_at}"
-      echo ""
-      found=true
-    fi
+        echo "Gate: ${gate_id}"
+        echo "  Mission: ${mission}"
+        echo "  Run: ${run_id}"
+        echo "  Options: ${options}"
+        echo "  Timeout: ${timeout_at}"
+        echo "  Created: ${created_at}"
+        echo ""
+        found=true
+      fi
+    done
   done
 
   if [[ "$found" == "false" ]]; then
