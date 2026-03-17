@@ -76,19 +76,15 @@ See `docs/architecture.md` for the full design.
 ## Claude Code Development Mode
 
 If you use [Claude Code](https://claude.com/claude-code), Orbit Rover includes
-a development configuration. The root `CLAUDE.md` contains **runtime**
-instructions (used when orbit invokes Claude as an agent). To switch to
-**development** mode with coding standards, architecture invariants, and test
-requirements:
+a development configuration in `claude-dev.md`. To activate **development** mode
+with coding standards, architecture invariants, and test requirements:
 
 ```bash
 # Activate development mode
-mv CLAUDE.md CLAUDE.md.orbit
-mv CONTRIBUTING.md CLAUDE.md
+mv claude-dev.md CLAUDE.md
 
-# When done, restore runtime mode
-mv CLAUDE.md CONTRIBUTING.md
-mv CLAUDE.md.orbit CLAUDE.md
+# When done, restore
+mv CLAUDE.md claude-dev.md
 ```
 
 ## License

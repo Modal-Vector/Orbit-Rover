@@ -5,22 +5,21 @@ Orbit Rover codebase itself (modifying lib/, cmd/, tests/, etc.).
 
 ## Activating Development Mode
 
-By default, the root `CLAUDE.md` is configured for **runtime** — helping Claude
-perform well when invoked by orbit as an agent. To switch to **development** mode:
+By default, there is no root `CLAUDE.md` — this prevents development instructions
+from polluting agent context when orbit invokes Claude from studio subdirectories.
+To activate **development** mode:
 
 ```bash
 # Activate development CLAUDE.md
-mv CLAUDE.md CLAUDE.md.orbit
-mv CONTRIBUTING.md CLAUDE.md
+mv claude-dev.md CLAUDE.md
 
-# When done developing, restore runtime mode
-mv CLAUDE.md CONTRIBUTING.md
-mv CLAUDE.md.orbit CLAUDE.md
+# When done developing, restore
+mv CLAUDE.md claude-dev.md
 ```
 
-When `CONTRIBUTING.md` is renamed to `CLAUDE.md`, Claude Code will load these
+When `claude-dev.md` is renamed to `CLAUDE.md`, Claude Code will load these
 development instructions (coding standards, test requirements, architecture
-invariants) instead of the runtime orbit-loop instructions.
+invariants).
 
 ---
 
@@ -83,8 +82,8 @@ between Rover and Station.
 
 ```
 orbit/                        ← repository root
-├── CLAUDE.md                 ← runtime instructions (orbit-invoked sessions)
-├── CONTRIBUTING.md           ← this file (development instructions)
+├── claude-dev.md             ← this file (development instructions, rename to CLAUDE.md to activate)
+├── CONTRIBUTING.md           ← contributor guide
 ├── orbit                     ← main CLI entry point (bash executable)
 ├── lib/
 │   ├── util.sh               ← shared helpers: logging, ID gen, atomic writes
