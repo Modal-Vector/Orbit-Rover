@@ -3,7 +3,7 @@
     {
       "id": "T-001",
       "title": "Loop-based orchestration patterns",
-      "description": "Research deterministic loop patterns (ReAct, Ralph loop, AutoGPT-style). Document how each handles state, checkpoints, and termination.",
+      "description": "Research deterministic loop patterns (ReAct, orbit loop, AutoGPT-style). Document how each handles state, checkpoints, and termination.",
       "sources": ["https://arxiv.org/abs/2210.03629"],
       "synthesis_goal": "Comparison table of loop-based approaches with pros/cons",
       "done": true

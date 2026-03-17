@@ -117,15 +117,15 @@ orbits:
 **Missing `system:` or `version:`** — Both are required. Without them,
 `orbit doctor` and `orbit run` will fail to load the config.
 
-**Using Station-tier fields and expecting them to work** — Fields like
+**Using Go-engine-tier fields and expecting them to work** — Fields like
 `streams:`, `serve:`, `webhooks:`, and `resource_pool:` are silently warned
 and ignored. Rover logs:
 ```
-[ROVER WARN] orbit.yaml: 'webhooks' not supported in Rover (Station feature). Use file sensors as an alternative.
+[ROVER WARN] orbit.yaml: 'webhooks' not supported in Rover (Go engine feature). Use file sensors as an alternative.
 ```
 
 **`state.backend: postgres`** — Rover warns and falls back to `file`.
-Postgres state requires Station.
+Postgres state requires the Go engine.
 
 **`deadlock_threshold` flat under `orbits:`** — The system config uses a flat
 `orbits.deadlock_threshold` key (unlike components which nest it under

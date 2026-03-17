@@ -193,7 +193,7 @@ flowchart LR
     PY -->|/static/*| BROWSER
 ```
 
-The web dashboard shares the same API contract as Orbit Station (Go), meaning
+The web dashboard shares the same API contract as the Orbit Go engine, meaning
 the same frontend code (HTML/CSS/JS) runs against both backends.
 
 See [Dashboard](dashboard.md) for full details.

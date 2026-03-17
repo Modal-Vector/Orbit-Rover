@@ -49,7 +49,7 @@ The TUI shows:
 ## Web Dashboard
 
 The web dashboard provides a full topology visualization using Cytoscape.js with
-the same PCB-inspired dark theme as Orbit Station.
+the same PCB-inspired dark theme as the Orbit Go engine.
 
 ```bash
 orbit dashboard --web
@@ -94,7 +94,7 @@ orbit dashboard --web --port 8067
       graph_builder.py   ─── Graph topology (port of Go graph.go)
       api_handlers.py    ─── API endpoints + YAML refresh
       learning_handlers.py ── Learning JSONL readers
-      static/            ─── Frontend (from Station, vendored JS)
+      static/            ─── Frontend (vendored JS)
 ```
 
 ### Graph Topology
@@ -144,7 +144,7 @@ mission, and run. Includes cache read ratio calculation.
 
 ### API Endpoints
 
-The Python server exposes the same API contract as Orbit Station:
+The Python server exposes the same API contract as the Orbit Go engine:
 
 | Endpoint | Description |
 |----------|-------------|
@@ -179,10 +179,11 @@ in `lib/webdash/static/js/vendor/`:
 Fonts use the system monospace stack (SF Mono, Fira Code, Cascadia Code,
 JetBrains Mono, Consolas) with no CDN dependencies.
 
-### Station Compatibility
+### Go Engine Compatibility
 
-The web dashboard serves the same frontend and API contract as Orbit Station
-(Go). The `.orbit/` directory is interchangeable — you can start with Rover's
-web dashboard and later switch to Station without changing the frontend.
+The web dashboard serves the same frontend and API contract as the Orbit Go
+engine. The `.orbit/` directory is forward-compatible — you can start with
+Rover's web dashboard and later switch to the Go engine without changing the
+frontend.
 
 [← Back to Index](index.md)

@@ -60,4 +60,4 @@ that accumulates knowledge across runs.
 | [Config Specs](specs/) | Quick-reference YAML schemas for component, mission, module, system, and prompt configs |
 | [CLI Reference](cli-reference.md) | Complete reference for all `orbit` subcommands |
 | [State Directory](state-directory.md) | `.orbit/` directory layout, file formats, and JSONL schemas |
-| [Compatibility](compatibility.md) | Rover-Station compatibility contract and schema versioning |
+| [Compatibility](compatibility.md) | Rover–Go engine compatibility contract and schema versioning |
