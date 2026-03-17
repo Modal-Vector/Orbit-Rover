@@ -123,7 +123,12 @@ flight_rules:
 | `mission` | string | — | **Required.** Unique name matching filename |
 | `status` | string | `active` | `active` or `offline` |
 | `description` | string | — | Human-readable |
-| `sensors` | object | — | Same schema as component sensors |
+| `sensors.paths` | string[] | `[]` | File glob patterns to watch |
+| `sensors.events` | string[] | `[]` | Event types (`modify`, `create`, `delete`) |
+| `sensors.debounce` | string | system default | Quiet period before triggering |
+| `sensors.cascade` | string | `allow` | `allow` or `block` — cascade control mode |
+| `sensors.schedule.every` | string | — | Interval duration (e.g. `30m`) |
+| `sensors.schedule.cron` | string | — | 5-field cron expression |
 | `stages` | list | — | **Required.** Ordered list of stages |
 | `stages[].name` | string | — | **Required.** Unique within mission |
 | `stages[].component` | string | — | Component name (component stage) |
@@ -193,3 +198,10 @@ means 72 hours from when the gate is opened, not from when the mission began.
 
 **Putting `flight_rules` inside `stages`** — Flight rules are a top-level
 mission field, not a property of individual stages.
+
+**Sensors on both mission and component** — If a component defines its own
+sensors AND is referenced in a mission that also has sensors, `orbit watch`
+can invoke the component both standalone and as part of the mission pipeline,
+creating concurrent runs. Define sensors at one level only — typically the
+mission. Remove sensors from component YAML if the component is used in any
+mission.

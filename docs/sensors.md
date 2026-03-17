@@ -7,8 +7,14 @@ last_updated: 2026-03-11
 
 # Sensors
 
-Sensors detect external changes and trigger component execution. Rover supports
-three sensor types: file watch, interval schedule, and cron schedule.
+Sensors detect external changes and trigger execution. Rover supports three
+sensor types: file watch, interval schedule, and cron schedule.
+
+Sensors can be defined on both **components** and **missions**. The schema is
+identical at both levels. Mission sensors trigger an entire pipeline via
+`orbit launch`; component sensors trigger a single component. See
+[Sensors: Missions vs Components](configuration.md#sensors-missions-vs-components)
+for guidance on which level to use.
 
 **Source:** `lib/sensors/`
 
@@ -181,14 +187,15 @@ Steps in detail:
 3. Initialize state directories (triggers, sensors, cascade)
 4. Set cleanup trap (SIGINT/SIGTERM)
 5. Start file watch sensors for all active components with `sensors.paths`
-6. Start interval sensors for all active components with `sensors.schedule.every`
-7. Register cron sensors for all active components with `sensors.schedule.cron`
-8. Enter trigger polling loop:
+6. Start file watch sensors for all active missions with `sensors.paths`
+7. Start interval sensors for all active components/missions with `sensors.schedule.every`
+8. Register cron sensors for all active components/missions with `sensors.schedule.cron`
+9. Enter trigger polling loop:
    - Check `.orbit/triggers/` for new trigger files
-   - Extract component name from filename
-   - Mark component as active in cascade tracker
-   - Dispatch component execution
-   - Mark component as done in cascade tracker
+   - Extract target name from filename
+   - For component triggers: mark active in cascade tracker, dispatch component execution
+   - For mission triggers: invoke `orbit launch` to run the full pipeline
+   - Mark done in cascade tracker
    - Sleep 1 second between polls
 
 ### Cleanup
