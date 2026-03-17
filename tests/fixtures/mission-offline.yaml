@@ -1,0 +1,7 @@
+mission: offline-plan
+status: offline
+description: "An offline mission"
+
+stages:
+  - name: analyse
+    component: task-decomposer

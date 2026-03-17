@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+if [[ "$1" == "-l" ]]; then
+  cat "$MOCK_CRONTAB_FILE" 2>/dev/null || true
+elif [[ "$1" == "-r" ]]; then
+  : > "$MOCK_CRONTAB_FILE"
+else
+  cat "$1" > "$MOCK_CRONTAB_FILE"
+fi

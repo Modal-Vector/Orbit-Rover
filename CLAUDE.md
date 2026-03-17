@@ -36,27 +36,8 @@ with bash 4+, no compiled runtime required.
 
 | Document | Purpose |
 |----------|---------|
-| `SPEC.md` | Complete implementation specification — source of truth for all behaviour |
-| `PROMPTS.md` | Phase-by-phase build prompts with deliverables, constraints, and verification checklists |
 | `docs/` | User-facing documentation (architecture, CLI reference, configuration, etc.) |
 | `docs/specs/` | Quick-reference YAML schemas (component, mission, module, system, prompt) — read these when creating or debugging Orbit configs |
-| `.orbit/progress.md` | Append-only build log from the initial 8-phase implementation |
-
-Consult `SPEC.md` when modifying behaviour to ensure changes remain spec-compliant.
-
-## Session Continuity
-
-Append a progress note to `.orbit/progress.md` at the end of sessions that
-make material changes:
-
-```
-## [date] — [area] — [status: complete/partial]
-**Completed:** [what was finished and is working]
-**Tests:** [bats test status — pass count / total]
-**Partial:** [anything started but not finished]
-**Blocked:** [anything that needs resolution]
-**Next session:** [exactly what to do first]
-```
 
 ## Architecture Invariants
 
@@ -104,8 +85,6 @@ between Rover and Station.
 orbit/                        ← repository root
 ├── CLAUDE.md                 ← runtime instructions (orbit-invoked sessions)
 ├── CONTRIBUTING.md           ← this file (development instructions)
-├── SPEC.md                   ← implementation specification
-├── PROMPTS.md                ← build prompts (historical reference)
 ├── orbit                     ← main CLI entry point (bash executable)
 ├── lib/
 │   ├── util.sh               ← shared helpers: logging, ID gen, atomic writes
@@ -226,9 +205,9 @@ or inside `if`.
 **Atomic writes:** All writes to JSONL files and state files must be atomic.
 Write to a `.tmp` file, then `mv` to the target. Never append partial JSON.
 
-**Unsupported fields:** The warning list in `config.sh` must exactly match
-SPEC.md §20. When Rover encounters a Station-tier field, it warns and continues.
-It never errors on unrecognised fields.
+**Unsupported fields:** The warning list in `config.sh` must exactly match the
+Unsupported Station Fields section below. When Rover encounters a Station-tier
+field, it warns and continues. It never errors on unrecognised fields.
 
 **ID generation:** Do not require `uuidgen`. Generate IDs as:
 ```bash
@@ -263,7 +242,7 @@ Warning format:
 
 ## Key Behaviours (Easy to Break)
 
-When modifying these areas, read the relevant SPEC.md section first.
+When modifying these areas, read the existing implementation and tests carefully.
 
 **Deadlock detection** hashes the content of files listed in `delivers[]`.
 An empty or absent delivers list means deadlock detection is disabled for that

@@ -1,0 +1,19 @@
+system: orbit
+version: 1
+
+defaults:
+  agent: claude-code
+  model: sonnet
+
+webhooks:
+  port: 8080
+
+streams:
+  backend: redis
+
+serve:
+  enabled: true
+  port: 9090
+
+state:
+  backend: postgres

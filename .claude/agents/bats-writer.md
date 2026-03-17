@@ -15,7 +15,7 @@ When invoked, you will be given a lib file or function name to test.
 ## Workflow
 
 1. Read the source file to understand every function and its contract
-2. Read SPEC.md sections relevant to the feature for expected behaviour
+2. Read existing tests and docs relevant to the feature for expected behaviour
 3. Check if a test file already exists for this phase
 4. Write or update the bats test file
 
@@ -53,7 +53,7 @@ teardown() {
 
 **What to test for each function:**
 - Happy path with valid input
-- Edge cases from SPEC.md (empty delivers list, missing files, etc.)
+- Edge cases from the specification (empty delivers list, missing files, etc.)
 - Error handling (invalid input, missing dependencies)
 - Output format matches spec exactly (warning messages, file paths, JSONL schema)
 - Atomic write behaviour (file exists only after success)
@@ -66,7 +66,7 @@ Create fixture files as needed — keep them minimal.
 
 ## Do NOT
 
-- Write tests for behaviour not in SPEC.md
+- Write tests for behaviour not in the specification
 - Add unnecessary assertions (one clear assertion per test preferred)
 - Skip edge cases documented in the spec
 - Use sleep in tests — mock time-dependent behaviour instead

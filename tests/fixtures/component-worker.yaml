@@ -1,0 +1,53 @@
+component: worker
+status: active
+description: "Executes atomic tasks one per orbit"
+
+agent: claude-code
+model: opus
+prompt: prompts/worker.md
+timeout: 600
+max_turns: 15
+
+sensors:
+  paths:
+    - "decisions/**/*.yaml"
+    - "requirements/**/*.yaml"
+  events: [create, modify]
+  debounce: 5s
+  cascade: block
+  schedule:
+    every: 24h
+
+delivers:
+  - "output/report.json"
+  - "output/report.md"
+
+preflight:
+  - scripts/distil-requirements.sh
+  - scripts/validate-inputs.sh
+
+postflight:
+  - scripts/log-result.sh
+
+orbits:
+  max: 30
+  success:
+    when: file
+    condition: output/done.flag
+  deadlock:
+    threshold: 5
+    action: perspective
+
+retry:
+  max_attempts: 2
+  backoff: exponential
+  initial_delay: 5s
+  max_delay: 60s
+  on_timeout: true
+
+tools:
+  assigned:
+    - read-file
+    - write-file
+    - run-tests
+  policy: restricted

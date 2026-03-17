@@ -1,0 +1,31 @@
+component: sensor-test
+status: active
+description: "Test component with all sensor types"
+
+agent: claude-code
+model: sonnet
+prompt: prompts/test.md
+timeout: 60
+max_turns: 5
+
+sensors:
+  paths:
+    - "input/**/*.txt"
+    - "data/*.json"
+  events: [create, modify]
+  debounce: 2s
+  cascade: block
+  schedule:
+    every: 1s
+
+delivers:
+  - "output/result.txt"
+
+orbits:
+  max: 5
+  success:
+    when: file
+    condition: output/done.flag
+  deadlock:
+    threshold: 3
+    action: abort

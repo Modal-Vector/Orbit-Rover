@@ -1,0 +1,20 @@
+module: risk-review
+status: active
+description: "Verify risk control chain for a specific risk ID"
+
+parameters:
+  risk_id:
+    required: true
+    description: "Risk identifier (e.g. RISK-008)"
+
+stages:
+  - name: "validate-{risk_id}"
+    component: ddr-validator
+
+  - name: "analyse-{risk_id}"
+    component: regulatory-analyst
+    depends_on:
+      - "validate-{risk_id}"
+
+delivers:
+  - "traceability/risk-{risk_id}-report.md"

@@ -182,4 +182,4 @@ bats tests/phase1-core.bats
 
 ## License
 
-[MIT](LICENSE) -- Modal Vector
+[Apache License 2.0](LICENSE) -- Modal Vector

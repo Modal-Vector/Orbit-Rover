@@ -1,0 +1,6 @@
+component: unsupported-worker
+status: active
+description: "Component with unsupported fields"
+
+resource_pool: gpu-cluster
+inflight: 5

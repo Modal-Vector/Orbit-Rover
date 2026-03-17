@@ -14,6 +14,5 @@ asking any AI tool to help create or debug Orbit configs.
 
 ## Source of Truth
 
-These docs are derived from [`SPEC.md`](../../SPEC.md) and reflect what
-[`lib/config.sh`](../../lib/config.sh) actually parses. When in doubt,
-SPEC.md is canonical.
+These docs reflect what [`lib/config.sh`](../../lib/config.sh) actually parses.
+When in doubt, the implementation and tests are canonical.

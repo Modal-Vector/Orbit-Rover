@@ -1,0 +1,41 @@
+#!/usr/bin/env bash
+# Mock claude binary for testing.
+# Logs arguments to MOCK_LOG_FILE, outputs MOCK_OUTPUT content.
+# Exits with MOCK_EXIT_CODE (default 0).
+# If MOCK_COUNTER_FILE is set, increments counter and uses MOCK_OUTPUT_N for Nth call.
+
+if [ -n "${MOCK_LOG_FILE:-}" ]; then
+  echo "$*" >> "$MOCK_LOG_FILE"
+fi
+
+exit_code="${MOCK_EXIT_CODE:-0}"
+
+if [ -n "${MOCK_COUNTER_FILE:-}" ]; then
+  count=0
+  if [ -f "$MOCK_COUNTER_FILE" ]; then
+    count=$(cat "$MOCK_COUNTER_FILE")
+  fi
+  count=$((count + 1))
+  echo "$count" > "$MOCK_COUNTER_FILE"
+
+  # Check for orbit-specific output
+  var_name="MOCK_OUTPUT_${count}"
+  if [ -n "${!var_name:-}" ]; then
+    echo "${!var_name}"
+    exit "${MOCK_EXIT_CODE:-0}"
+  fi
+
+  # Check for orbit-specific exit code
+  exit_var="MOCK_EXIT_CODE_${count}"
+  if [ -n "${!exit_var:-}" ]; then
+    exit_code="${!exit_var}"
+  fi
+fi
+
+if [ -n "${MOCK_OUTPUT_FILE:-}" ] && [ -f "${MOCK_OUTPUT_FILE}" ]; then
+  cat "$MOCK_OUTPUT_FILE"
+elif [ -n "${MOCK_OUTPUT:-}" ]; then
+  echo "$MOCK_OUTPUT"
+fi
+
+exit "$exit_code"

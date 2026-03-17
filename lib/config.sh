@@ -8,7 +8,7 @@ ORBIT_LIB_DIR="${ORBIT_LIB_DIR:-$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)}"
 source "$ORBIT_LIB_DIR/yaml.sh"
 
 # --------------------------------------------------------------------------
-# Unsupported fields — SPEC.md §20 (explicit list, not dynamic detection)
+# Unsupported Station fields (explicit list, not dynamic detection)
 # --------------------------------------------------------------------------
 
 _UNSUPPORTED_FIELDS=(

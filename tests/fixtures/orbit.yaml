@@ -1,0 +1,20 @@
+system: orbit
+version: 1
+
+defaults:
+  agent: claude-code
+  model: sonnet
+  timeout: 300
+  max_turns: 10
+
+settings:
+  log_level: info
+  workspace: .
+  state_dir: .orbit
+
+orbits:
+  default_max: 20
+  deadlock_threshold: 3
+
+sensors:
+  debounce_default: 5s

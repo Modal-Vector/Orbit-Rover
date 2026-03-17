@@ -1,0 +1,39 @@
+mission: implement
+status: active
+description: "Implementation mission"
+
+sensors:
+  paths:
+    - ".orbit/plans/*/tasks.json"
+  events: [create, modify]
+  debounce: 10s
+  schedule:
+    cron: "0 2 * * *"
+
+stages:
+  - name: decompose
+    component: task-decomposer
+    waypoint: true
+
+  - name: work
+    component: worker
+    depends_on: [decompose]
+    orbits_to: decompose
+    max_orbits: 100
+    orbit_exit:
+      when: bash
+      condition: "jq -e '[.tasks[] | select(.done == false)] | length == 0' tasks.json"
+
+  - name: gate
+    type: manual
+    prompt: "Review the outputs before proceeding."
+    options: [approve, reject]
+    timeout: 72h
+    default: reject
+    depends_on: [work]
+
+flight_rules:
+  - name: cost-ceiling
+    condition: "metrics.cost_usd < 10.00"
+    on_violation: abort
+    message: "Mission exceeded cost ceiling"

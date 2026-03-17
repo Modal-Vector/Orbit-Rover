@@ -1,0 +1,5 @@
+component: offline-worker
+status: offline
+description: "An offline component"
+delivers:
+  - "output/result.txt"

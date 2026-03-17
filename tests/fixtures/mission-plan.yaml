@@ -1,0 +1,7 @@
+mission: plan
+status: active
+description: "Planning mission"
+
+stages:
+  - name: analyse
+    component: task-decomposer

@@ -2,13 +2,10 @@
 .env
 .env.*
 
-# Design documents (kept separate)
+# Design / build documents (not shipped)
 Design/
 SPEC.md
 PROMPTS.md
-
-# Tests
-tests/
 
 # Runtime state
 .orbit/
