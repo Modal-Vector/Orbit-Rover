@@ -155,30 +155,65 @@ Before exiting, emit a checkpoint so the next orbit knows where you left off:
 
 ### Feedback
 
-Self-improvement suggestions for the component's prompt. Stored in
-`components/{component}/{component}.feedback.jsonl`. Surfaced via `{feedback.summary}`.
+A general-purpose improvement signal for the component. Agents should emit
+`<feedback>` tags to communicate anything that would help them do their job
+better. This is not limited to prompt suggestions; it includes:
+
+- Scripts or tools that would make a task tractable or faster
+- MCP servers or external capabilities that would expand what the agent can do
+- Workflow changes that would reduce repeated errors or unnecessary orbits
+- Clearer prompt structure or missing context in the current instructions
+- Validation steps that should exist but do not
+- Any observation that would improve future performance
+
+Stored in `components/{component}/{component}.feedback.jsonl`. Surfaced via
+`{feedback.summary}`.
+
+Examples:
 
 ```xml
+<!-- Prompt improvement -->
 <feedback>
-The validation step should also check for future-dated entries — this keeps
+The validation step should also check for future-dated entries — this is
 causing false positives in the compliance report.
+</feedback>
+
+<!-- Missing tooling -->
+<feedback>
+A source distillation script would significantly reduce context usage. The
+preflight passes the full source directory; filtering to task-relevant sections
+would improve both quality and cost.
+</feedback>
+
+<!-- Missing capability -->
+<feedback>
+An MCP server for the internal literature database would remove the manual
+search step and allow direct querying by topic and date range.
 </feedback>
 ```
 
-Vote on existing feedback:
+Vote on existing feedback to reinforce signals that remain relevant:
+
 ```xml
-<vote id="fb-0023" weight="2">Still relevant — recurring issue</vote>
+<vote id="fb-0023" weight="2">Still relevant — recurring issue across multiple runs</vote>
 ```
 
-**How to instruct the agent:** Tell the agent what kind of observations warrant
-feedback and where to emit it relative to the checkpoint:
+**How to instruct the agent:** Tell the agent to emit feedback for any
+observation that would improve the system, not just prompt problems. Frame it
+broadly:
 
 ```markdown
-If you notice a process issue, a gap in your instructions, or something that
-would make future orbits more effective, report it:
+If you encounter a gap in your tooling, a missing script, a capability that
+would make this work easier, or anything else that would help future orbits,
+report it:
 
-<feedback>What went wrong or could be improved, and why it matters</feedback>
+<feedback>What is needed and why — be specific about what it would enable</feedback>
 ```
+
+**Acting on feedback:** Feedback accumulates across runs and can be acted on
+autonomously by a dedicated improvement mission. See the
+[Learning System](../learning-system.md) documentation for the improvement
+mission pattern.
 
 ### Insights
 

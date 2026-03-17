@@ -3,10 +3,13 @@
 Bash-based agent orchestration engine — the open-source, zero-infrastructure
 tier of the [Orbit](https://github.com/Modal-Vector/orbit) platform.
 
-Rover runs on any POSIX system with bash 4+ and implements the **Ralph loop**
-pattern: a deterministic orbit loop that invokes an AI agent repeatedly until a
-success condition is met, with deadlock detection, checkpoint continuity, and a
-learning system that accumulates knowledge across orbits.
+Rover runs on any POSIX system with bash 4+ and implements the **orbit loop**
+pattern: a deterministic execution loop, inspired by the *ralph loop* of
+spacecraft navigation, that invokes an AI agent repeatedly until a success
+condition is met. Like a spacecraft making repeated correction manoeuvres to
+achieve orbital insertion, the loop corrects course on each pass, with
+deadlock detection, checkpoint continuity, and a learning system that
+accumulates knowledge across runs.
 
 ![TUI Dashboard](docs/images/tui-dashboard.png)
 
@@ -56,7 +59,8 @@ cd my-project
 - **Tool governance** — auth keys, policy flags, request/grant/deny workflow
 - **Manual gates** — human approval checkpoints with configurable timeouts
 - **Modules** — reusable stage groups with parameterised templates
-- **Adapters** — pluggable agent backends (Claude Code, OpenCode)
+- **Adapters** — pluggable agent backends (Claude Code, OpenCode, Ollama for
+  fully offline local inference)
 - **Dashboard** — terminal TUI (gum) and web topology graph (Cytoscape.js)
 
 ![Web Dashboard](docs/images/web-dashboard.png)
@@ -73,7 +77,8 @@ cd my-project
 At least one agent adapter: `claude` (Claude Code CLI) or `opencode`.
 
 Optional: `inotifywait` (efficient file watching), `cron` (schedule sensors),
-`gum` (styled TUI dashboard), `ollama` (local models).
+`gum` (styled TUI dashboard), `ollama` (local models for fully offline
+deployment).
 
 ```bash
 ./orbit doctor   # verify all dependencies

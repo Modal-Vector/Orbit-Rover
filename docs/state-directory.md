@@ -176,10 +176,11 @@ these conventions:
 - Timestamps are ISO-8601 UTC
 - Files are created on first write (no pre-initialisation needed)
 
-## Interchangeability
+## Forward Compatibility
 
-The `.orbit/` directory format is designed to be interchangeable between Rover
-(bash) and Station (Go). Both implementations read and write the same file
-formats, enabling promotion from Rover to Station without data migration.
+The `.orbit/` directory format is designed to be forward-compatible with the
+Orbit Go engine, which is in active development. Both implementations read and
+write the same file formats, so projects built with Rover today will run without
+data migration when the Go engine ships.
 
 [← Back to Index](index.md)

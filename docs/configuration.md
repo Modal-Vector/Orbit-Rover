@@ -150,6 +150,17 @@ Mission YAML files live in `missions/` and orchestrate multiple components.
 name: transform
 description: Transform a source document
 
+# Sensors — reactive triggers for the mission pipeline
+sensors:
+  paths:
+    - plans/tasks.json
+  events:
+    - create
+  debounce: 10s
+  cascade: block
+  schedule:
+    cron: "0 2 * * *"           # Nightly at 2am
+
 stages:
   - name: decompose
     component: section-decomposer
@@ -220,6 +231,41 @@ flowchart TD
 Available metrics: `metrics.total_tokens`, `metrics.cost_usd`,
 `metrics.duration_seconds`, `metrics.orbit_count`.
 
+### Mission Fields
+
+| Field | Type | Default | Description |
+|-------|------|---------|-------------|
+| `mission` | string | required | Unique mission name (must match filename) |
+| `status` | string | `active` | Mission status (`active` or `offline`) |
+| `description` | string | — | Human-readable description |
+| `sensors.paths` | string[] | `[]` | File glob patterns to watch |
+| `sensors.events` | string[] | `[]` | Event types (modify, create, delete) |
+| `sensors.debounce` | string | system default | Quiet period before triggering |
+| `sensors.cascade` | string | `allow` | Cascade control mode |
+| `sensors.schedule.every` | string | — | Interval duration (e.g. `30m`) |
+| `sensors.schedule.cron` | string | — | Cron expression |
+
+## Sensors: Missions vs Components
+
+**Mission sensors** are the common pattern. They trigger an entire pipeline in
+response to an external event — a cron schedule, a file appearing, or an
+interval timer. All three studios (orbit-research, orbit-fieldops,
+orbit-sentinel) define sensors on missions, not components.
+
+**Component sensors** are for standalone components run outside a mission context
+via `orbit watch`. This is useful for single-purpose reactive workers that don't
+need multi-stage orchestration.
+
+> **Overlap warning:** If a component defines its own sensors AND appears in a
+> mission stage where the mission also has sensors, `orbit watch` can invoke the
+> component both as a standalone trigger and as part of the mission pipeline.
+> This creates concurrent runs of the same component, which can corrupt state or
+> produce duplicate work.
+>
+> To avoid this, define sensors at one level only — typically the mission. If a
+> component is used in any mission, remove sensors from the component YAML and
+> let the mission control when it runs.
+
 ## Module Configuration
 
 Modules are reusable stage groups with parameters, defined in `modules/`.
@@ -249,24 +295,24 @@ Run with parameters:
 ./orbit run research-block --params '{"topic":"ai-safety","depth":"deep"}'
 ```
 
-## Unsupported Station Fields
+## Unsupported Go Engine Fields
 
-Rover warns and ignores these Station-tier fields in YAML:
+Rover warns and ignores these Go-engine-tier fields in YAML:
 
 | Field | Warning | Alternative |
 |-------|---------|-------------|
-| `resource_pool` | Station feature | — |
-| `inflight` | Station feature | — |
-| `streams` / `streams.backend` | Station feature | — |
-| `webhooks` | Station feature | Use file sensors |
-| `serve` / `serve.enabled` / `serve.port` | Station feature | — |
-| `deployment: contained` | Station feature | — |
-| `deployment: c2` | Station feature | — |
-| `state.backend: postgres` | Station feature | Falls back to file |
+| `resource_pool` | Go engine feature | — |
+| `inflight` | Go engine feature | — |
+| `streams` / `streams.backend` | Go engine feature | — |
+| `webhooks` | Go engine feature | Use file sensors |
+| `serve` / `serve.enabled` / `serve.port` | Go engine feature | — |
+| `deployment: contained` | Go engine feature | — |
+| `deployment: c2` | Go engine feature | — |
+| `state.backend: postgres` | Go engine feature | Falls back to file |
 
 Warning format:
 ```
-[ROVER WARN] orbit.yaml: 'webhooks' not supported in Rover (Station feature). Use file sensors as an alternative.
+[ROVER WARN] orbit.yaml: 'webhooks' not supported in Rover (Go engine feature). Use file sensors as an alternative.
 ```
 
 [← Back to Index](index.md)

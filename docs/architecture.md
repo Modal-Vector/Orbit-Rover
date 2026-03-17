@@ -41,9 +41,13 @@ Rover has no context window monitoring, no compaction signals, no background
 context size checks. Context exhaustion is prevented by task sizing at design
 time (the decomposer pattern), not detected at runtime.
 
-## The Ralph Loop
+## The Orbit Loop
 
-The Ralph loop is the core execution pattern:
+The orbit loop is the core execution pattern. Its name draws from the *ralph
+loop*, a spacecraft navigation concept describing the repeated correction
+manoeuvres a vessel makes to achieve and maintain orbit. Like its namesake,
+the orbit loop runs until a stable condition is reached, correcting course on
+each pass.
 
 ```mermaid
 flowchart TD

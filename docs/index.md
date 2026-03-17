@@ -9,10 +9,12 @@ Orbit Rover is a bash-based agent orchestration engine — the open-source,
 zero-infrastructure tier of the Orbit platform. It runs on any POSIX system
 with bash 4+, no compiled runtime required.
 
-Rover implements the **Ralph loop** pattern: a deterministic orbit loop that
-invokes an AI agent repeatedly until a success condition is met, with deadlock
-detection, checkpoint continuity, and a learning system that accumulates
-knowledge across orbits.
+Rover implements the **orbit loop** pattern: a deterministic execution loop,
+inspired by the *ralph loop* of spacecraft navigation, that invokes an AI agent
+repeatedly until a success condition is met. Like a spacecraft making repeated
+correction manoeuvres to achieve orbital insertion, the loop corrects course on
+each pass, with deadlock detection, checkpoint continuity, and a learning system
+that accumulates knowledge across runs.
 
 ## Start Here
 
