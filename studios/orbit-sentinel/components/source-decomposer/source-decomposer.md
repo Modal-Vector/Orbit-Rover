@@ -10,7 +10,7 @@ What has happened so far:
 
 ## Task
 
-Read the watchlist at `watchlist.yaml`. For each source entry, create an analyst task in `.orbit/plans/sentinel/tasks.json`. Your job is to turn each watchlist entry into a **specific analytical brief** — not just copy the source metadata.
+Read the watchlist at `watchlist.yaml`. For each source entry, create an analyst task in `{mission.run_dir}/plans/sentinel/tasks.json`. Your job is to turn each watchlist entry into a **specific analytical brief** — not just copy the source metadata.
 
 The `description` field is the analyst's primary instruction. It must tell the analyst exactly what to look for, what signals matter, and what to flag. A vague description like "monitor for changes" is useless — the analyst needs concrete guidance.
 

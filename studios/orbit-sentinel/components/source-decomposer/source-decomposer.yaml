@@ -2,10 +2,10 @@ component: source-decomposer
 prompt: components/source-decomposer/source-decomposer.md
 
 delivers:
-  - .orbit/plans/sentinel/tasks.json
+  - "{mission.run_dir}/plans/sentinel/tasks.json"
 
 orbits:
   max: 3
   success:
     when: file
-    condition: .orbit/plans/sentinel/tasks.json
+    condition: "{mission.run_dir}/plans/sentinel/tasks.json"

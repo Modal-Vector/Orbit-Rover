@@ -64,7 +64,7 @@ delivers:
 # Sensors — reactive triggers
 sensors:
   paths:
-    - .orbit/plans/tasks.json
+    - plans/tasks.json
   events:
     - modify
   debounce: 5s
@@ -87,7 +87,7 @@ orbits:
     when: bash                # file | bash
     condition: >
       jq '[.tasks[] | select(.done == false)] | length == 0'
-      .orbit/plans/research/tasks.json
+      {mission.run_dir}/plans/research/tasks.json
   deadlock:
     threshold: 3
     action: perspective       # perspective | abort

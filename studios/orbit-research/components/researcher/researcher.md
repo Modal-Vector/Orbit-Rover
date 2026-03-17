@@ -18,7 +18,7 @@ Active decisions:
 
 ## Task
 
-Read the current atomic task from `.orbit/plans/research/atomic/current.json`. Find the first atomic task where `done` is `false`.
+Read the current atomic task from `{mission.run_dir}/plans/research/atomic/current.json`. Find the first atomic task where `done` is `false`.
 
 The preflight scripts have already distilled source material. Read:
 - `sources/{task-id}/distilled.md` — distilled source content (max 8KB)

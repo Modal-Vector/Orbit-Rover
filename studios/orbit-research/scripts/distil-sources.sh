@@ -4,7 +4,7 @@ set -euo pipefail
 # distil-sources.sh — Distil raw sources to structured text for the researcher
 # Handles HTML stripping and PDF text extraction, caps output at 8KB.
 
-ATOMIC_FILE=".orbit/plans/research/atomic/current.json"
+ATOMIC_FILE="${ORBIT_RUN_DIR:-.orbit}/plans/research/atomic/current.json"
 
 if [ ! -f "$ATOMIC_FILE" ]; then
   echo "[ORBIT WARN] No atomic tasks file at $ATOMIC_FILE" >&2

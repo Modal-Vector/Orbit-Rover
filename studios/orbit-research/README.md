@@ -93,9 +93,9 @@ This is a waypoint — the mission pauses for review before continuing.
 | Path | Description |
 |------|-------------|
 | `brief.md` | Research brief — objective, audience, voice, scope, output format |
-| `.orbit/plans/research/tasks.json` | Topic-level task list (created by planner) |
-| `.orbit/plans/research/atomic/current.json` | Atomic tasks for the current topic |
-| `.orbit/plans/research/write-tasks.json` | Section writing task list |
+| `.orbit/runs/{run-id}/plans/research/tasks.json` | Topic-level task list (created by planner, run-scoped) |
+| `.orbit/runs/{run-id}/plans/research/atomic/current.json` | Atomic tasks for the current topic (run-scoped) |
+| `.orbit/runs/{run-id}/plans/research/write-tasks.json` | Section writing task list (run-scoped) |
 | `sources/{task-id}/distilled.md` | Distilled source material (max 8KB, preflight output) |
 | `findings/{task-id}.md` | Per-task research findings |
 | `findings/index.md` | Auto-generated index of all findings (rebuilt each orbit by `extract-findings.sh`) |

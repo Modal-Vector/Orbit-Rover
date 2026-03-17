@@ -25,7 +25,7 @@ quiet period.
 sensors:
   paths:
     - src/**/*.md
-    - .orbit/plans/tasks.json
+    - plans/tasks.json
   events:
     - modify
   debounce: 5s

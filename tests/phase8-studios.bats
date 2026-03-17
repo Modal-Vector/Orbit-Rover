@@ -320,7 +320,7 @@ yaml_get() {
 @test "research: section-decomposer delivers write-tasks.json" {
   local comp="$STUDIOS_DIR/orbit-research/components/section-decomposer/section-decomposer.yaml"
   run yq -r '.delivers[0]' "$comp"
-  assert_output ".orbit/plans/research/write-tasks.json"
+  assert_output "{mission.run_dir}/plans/research/write-tasks.json"
 }
 
 @test "research: section-writer has deadlock_threshold 5" {

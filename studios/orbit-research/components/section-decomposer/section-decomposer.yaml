@@ -2,10 +2,10 @@ component: section-decomposer
 prompt: components/section-decomposer/section-decomposer.md
 
 delivers:
-  - .orbit/plans/research/write-tasks.json
+  - "{mission.run_dir}/plans/research/write-tasks.json"
 
 orbits:
   max: 3
   success:
     when: file
-    condition: .orbit/plans/research/write-tasks.json
+    condition: "{mission.run_dir}/plans/research/write-tasks.json"

@@ -82,7 +82,7 @@ sources:
 | Path | Description |
 |------|-------------|
 | `watchlist.yaml` | Sources to monitor — name, URL, type, priority, tags |
-| `.orbit/plans/sentinel/tasks.json` | Per-run task list (one task per watchlist source) |
+| `.orbit/runs/{run-id}/plans/sentinel/tasks.json` | Per-run task list (one task per watchlist source, run-scoped) |
 | `sources/{task-id}/distilled.md` | Distilled source content, max 8KB (preflight output) |
 | `findings/{task-id}.md` | Analyst findings per source |
 | `intelligence/daily-brief.md` | Consolidated daily intelligence brief |

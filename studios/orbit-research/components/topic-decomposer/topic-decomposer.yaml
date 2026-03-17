@@ -2,12 +2,12 @@ component: topic-decomposer
 prompt: components/topic-decomposer/topic-decomposer.md
 
 delivers:
-  - .orbit/plans/research/atomic/
+  - "{mission.run_dir}/plans/research/atomic/"
 
 orbits:
   max: 5
   success:
     when: bash
     condition: |
-      test -d .orbit/plans/research/atomic && \
-      find .orbit/plans/research/atomic -name '*.json' | head -1 | grep -q .
+      test -d {mission.run_dir}/plans/research/atomic && \
+      find {mission.run_dir}/plans/research/atomic -name '*.json' | head -1 | grep -q .

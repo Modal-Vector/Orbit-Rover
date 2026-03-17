@@ -13,7 +13,7 @@ tools:
   policy: restricted
 
 delivers:
-  - .orbit/plans/fieldops/tasks.json
+  - "{mission.run_dir}/plans/fieldops/tasks.json"
 
 orbits:
   max: 20
@@ -23,4 +23,4 @@ orbits:
     when: bash
     condition: |
       jq -e '[.tasks[] | select(.done == false)] | length == 0' \
-        .orbit/plans/fieldops/tasks.json
+        {mission.run_dir}/plans/fieldops/tasks.json

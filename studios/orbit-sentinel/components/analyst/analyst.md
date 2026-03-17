@@ -10,7 +10,7 @@ What has happened so far:
 
 ## Task
 
-Read the task list from `.orbit/plans/sentinel/tasks.json`. Find the first task where `done` is `false`.
+Read the task list from `{mission.run_dir}/plans/sentinel/tasks.json`. Find the first task where `done` is `false`.
 
 The task's `description` field is your analytical brief — it tells you what to look for in this source. Use it to focus your analysis. Do not treat every source the same way; the description exists to direct your attention to what matters for this specific source.
 

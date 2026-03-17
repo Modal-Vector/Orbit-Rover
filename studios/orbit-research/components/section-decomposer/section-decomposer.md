@@ -20,7 +20,7 @@ Active decisions:
 
 Read the completed research findings in `findings/`. Decompose the findings into sections for sequential writing.
 
-For each section, write one task entry to `.orbit/plans/research/write-tasks.json`:
+For each section, write one task entry to `{mission.run_dir}/plans/research/write-tasks.json`:
 
 ```json
 {

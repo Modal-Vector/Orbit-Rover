@@ -22,7 +22,7 @@ else
 fi
 
 # Check tasks for any failed verifications
-TASKS_FILE=".orbit/plans/fieldops/tasks.json"
+TASKS_FILE="${ORBIT_RUN_DIR:-.orbit}/plans/fieldops/tasks.json"
 if [ -f "$TASKS_FILE" ]; then
   FAILED=$(jq '[.tasks[] | select(.done == true and .verification_failed == true)] | length' "$TASKS_FILE" 2>/dev/null || echo "0")
   if [ "$FAILED" -gt 0 ]; then

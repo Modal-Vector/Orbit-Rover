@@ -148,6 +148,18 @@ orbit_run_component() {
     return 1
   fi
 
+  # Compute run_dir for path substitution
+  local run_dir
+  if [[ -n "$run_id" ]]; then
+    run_dir="${state_dir}/runs/${run_id}"
+  else
+    run_dir="${state_dir}"
+  fi
+
+  # Substitute {mission.run_dir} in success_condition and delivers
+  success_condition="${success_condition//\{mission.run_dir\}/${run_dir}}"
+  delivers_str="${delivers_str//\{mission.run_dir\}/${run_dir}}"
+
   # Parse comma-separated lists into arrays
   local delivers=()
   if [ -n "$delivers_str" ]; then
@@ -164,10 +176,13 @@ orbit_run_component() {
     IFS=',' read -ra postflight <<< "$postflight_str"
   fi
 
+  # Export run_dir for preflight/postflight scripts
+  export ORBIT_RUN_DIR="$run_dir"
+
   # Setup state directory — scope to run directory when run_id is present
   local comp_state_dir
   if [[ -n "$run_id" ]]; then
-    comp_state_dir="${state_dir}/runs/${run_id}/state/${component}"
+    comp_state_dir="${run_dir}/state/${component}"
   else
     comp_state_dir="${state_dir}/state/${component}"
   fi
@@ -228,7 +243,10 @@ orbit_run_component() {
       "orbit.checkpoint=$checkpoint" \
       "orbit.progress=$progress" \
       "orbit.max=$orbits_max" \
-      "component.name=$component")
+      "component.name=$component" \
+      "mission.name=$mission" \
+      "mission.run_id=$run_id" \
+      "mission.run_dir=$run_dir")
 
     # Perspective reframe: if the previous orbit triggered deadlock with
     # action=perspective, prepend the reframe prompt to force a new approach

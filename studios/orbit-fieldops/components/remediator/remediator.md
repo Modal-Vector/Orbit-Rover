@@ -10,7 +10,7 @@ What has happened so far:
 
 ## Task
 
-Read the task list from `.orbit/plans/fieldops/tasks.json`. Find the first task where `done` is `false`.
+Read the task list from `{mission.run_dir}/plans/fieldops/tasks.json`. Find the first task where `done` is `false`.
 
 Apply the remediation using ONLY the assigned tools:
 - `notify-operator` — send notifications to the operator

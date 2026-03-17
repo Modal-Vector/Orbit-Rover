@@ -16,7 +16,7 @@ Diagnose the anomalies and create a remediation plan:
 
 1. Analyse each anomaly pattern in the report
 2. Correlate anomalies to identify root causes
-3. Create remediation tasks in `.orbit/plans/fieldops/tasks.json`:
+3. Create remediation tasks in `{mission.run_dir}/plans/fieldops/tasks.json`:
 
 ```json
 {

@@ -18,9 +18,9 @@ Active decisions:
 
 ## Task
 
-Read `.orbit/plans/research/tasks.json`. Find the next incomplete topic (first where `done` is `false`).
+Read `{mission.run_dir}/plans/research/tasks.json`. Find the next incomplete topic (first where `done` is `false`).
 
-Break this topic into atomic research tasks and write them to `.orbit/plans/research/atomic/current.json`:
+Break this topic into atomic research tasks and write them to `{mission.run_dir}/plans/research/atomic/current.json`:
 
 ```json
 {

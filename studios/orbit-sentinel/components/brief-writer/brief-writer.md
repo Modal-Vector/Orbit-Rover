@@ -13,7 +13,7 @@ What has happened so far:
 Synthesise all analyst findings into a single daily intelligence brief at `intelligence/daily-brief.md`.
 
 1. Read all files in `findings/` — each is a per-source analysis from the analyst stage
-2. Read `.orbit/plans/sentinel/tasks.json` for source metadata (names, types, status)
+2. Read `{mission.run_dir}/plans/sentinel/tasks.json` for source metadata (names, types, status)
 3. Write `intelligence/daily-brief.md` following the format below
 4. Archive the brief: copy `intelligence/daily-brief.md` to
    `intelligence/briefs/brief-YYYY-MM-DD-HHMMSS.md` using the current UTC

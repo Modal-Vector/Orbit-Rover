@@ -107,6 +107,7 @@ cmd_launch() {
   run_id="$(_orbit_gen_id "run-" "$mission_name")-$(date -u +%Y%m%d-%H:%M)"
   local run_dir="${state_dir}/runs/${run_id}"
   mkdir -p "${run_dir}/stages"
+  mkdir -p "${run_dir}/plans"
 
   local now
   now=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
@@ -202,7 +203,7 @@ cmd_launch() {
     orbits_to=$(echo "$stage_json" | jq -r '.orbits_to // empty')
 
     if [[ -n "$orbits_to" ]]; then
-      _execute_orbits_to_loop "$stage_json" "$project_dir" "$state_dir" "$run_dir" total_orbits "$run_id" || {
+      _execute_orbits_to_loop "$stage_json" "$project_dir" "$state_dir" "$run_dir" total_orbits "$run_id" "$mission_name" || {
         local ot_exit=$?
         if [[ $ot_exit -eq 3 ]]; then
           _write_stage_state "$run_dir" "$stage_name" "stopped" "operator stop"
@@ -216,7 +217,7 @@ cmd_launch() {
       }
     else
       echo "Executing stage '$stage_name' (component: $comp_name)"
-      _execute_stage_component "$stage_json" "$project_dir" "$state_dir" "$run_id" || {
+      _execute_stage_component "$stage_json" "$project_dir" "$state_dir" "$run_id" "$mission_name" || {
         local stage_exit=$?
         if [[ $stage_exit -eq 3 ]]; then
           _write_stage_state "$run_dir" "$stage_name" "stopped" "operator stop"
@@ -430,6 +431,7 @@ _execute_orbits_to_loop() {
   local run_dir="$4"
   local -n _total_orbits=$5
   local run_id="${6:-}"
+  local mission_name="${7:-}"
 
   local stage_name orbits_to max_orbits
   stage_name=$(echo "$stage_json" | jq -r '.name')
@@ -439,6 +441,9 @@ _execute_orbits_to_loop() {
   local exit_when exit_condition
   exit_when=$(echo "$stage_json" | jq -r '.orbit_exit.when // "bash"')
   exit_condition=$(echo "$stage_json" | jq -r '.orbit_exit.condition // "false"')
+
+  # Substitute {mission.run_dir} in exit condition
+  exit_condition="${exit_condition//\{mission.run_dir\}/${run_dir}}"
 
   echo "Executing orbits_to loop: ${stage_name} → ${orbits_to} (max: ${max_orbits})"
 
@@ -458,7 +463,7 @@ _execute_orbits_to_loop() {
     fi
 
     # Execute the stage component
-    _execute_stage_component "$stage_json" "$project_dir" "$state_dir" "$run_id" || {
+    _execute_stage_component "$stage_json" "$project_dir" "$state_dir" "$run_id" "$mission_name" || {
       local comp_exit=$?
       if [[ $comp_exit -eq 3 ]]; then
         return 3
@@ -493,6 +498,7 @@ _execute_stage_component() {
   local project_dir="$2"
   local state_dir="$3"
   local run_id="${4:-}"
+  local mission_name="${5:-}"
 
   local comp_name
   comp_name=$(echo "$stage_json" | jq -r '.component // empty')
@@ -514,6 +520,7 @@ _execute_stage_component() {
   local args=()
   _build_component_args args "$comp_name" "$state_dir"
   [[ -n "$run_id" ]] && args+=(--run-id "$run_id")
+  [[ -n "$mission_name" ]] && args+=(--mission "$mission_name")
   orbit_run_component "${args[@]}"
 }
 

@@ -300,7 +300,7 @@ Prior progress:
 
 ## Task
 
-Read the task list from `.orbit/plans/current/tasks.json`. Find the first
+Read the task list from `{mission.run_dir}/plans/current/tasks.json`. Find the first
 task where `done` is `false`.
 
 1. Read the task description and any prior notes from previous orbits
@@ -362,7 +362,7 @@ Prior progress:
 
 ## Task
 
-Read the task list from `.orbit/plans/fieldops/tasks.json`. Find the first task where `done` is `false`.
+Read the task list from `{mission.run_dir}/plans/fieldops/tasks.json`. Find the first task where `done` is `false`.
 
 Apply the remediation using ONLY the assigned tools:
 - `notify-operator` — send notifications to the operator

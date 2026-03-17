@@ -44,11 +44,11 @@ flowchart LR
 ```
 
 1. **Plan mission:** `research-planner` reads the research brief and creates a
-   topic-level task list in `.orbit/plans/research/tasks.json`
+   topic-level task list in `.orbit/runs/{run-id}/plans/research/tasks.json`
 2. **Research mission:** `topic-decomposer` breaks each topic into atomic tasks,
    `researcher` investigates one per orbit with preflight source distillation
 3. **Write mission:** `section-decomposer` reads completed findings and creates
-   section tasks in `.orbit/plans/research/write-tasks.json`, `section-writer`
+   section tasks in `.orbit/runs/{run-id}/plans/research/write-tasks.json`, `section-writer`
    writes one section per orbit
 
 ### Components

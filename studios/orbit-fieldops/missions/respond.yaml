@@ -22,7 +22,7 @@ stages:
       when: bash
       condition: |
         jq -e '[.tasks[] | select(.done == false)] | length == 0' \
-          .orbit/plans/fieldops/tasks.json
+          {mission.run_dir}/plans/fieldops/tasks.json
 
 flight_rules:
   - name: cost-ceiling

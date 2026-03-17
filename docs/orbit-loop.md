@@ -138,7 +138,7 @@ success:
   when: bash
   condition: >
     jq '[.tasks[] | select(.done == false)] | length == 0'
-    .orbit/plans/tasks.json
+    {mission.run_dir}/plans/tasks.json
 ```
 
 Succeeds when the bash expression exits with code 0.

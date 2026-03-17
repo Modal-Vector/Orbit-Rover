@@ -4,7 +4,7 @@ set -euo pipefail
 # fetch-source.sh — Fetch raw content from the current task's source URL
 # Reads the current task from tasks.json and downloads the source content.
 
-TASKS_FILE=".orbit/plans/sentinel/tasks.json"
+TASKS_FILE="${ORBIT_RUN_DIR:-.orbit}/plans/sentinel/tasks.json"
 
 if [ ! -f "$TASKS_FILE" ]; then
   echo "[ORBIT WARN] No tasks file found at $TASKS_FILE" >&2

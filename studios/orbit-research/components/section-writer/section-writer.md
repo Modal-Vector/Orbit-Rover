@@ -18,7 +18,7 @@ Active decisions:
 
 ## Task
 
-Read the task list from `.orbit/plans/research/write-tasks.json`. Find the first task where `done` is `false`.
+Read the task list from `{mission.run_dir}/plans/research/write-tasks.json`. Find the first task where `done` is `false`.
 
 1. Read `brief.md` for the research objective, audience, and expected output format
 2. Read the context files listed in the task (research findings from `findings/`)

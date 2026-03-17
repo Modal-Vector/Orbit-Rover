@@ -69,7 +69,7 @@ start a second mission while one is running.
 |------|-------------|
 | `logs/anomaly-trigger` | Marker file — external log processor creates this to trigger the mission |
 | `logs/anomaly-report.json` | Structured anomaly patterns (preflight output from `extract-anomalies.sh`) |
-| `.orbit/plans/fieldops/tasks.json` | Remediation task list (created by diagnostician, consumed by remediator) |
+| `.orbit/runs/{run-id}/plans/fieldops/tasks.json` | Remediation task list (created by diagnostician, consumed by remediator, run-scoped) |
 | `.orbit/tool-auth/remediator.json` | Auth keys granted for restricted tools |
 | `.orbit/state/remediator/last-health-check.json` | Most recent health check result (written by `check-health` tool) |
 | `RISK-REGISTRY.md` | Risk classification and approval policy for all tools |

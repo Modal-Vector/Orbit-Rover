@@ -16,7 +16,7 @@ description: "Human-readable desc"   # optional — shown in registry and dashbo
 # Sensors — triggers for watch mode (orbit watch)
 sensors:                             # optional — same schema as component sensors
   paths:
-    - ".orbit/plans/*/tasks.json"
+    - "tasks/*/done.flag"
   events: [create, modify]
   debounce: 10s
   schedule:
@@ -43,7 +43,7 @@ stages:
       when: bash                     # file | bash
       condition: |                   # file path or bash expression
         jq -e '[.tasks[] | select(.done == false)] | length == 0' \
-          .orbit/plans/project/tasks.json
+          {mission.run_dir}/plans/project/tasks.json
 
   # Manual gate — human approval checkpoint
   - name: review-gate
@@ -107,7 +107,7 @@ stages:
       when: bash
       condition: |
         jq -e '[.tasks[] | select(.done == false)] | length == 0' \
-          .orbit/plans/fieldops/tasks.json
+          {mission.run_dir}/plans/fieldops/tasks.json
 
 flight_rules:
   - name: cost-ceiling

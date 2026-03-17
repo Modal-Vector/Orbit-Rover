@@ -103,13 +103,13 @@ preflight:
   - scripts/extract-anomalies.sh
 
 delivers:
-  - .orbit/plans/fieldops/tasks.json
+  - "{mission.run_dir}/plans/fieldops/tasks.json"
 
 orbits:
   max: 5
   success:
     when: file
-    condition: .orbit/plans/fieldops/tasks.json
+    condition: "{mission.run_dir}/plans/fieldops/tasks.json"
 ```
 
 ## Field Reference

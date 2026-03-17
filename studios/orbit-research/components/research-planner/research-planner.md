@@ -20,7 +20,7 @@ Active decisions:
 
 Read the research brief at `brief.md`. Create a structured research plan with one task per topic area.
 
-Write to `.orbit/plans/research/tasks.json`:
+Write to `{mission.run_dir}/plans/research/tasks.json`:
 
 ```json
 {

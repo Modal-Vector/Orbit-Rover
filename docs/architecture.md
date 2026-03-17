@@ -24,8 +24,9 @@ is stateless and ephemeral — it starts fresh every orbit.
 ### Disk is the Only Memory
 
 State lives in `.orbit/`. Insights and decisions live in `.orbit/learning/`.
-Feedback is co-located with components. Task state lives in `.orbit/plans/`.
-Nothing of value lives in memory between invocations.
+Feedback is co-located with components. Task state lives in
+`.orbit/runs/{run-id}/plans/` (scoped to each mission run). Nothing of value
+lives in memory between invocations.
 Checkpoints bridge orbits by persisting agent context to disk.
 
 ### Promise Flag Exit
@@ -127,8 +128,9 @@ flowchart TD
     DONE([Mission complete ✓])
 ```
 
-The decomposer breaks work into atomic tasks stored in `.orbit/plans/`. The
-worker processes one task per orbit, checking off completions. The `orbits_to`
+The decomposer breaks work into atomic tasks stored in the run-scoped plans
+directory (`.orbit/runs/{run-id}/plans/`). The worker processes one task per
+orbit, checking off completions. The `orbits_to`
 mechanism loops the worker stage back to itself until all tasks are done.
 
 ## Component Lifecycle

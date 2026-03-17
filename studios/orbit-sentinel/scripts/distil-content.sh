@@ -5,7 +5,7 @@ set -euo pipefail
 # Reads raw.html from the current task's source directory, strips tags,
 # and caps output at 8KB.
 
-TASKS_FILE=".orbit/plans/sentinel/tasks.json"
+TASKS_FILE="${ORBIT_RUN_DIR:-.orbit}/plans/sentinel/tasks.json"
 
 if [ ! -f "$TASKS_FILE" ]; then
   echo "[ORBIT WARN] No tasks file found at $TASKS_FILE" >&2

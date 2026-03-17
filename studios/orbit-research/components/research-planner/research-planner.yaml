@@ -2,10 +2,10 @@ component: research-planner
 prompt: components/research-planner/research-planner.md
 
 delivers:
-  - .orbit/plans/research/tasks.json
+  - "{mission.run_dir}/plans/research/tasks.json"
 
 orbits:
   max: 3
   success:
     when: file
-    condition: .orbit/plans/research/tasks.json
+    condition: "{mission.run_dir}/plans/research/tasks.json"

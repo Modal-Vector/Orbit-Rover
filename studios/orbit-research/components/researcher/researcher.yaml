@@ -16,4 +16,4 @@ orbits:
     when: bash
     condition: |
       jq -e '[.tasks[] | select(.done == false)] | length == 0' \
-        .orbit/plans/research/tasks.json
+        {mission.run_dir}/plans/research/tasks.json
