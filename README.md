@@ -1,17 +1,12 @@
+![TUI Dashboard](docs/images/Tui_dashboard.png)
+
 # Orbit Rover
 
-Bash-based agent orchestration engine — the open-source, zero-infrastructure
-tier of the [Orbit](https://github.com/Modal-Vector/orbit) platform.
+Bash-based agent orchestration engine — the open-source, zero-infrastructure tier of the Orbit platform (under active development).
 
-Rover runs on any POSIX system with bash 4+ and implements the **orbit loop**
-pattern: a deterministic execution loop, inspired by the *ralph loop* of
-spacecraft navigation, that invokes an AI agent repeatedly until a success
-condition is met. Like a spacecraft making repeated correction manoeuvres to
-achieve orbital insertion, the loop corrects course on each pass, with
-deadlock detection, checkpoint continuity, and a learning system that
-accumulates knowledge across runs.
+Rover runs on any POSIX system with bash 4+ and implements the **orbit loop** pattern: a deterministic execution loop, inspired by the *ralph loop*. based around the metaphor of spacecraft navigation, orbit  invokes a CLI AI agent repeatedly until a success condition is met. 
 
-![TUI Dashboard](docs/images/tui-dashboard.png)
+Like a spacecraft making repeated correction manoeuvres to achieve orbital stability, the loop corrects course on each pass, with deadlock detection, checkpoint continuity, and a learning system that accumulates knowledge across runs.
 
 ## Quick Start
 
@@ -61,6 +56,11 @@ cd my-project
 - **Modules** — reusable stage groups with parameterised templates
 - **Adapters** — pluggable agent backends (Claude Code, OpenCode, Ollama for
   fully offline local inference)
+- **Self-healing** — deadlock detection, waypoint recovery, checkpoint
+  continuity, and atomic writes combine to handle failures without intervention
+- **Self-evolution** — the learning system accumulates domain knowledge across
+  runs; improvement missions can act on feedback to refine prompts, scripts,
+  and configurations
 - **Dashboard** — terminal TUI (gum) and web topology graph (Cytoscape.js)
 
 ![Web Dashboard](docs/images/web-dashboard.png)
@@ -104,6 +104,7 @@ my-project/
 orbit init <name>         Create a new project
 orbit run <component>     Run a single component
 orbit launch <mission>    Execute a mission
+orbit stop <mission>      Graceful stop (exit code 3)
 orbit trigger <name>      Fire a manual trigger
 orbit watch               Start sensor monitoring
 orbit dashboard           TUI dashboard (--web for topology graph)
@@ -135,10 +136,22 @@ Rover's core invariants:
   lives in memory between invocations.
 - **Promise flag exit.** The loop runs until the success condition is satisfied.
   `orbits.max` is a safety ceiling, not the intended exit mechanism.
+- **Deterministic/adaptive boundary.** Sensors, preflight scripts, and success
+  conditions are deterministic. LLM agents handle only what requires judgment.
+  The expensive adaptive layer is never asked to do work a script can handle.
+
+Exit codes:
+
+| Code | Meaning |
+|------|---------|
+| 0 | Promise flag satisfied |
+| 1 | Orbit ceiling reached or deadlock abort |
+| 2 | Flight rule violation |
+| 3 | Graceful stop (`orbit stop`) |
 
 The `.orbit/` directory format is interchangeable with
-[Orbit Station](https://github.com/Modal-Vector/orbit) (Go) — you can start
-with Rover and promote to Station without data migration.
+Orbit Station (Go, under active development) — you can start with Rover and
+promote to Station without data migration.
 
 See [docs/architecture.md](docs/architecture.md) for the full design.
 
@@ -146,9 +159,14 @@ See [docs/architecture.md](docs/architecture.md) for the full design.
 
 Three example projects in `studios/`:
 
-- **orbit-research** — research + writing pipeline (plan, research, write)
-- **orbit-sentinel** — intelligence monitoring with file sensors
-- **orbit-fieldops** — autonomous field operations with approval gates
+- **orbit-research** — plan → research → write pipeline showing the
+  decompose-execute pattern, `orbits_to` looping, and preflight source
+  distillation
+- **orbit-sentinel** — daily intelligence monitoring with cron sensors,
+  iterative analysis over a source watchlist, and manual approval gate with
+  timeout
+- **orbit-fieldops** — autonomous incident response with restricted tool
+  governance, file-sensor triggering, and cascade blocking
 
 ## Documentation
 
