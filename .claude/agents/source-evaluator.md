@@ -12,7 +12,7 @@ or distilled content file), evaluate whether it merits deep analysis.
 
 You will be given one or more of:
 - A source URL
-- A file path to distilled content (e.g. `sources/{task-id}/distilled.md`)
+- A file path to distilled content (e.g. `{run-dir}/sources/{task-id}/distilled.md`)
 - A description of the source from a task list
 
 ## Evaluation Criteria

@@ -382,7 +382,7 @@ yaml_get() {
 @test "sentinel: brief-writer delivers daily-brief.md" {
   local comp="$STUDIOS_DIR/orbit-sentinel/components/brief-writer/brief-writer.yaml"
   run yq -r '.delivers[0]' "$comp"
-  assert_output "intelligence/daily-brief.md"
+  assert_output "{mission.run_dir}/intelligence/daily-brief.md"
 }
 
 @test "sentinel: analyst has preflight scripts" {

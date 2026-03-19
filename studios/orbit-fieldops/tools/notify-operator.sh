@@ -9,7 +9,7 @@ SEVERITY="${1:-info}"
 shift
 MESSAGE="${*:-No message provided}"
 
-NOTIFY_DIR=".orbit/notifications"
+NOTIFY_DIR="${ORBIT_RUN_DIR}/notifications"
 mkdir -p "$NOTIFY_DIR"
 
 TIMESTAMP=$(date -u +%Y-%m-%dT%H:%M:%SZ)

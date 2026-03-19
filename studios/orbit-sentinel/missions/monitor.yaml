@@ -30,7 +30,7 @@ stages:
     type: manual
     prompt: |
       Daily intelligence brief ready.
-      Review: intelligence/daily-brief.md
+      Review: {mission.run_dir}/intelligence/daily-brief.md
       Approve to archive and reset, reject to iterate.
     options: [approve, reject]
     timeout: 12h

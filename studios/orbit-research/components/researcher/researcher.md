@@ -21,17 +21,17 @@ Active decisions:
 Read the current atomic task from `{mission.run_dir}/plans/research/atomic/current.json`. Find the first atomic task where `done` is `false`.
 
 The preflight scripts have already distilled source material. Read:
-- `sources/{task-id}/distilled.md` — distilled source content (max 8KB)
-- `findings/index.md` — findings from previously completed topics
+- `{mission.run_dir}/sources/{task-id}/distilled.md` — distilled source content (max 8KB)
+- `{mission.run_dir}/findings/index.md` — findings from previously completed topics
 
 1. Analyse the distilled source material
-2. Write findings to `findings/{task-id}.md`
+2. Write findings to `{mission.run_dir}/findings/{task-id}.md`
 3. Mark the atomic task as `done: true` in `current.json`
 4. If all atomic tasks for this topic are done, mark the topic as `done: true` in `tasks.json`
 
 ### Output Format
 
-Write `findings/{task-id}.md` with:
+Write `{mission.run_dir}/findings/{task-id}.md` with:
 - **Source**: what was analysed (include type, date if available, and relevance to the research goal)
 - **Key Findings**: lead with the most significant finding, not the first thing you read; each finding should be a claim supported by specific evidence from the source
 - **Cross-References**: specific connections to other topics or prior findings — cite the finding ID and explain the relationship (supports, contradicts, extends), not just "related to T-002"
@@ -51,11 +51,11 @@ Observation about source quality or research approach
 
 **Claims vs evidence:** Distinguish between what the source explicitly states and what you infer. Mark inferences clearly (e.g., "this suggests…" or "inferring from the architecture…"). Never present an inference as a direct finding.
 
-**Conflicting sources:** When findings contradict prior results in `findings/index.md`, document both positions and the basis for each. Do not silently prefer one over the other. Flag the conflict in Cross-References so downstream components can address it.
+**Conflicting sources:** When findings contradict prior results in `{mission.run_dir}/findings/index.md`, document both positions and the basis for each. Do not silently prefer one over the other. Flag the conflict in Cross-References so downstream components can address it.
 
 **Primary vs inferred findings:** A primary finding is directly supported by evidence in the source material. An inferred finding is a conclusion you draw by connecting multiple pieces of evidence. Label each finding accordingly.
 
-**Cross-reference expectations:** After writing findings, check `findings/index.md` for at least one meaningful connection. If no connection exists, note why this topic stands alone — isolation is acceptable but should be conscious.
+**Cross-reference expectations:** After writing findings, check `{mission.run_dir}/findings/index.md` for at least one meaningful connection. If no connection exists, note why this topic stands alone — isolation is acceptable but should be conscious.
 
 ### Evidence Quality
 

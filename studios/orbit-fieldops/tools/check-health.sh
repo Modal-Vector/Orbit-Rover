@@ -28,7 +28,7 @@ fi
 
 echo "[HEALTH] Checking $SERVICE at $ENDPOINT"
 
-RESULT_DIR=".orbit/state/remediator"
+RESULT_DIR="${ORBIT_RUN_DIR}/state/remediator"
 mkdir -p "$RESULT_DIR"
 
 if curl -sf --max-time 10 "$ENDPOINT" > /dev/null 2>&1; then

@@ -10,7 +10,7 @@ What has happened so far:
 
 ## Task
 
-The preflight script has extracted anomaly data from system logs. Read the structured anomaly report at `logs/anomaly-report.json`.
+The preflight script has extracted anomaly data from system logs. Read the structured anomaly report at `{mission.run_dir}/logs/anomaly-report.json`.
 
 Diagnose the anomalies and create a remediation plan:
 

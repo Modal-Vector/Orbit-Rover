@@ -52,7 +52,7 @@ cp orbit.yaml.edge orbit.yaml
 
 | Stage | Component | Behaviour |
 |-------|-----------|-----------|
-| `diagnose` (waypoint) | diagnostician | Preflight: `extract-anomalies.sh` parses log files and writes `logs/anomaly-report.json`. Diagnostician analyses patterns, correlates root causes, creates remediation tasks. |
+| `diagnose` (waypoint) | diagnostician | Preflight: `extract-anomalies.sh` parses log files and writes `{run-dir}/logs/anomaly-report.json`. Diagnostician analyses patterns, correlates root causes, creates remediation tasks. |
 | `remediate` | remediator | Applies one fix per orbit using assigned tools. Postflight: `validate-fix.sh` checks health and verifies no tasks have `verification_failed`. Loops back to diagnose (max 20 orbits). |
 
 **Trigger**: The mission starts when an external log processor creates
@@ -68,10 +68,10 @@ start a second mission while one is running.
 | Path | Description |
 |------|-------------|
 | `logs/anomaly-trigger` | Marker file — external log processor creates this to trigger the mission |
-| `logs/anomaly-report.json` | Structured anomaly patterns (preflight output from `extract-anomalies.sh`) |
+| `.orbit/runs/{run-id}/logs/anomaly-report.json` | Structured anomaly patterns (preflight output from `extract-anomalies.sh`) |
 | `.orbit/runs/{run-id}/plans/fieldops/tasks.json` | Remediation task list (created by diagnostician, consumed by remediator, run-scoped) |
 | `.orbit/tool-auth/remediator.json` | Auth keys granted for restricted tools |
-| `.orbit/state/remediator/last-health-check.json` | Most recent health check result (written by `check-health` tool) |
+| `.orbit/runs/{run-id}/state/remediator/last-health-check.json` | Most recent health check result (written by `check-health` tool) |
 | `RISK-REGISTRY.md` | Risk classification and approval policy for all tools |
 
 ## Tool Governance

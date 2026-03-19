@@ -12,7 +12,7 @@ and would be invisible to single-source analysis.
 ## Input
 
 You will be given:
-- Current findings directory (e.g. `findings/`)
+- Current findings directory (e.g. `{run-dir}/findings/`)
 - Historical findings from prior runs (if available)
 - The watchlist sources being monitored (`watchlist.yaml`)
 

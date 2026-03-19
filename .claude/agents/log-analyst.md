@@ -13,7 +13,7 @@ symptoms from causes.
 ## Input
 
 You will be given one or more of:
-- An anomaly report (`logs/anomaly-report.json`)
+- An anomaly report (`{run-dir}/logs/anomaly-report.json`)
 - Raw log files or excerpts
 - A specific anomaly ID to investigate deeper
 

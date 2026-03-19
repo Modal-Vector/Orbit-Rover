@@ -8,7 +8,7 @@ preflight:
   - scripts/extract-findings.sh
 
 delivers:
-  - findings/
+  - "{mission.run_dir}/findings/"
 
 orbits:
   max: 200

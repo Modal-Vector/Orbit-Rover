@@ -12,8 +12,8 @@ conflicts, cascade risks, and sequencing errors that could make things worse.
 ## Input
 
 You will be given:
-- A remediation task list (`.orbit/plans/fieldops/tasks.json`)
-- The anomaly report that produced it (`logs/anomaly-report.json`)
+- A remediation task list (`{run-dir}/plans/fieldops/tasks.json`)
+- The anomaly report that produced it (`{run-dir}/logs/anomaly-report.json`)
 - Optionally, prior findings or the diagnostician's checkpoint
 
 ## Analysis Dimensions

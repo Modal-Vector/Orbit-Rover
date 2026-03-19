@@ -18,7 +18,7 @@ Active decisions:
 
 ## Task
 
-Read the completed research findings in `findings/`. Decompose the findings into sections for sequential writing.
+Read the completed research findings in `{mission.run_dir}/findings/`. Decompose the findings into sections for sequential writing.
 
 For each section, write one task entry to `{mission.run_dir}/plans/research/write-tasks.json`:
 
@@ -30,7 +30,7 @@ For each section, write one task entry to `{mission.run_dir}/plans/research/writ
       "title": "Section heading",
       "description": "What transformation to apply",
       "acceptance_criteria": "What the section must contain",
-      "context_files": ["findings/T-001.md", "findings/T-002.md"],
+      "context_files": ["{mission.run_dir}/findings/T-001.md", "{mission.run_dir}/findings/T-002.md"],
       "done": false
     }
   ]

@@ -28,7 +28,7 @@ if [ -z "$SOURCE_URL" ]; then
 fi
 
 # Create output directory
-OUTPUT_DIR="sources/${TASK_ID}"
+OUTPUT_DIR="${ORBIT_RUN_DIR}/sources/${TASK_ID}"
 mkdir -p "$OUTPUT_DIR"
 
 # Fetch the source content

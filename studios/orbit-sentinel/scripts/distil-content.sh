@@ -20,8 +20,8 @@ if [ -z "$TASK_ID" ]; then
   exit 0
 fi
 
-RAW_FILE="sources/${TASK_ID}/raw.html"
-OUTPUT_FILE="sources/${TASK_ID}/distilled.md"
+RAW_FILE="${ORBIT_RUN_DIR}/sources/${TASK_ID}/raw.html"
+OUTPUT_FILE="${ORBIT_RUN_DIR}/sources/${TASK_ID}/distilled.md"
 
 if [ ! -f "$RAW_FILE" ]; then
   echo "[ORBIT WARN] No raw content at $RAW_FILE" >&2

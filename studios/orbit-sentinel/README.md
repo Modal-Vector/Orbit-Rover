@@ -48,8 +48,8 @@ orbit reject monitor     # reject to iterate further
 |-------|-----------|-----------|
 | `decompose` (waypoint) | source-decomposer | Reads `watchlist.yaml`, creates one task per source with URL, type, priority, and tags. |
 | `analyse` | analyst | One source per orbit. Preflight: `fetch-source.sh` downloads the source; `distil-content.sh` strips HTML and caps at 8KB. Analyst writes findings. Loops back to decompose (max 100 orbits). |
-| `assemble` | brief-writer | Reads all `findings/*.md` and synthesises `intelligence/daily-brief.md` with priority grouping and executive summary. |
-| `brief-gate` | manual gate | Pauses for human review of `intelligence/daily-brief.md`. 12h timeout — defaults to approve if no action taken. |
+| `assemble` | brief-writer | Reads all `{run-dir}/findings/*.md` and synthesises `{run-dir}/intelligence/daily-brief.md` with priority grouping and executive summary. |
+| `brief-gate` | manual gate | Pauses for human review of `{run-dir}/intelligence/daily-brief.md`. 12h timeout — defaults to approve if no action taken. |
 
 **Trigger**: Cron schedule, daily at 06:00 UTC.
 
@@ -83,10 +83,10 @@ sources:
 |------|-------------|
 | `watchlist.yaml` | Sources to monitor — name, URL, type, priority, tags |
 | `.orbit/runs/{run-id}/plans/sentinel/tasks.json` | Per-run task list (one task per watchlist source, run-scoped) |
-| `sources/{task-id}/distilled.md` | Distilled source content, max 8KB (preflight output) |
-| `findings/{task-id}.md` | Analyst findings per source |
-| `intelligence/daily-brief.md` | Consolidated daily intelligence brief |
-| `intelligence/briefs/brief-*.md` | Timestamped archive of each brief |
+| `.orbit/runs/{run-id}/sources/{task-id}/distilled.md` | Distilled source content, max 8KB (preflight output) |
+| `.orbit/runs/{run-id}/findings/{task-id}.md` | Analyst findings per source |
+| `.orbit/runs/{run-id}/intelligence/daily-brief.md` | Consolidated daily intelligence brief |
+| `.orbit/runs/{run-id}/intelligence/briefs/brief-*.md` | Timestamped archive of each brief |
 
 ## Configuration
 

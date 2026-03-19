@@ -14,7 +14,7 @@ you verify the *anomaly* is gone.
 
 You will be given:
 - The remediation task that was just completed (from `tasks.json`)
-- The original anomaly report (`logs/anomaly-report.json`)
+- The original anomaly report (`{run-dir}/logs/anomaly-report.json`)
 - Current system state (logs, health endpoints, metrics)
 - The remediator's checkpoint describing what was done
 

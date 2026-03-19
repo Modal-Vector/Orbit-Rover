@@ -14,17 +14,17 @@ Read the task list from `{mission.run_dir}/plans/sentinel/tasks.json`. Find the 
 
 The task's `description` field is your analytical brief — it tells you what to look for in this source. Use it to focus your analysis. Do not treat every source the same way; the description exists to direct your attention to what matters for this specific source.
 
-The preflight scripts have already fetched and distilled the source content. Read the distilled content at `sources/{task-id}/distilled.md`.
+The preflight scripts have already fetched and distilled the source content. Read the distilled content at `{mission.run_dir}/sources/{task-id}/distilled.md`.
 
 1. Read the task description to understand your analytical focus for this source
 2. Analyse the distilled content against that brief — look for the specific signals it asks for
-3. Write findings to `findings/{task-id}.md`
+3. Write findings to `{mission.run_dir}/findings/{task-id}.md`
 4. Mark the task as `done: true` in `tasks.json`
 5. Emit insights for patterns worth remembering across runs
 
 ### Output Format
 
-Write `findings/{task-id}.md` with:
+Write `{mission.run_dir}/findings/{task-id}.md` with:
 - **Source**: name and type
 - **Key Signals**: bullet list of notable items
 - **Assessment**: brief analysis of significance

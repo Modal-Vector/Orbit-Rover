@@ -7,7 +7,7 @@ set -euo pipefail
 HEALTH_STATUS=0
 
 # Check if health check endpoint results exist
-HEALTH_FILE=".orbit/state/remediator/last-health-check.json"
+HEALTH_FILE="${ORBIT_RUN_DIR}/state/remediator/last-health-check.json"
 
 if [ -f "$HEALTH_FILE" ]; then
   STATUS=$(jq -r '.status // "unknown"' "$HEALTH_FILE" 2>/dev/null || echo "unknown")

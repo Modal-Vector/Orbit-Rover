@@ -72,7 +72,7 @@ This is a waypoint — the mission pauses for review before continuing.
    and breaks it into atomic research tasks
 2. **Investigate**: `researcher` processes one atomic task per orbit:
    - Preflight: `distil-sources.sh` fetches source URLs and strips HTML/PDF to
-     8KB plain text; `extract-findings.sh` rebuilds `findings/index.md` from
+     8KB plain text; `extract-findings.sh` rebuilds `{run-dir}/findings/index.md` from
      all existing findings
    - The researcher analyses distilled content and writes findings
    - Loops back to decompose when the current topic is complete, until all
@@ -85,7 +85,7 @@ This is a waypoint — the mission pauses for review before continuing.
 2. **Write**: `section-writer` processes one section per orbit:
    - Reads `brief.md` for audience, voice, and output format
    - Reads the findings listed in the task's `context_files`
-   - Writes polished prose to `output/`
+   - Writes polished prose to `{run-dir}/output/`
    - Loops until all sections are complete
 
 ## Key Files
@@ -96,10 +96,10 @@ This is a waypoint — the mission pauses for review before continuing.
 | `.orbit/runs/{run-id}/plans/research/tasks.json` | Topic-level task list (created by planner, run-scoped) |
 | `.orbit/runs/{run-id}/plans/research/atomic/current.json` | Atomic tasks for the current topic (run-scoped) |
 | `.orbit/runs/{run-id}/plans/research/write-tasks.json` | Section writing task list (run-scoped) |
-| `sources/{task-id}/distilled.md` | Distilled source material (max 8KB, preflight output) |
-| `findings/{task-id}.md` | Per-task research findings |
-| `findings/index.md` | Auto-generated index of all findings (rebuilt each orbit by `extract-findings.sh`) |
-| `output/` | Final written sections |
+| `.orbit/runs/{run-id}/sources/{task-id}/distilled.md` | Distilled source material (max 8KB, preflight output) |
+| `.orbit/runs/{run-id}/findings/{task-id}.md` | Per-task research findings |
+| `.orbit/runs/{run-id}/findings/index.md` | Auto-generated index of all findings (rebuilt each orbit by `extract-findings.sh`) |
+| `.orbit/runs/{run-id}/output/` | Final written sections |
 
 ## Configuration
 

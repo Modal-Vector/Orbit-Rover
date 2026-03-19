@@ -22,7 +22,7 @@ fi
 TASK_ID=$(echo "$TASK" | jq -r '.id')
 SOURCE_URL=$(echo "$TASK" | jq -r '.source_url // empty')
 
-OUTPUT_DIR="sources/${TASK_ID}"
+OUTPUT_DIR="${ORBIT_RUN_DIR}/sources/${TASK_ID}"
 mkdir -p "$OUTPUT_DIR"
 
 if [ -z "$SOURCE_URL" ]; then

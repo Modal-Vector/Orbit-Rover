@@ -2,7 +2,7 @@ component: section-writer
 prompt: components/section-writer/section-writer.md
 
 delivers:
-  - output/
+  - "{mission.run_dir}/output/"
 
 orbits:
   max: 50

@@ -10,14 +10,14 @@ What has happened so far:
 
 ## Task
 
-Synthesise all analyst findings into a single daily intelligence brief at `intelligence/daily-brief.md`.
+Synthesise all analyst findings into a single daily intelligence brief at `{mission.run_dir}/intelligence/daily-brief.md`.
 
-1. Read all files in `findings/` — each is a per-source analysis from the analyst stage
+1. Read all files in `{mission.run_dir}/findings/` — each is a per-source analysis from the analyst stage
 2. Read `{mission.run_dir}/plans/sentinel/tasks.json` for source metadata (names, types, status)
-3. Write `intelligence/daily-brief.md` following the format below
-4. Archive the brief: copy `intelligence/daily-brief.md` to
-   `intelligence/briefs/brief-YYYY-MM-DD-HHMMSS.md` using the current UTC
-   timestamp. Create `intelligence/briefs/` if it doesn't exist.
+3. Write `{mission.run_dir}/intelligence/daily-brief.md` following the format below
+4. Archive the brief: copy `{mission.run_dir}/intelligence/daily-brief.md` to
+   `{mission.run_dir}/intelligence/briefs/brief-YYYY-MM-DD-HHMMSS.md` using the current UTC
+   timestamp. Create `{mission.run_dir}/intelligence/briefs/` if it doesn't exist.
 
 ### Output Format
 
@@ -53,7 +53,7 @@ Scheduled: {next cron time}
 - If a finding has no signals, list the source in the table but omit from priority sections
 - Include every source in the table, even if it produced no findings
 - Write the file in a single pass — do not append incrementally
-- Always write `intelligence/daily-brief.md` first, then the timestamped archive copy
+- Always write `{mission.run_dir}/intelligence/daily-brief.md` first, then the timestamped archive copy
 - Use UTC for archive filenames (e.g. `brief-2026-03-14-060012.md`)
 
 ### Learning

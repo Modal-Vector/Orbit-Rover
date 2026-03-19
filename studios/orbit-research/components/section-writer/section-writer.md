@@ -21,8 +21,8 @@ Active decisions:
 Read the task list from `{mission.run_dir}/plans/research/write-tasks.json`. Find the first task where `done` is `false`.
 
 1. Read `brief.md` for the research objective, audience, and expected output format
-2. Read the context files listed in the task (research findings from `findings/`)
-3. Write the section to `output/` following the task description and the writing standards below
+2. Read the context files listed in the task (research findings from `{mission.run_dir}/findings/`)
+3. Write the section to `{mission.run_dir}/output/` following the task description and the writing standards below
 4. Run the self-review checklist before marking done
 5. Mark the task as `done: true` in `write-tasks.json`
 

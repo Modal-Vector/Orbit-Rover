@@ -6,7 +6,7 @@ preflight:
   - scripts/distil-content.sh
 
 delivers:
-  - findings/
+  - "{mission.run_dir}/findings/"
 
 orbits:
   max: 100

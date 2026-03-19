@@ -115,7 +115,7 @@ flowchart TD
 2. When triggered, `source-decomposer` breaks the watchlist into individual
    source monitoring tasks
 3. `analyst` processes each source and produces intelligence findings
-4. `brief-writer` synthesises all findings into `intelligence/daily-brief.md`
+4. `brief-writer` synthesises all findings into `{run-dir}/intelligence/daily-brief.md`
 
 ### Components
 

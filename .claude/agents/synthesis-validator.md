@@ -12,7 +12,7 @@ undermine the final output.
 ## Input
 
 You will be given:
-- A directory of findings files (e.g. `findings/`)
+- A directory of findings files (e.g. `{run-dir}/findings/`)
 - Optionally, the task list showing what was researched (`tasks.json`)
 - Optionally, specific findings to focus on
 

@@ -4,7 +4,7 @@ set -euo pipefail
 # extract-findings.sh — Build a findings index from completed research topics
 # Scans findings/ directory and creates a consolidated index.
 
-FINDINGS_DIR="findings"
+FINDINGS_DIR="${ORBIT_RUN_DIR}/findings"
 INDEX_FILE="${FINDINGS_DIR}/index.md"
 
 mkdir -p "$FINDINGS_DIR"

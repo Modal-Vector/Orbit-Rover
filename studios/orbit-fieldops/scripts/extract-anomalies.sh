@@ -5,11 +5,12 @@ set -euo pipefail
 # Reads log files from logs/ directory and produces a structured anomaly report.
 
 LOG_DIR="logs"
-OUTPUT_FILE="${LOG_DIR}/anomaly-report.json"
+OUTPUT_FILE="${ORBIT_RUN_DIR}/logs/anomaly-report.json"
+
+mkdir -p "${ORBIT_RUN_DIR}/logs"
 
 if [ ! -d "$LOG_DIR" ]; then
   echo "[ORBIT WARN] No logs directory found" >&2
-  mkdir -p "$LOG_DIR"
   echo '{"anomalies": [], "generated_at": "'$(date -u +%Y-%m-%dT%H:%M:%SZ)'"}' > "$OUTPUT_FILE"
   exit 0
 fi
