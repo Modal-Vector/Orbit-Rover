@@ -34,5 +34,5 @@ stages:
       Approve to archive and reset, reject to iterate.
     options: [approve, reject]
     timeout: 12h
-    default: approve
+    default: reject
     depends_on: [assemble]

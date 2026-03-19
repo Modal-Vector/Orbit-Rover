@@ -1,4 +1,6 @@
 component: researcher
+agent: claude-code
+model: sonnet
 prompt: components/researcher/researcher.md
 
 preflight:
@@ -10,10 +12,10 @@ delivers:
 
 orbits:
   max: 200
-  deadlock:
-    threshold: 5
   success:
     when: bash
     condition: |
       jq -e '[.tasks[] | select(.done == false)] | length == 0' \
         {mission.run_dir}/plans/research/tasks.json
+  deadlock:
+    threshold: 5
