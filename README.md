@@ -8,6 +8,8 @@ Rover runs on any POSIX system with bash 4+ and implements the **orbit loop** pa
 
 Like a spacecraft making repeated correction manoeuvres to achieve orbital stability, the loop corrects course on each pass, with deadlock detection, checkpoint continuity, and a learning system that accumulates knowledge across runs.
 
+Read the release blogpost here: [modalvector.ai/blog/orbit-rover-launch/](https://modalvector.ai/blog/orbit-rover-launch/)
+
 ## Quick Start
 
 ```bash
