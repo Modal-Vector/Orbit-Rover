@@ -357,7 +357,7 @@ yaml_get() {
   assert_output "manual"
 
   run yq -r '.stages[] | select(.name == "brief-gate") | .default' "$mission"
-  assert_output "approve"
+  assert_output "reject"
 
   run yq -r '.stages[] | select(.name == "brief-gate") | .timeout' "$mission"
   assert_output "12h"
